@@ -15,7 +15,7 @@ export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("blog", ({ data }) => {
     return !data.draft && data.category === "sports";
   });
-  return paginate(getSortedPosts(posts), { pageSize: SITE.postPerPage });
+  return paginate(getSortedPosts(posts), { pageSize: SITE.sports.postPerPage });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;

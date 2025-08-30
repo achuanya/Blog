@@ -18,9 +18,14 @@ export const SITE = {
   showBackButton: true,      // 显示返回按钮
   dynamicOgImage: false,      // 启用动态生成社交媒体图片
   
-  // 分页配置
+  // 默认分页配置
   postPerIndex: 5,          // 首页显示的文章数量
   postPerPage: 5,           // 每页显示的文章数量
+  
+  // Sports分类独立分页配置
+  sports: {
+    postPerPage: 5,         // Sports每页显示的文章数量
+  },
   
   // 定时发布配置
   scheduledPostMargin: 15 * 60 * 1000,  // 定时发布边距时间（15分钟，单位：毫秒）
