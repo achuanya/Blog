@@ -5,7 +5,7 @@ featured: false
 category: technology
 pubDatetime: 2025-08-30T17:05+08:00
 title: 何为享受
-slug: what-is-enjoyment.md
+slug: what-is-enjoyment
 ogImage: https://cos.lhasa.icu/ArticlePictures/what-is-enjoyment/what-is-enjoyment.png
 tags:
   - 随笔
