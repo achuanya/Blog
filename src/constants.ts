@@ -8,6 +8,7 @@ import IconTelegram from "@/assets/icons/IconTelegram.svg"; // Telegram图标
 // import IconPinterest from "@/assets/icons/IconPinterest.svg"; // Pinterest图标
 import IconDouyin from "@/assets/icons/IconDouyin.svg";     // 抖音图标
 import IconMastodon from "@/assets/icons/IconMastodon.svg"; // Mastodon图标
+import IconZhihu from "@/assets/icons/IconZhihu.svg";       // 知乎图标
 import { SITE } from "@/config";
 
 interface Social {
@@ -32,16 +33,10 @@ export const SOCIALS: Social[] = [
     icon: IconDouyin,                                  // 抖音图标
   },
   {
-    name: "Mastodon",                                  // Mastodon社交网络
-    href: "https://mastodon.social/@lhasarider",       // Mastodon用户页面
-    linkTitle: `${SITE.title} on Mastodon`,           // 链接标题
-    icon: IconMastodon,                               // Mastodon图标
-  },
-  {
-    name: "Telegram",                                 // Telegram即时通讯
-    href: "https://t.me/lhasa88",                    // Telegram用户页面
-    linkTitle: `Share this post via Telegram`,       // 链接标题
-    icon: IconTelegram,                              // Telegram图标
+    name: "Zhihu",                                   // 知乎平台
+    href: "https://www.zhihu.com/people/lhasaicu",  // 知乎用户页面
+    linkTitle: `${SITE.title} on Zhihu`,            // 链接标题
+    icon: IconZhihu,                                // 知乎图标
   },
   {
     name: "Mail",                                    // 电子邮件
@@ -70,18 +65,6 @@ export const SHARE_LINKS: Social[] = [
     href: "https://x.com/intent/post?url=",           // X分享链接
     linkTitle: `Share this post on X`,                // 链接标题
     icon: IconBrandX,                                 // X图标
-  },
-  {
-    name: "Telegram",                                 // Telegram即时通讯
-    href: "https://t.me/share/url?url=",             // Telegram分享链接
-    linkTitle: `Share this post via Telegram`,       // 链接标题
-    icon: IconTelegram,                              // Telegram图标
-  },
-  {
-    name: "Mastodon",                                // Mastodon去中心化社交网络
-    href: "https://mastodon.social/share?text=",     // Mastodon分享链接
-    linkTitle: `Share this post on Mastodon`,       // 链接标题
-    icon: IconMastodon,                             // Mastodon图标
   },
   // {
   //   name: "Pinterest",                                      // Pinterest图片社交
