@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-10-15T16:41+08:00
 title: Manjaro Linux 双显卡切换解决方案
 slug: manjaro-dual-graphics
-ogImage: https://cos.lhasa.icu/ArticlePictures/manjaro.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/manjaro-dual-graphics/manjaro.jpg_81
 tags:
   - Manjaro
   - Linux

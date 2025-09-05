@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-05-06T08:34+08:00
 title: ionic 笔记 (环境搭建与命令)
 slug: ionic
-ogImage: https://cos.lhasa.icu/ArticlePictures/ionic.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/ionic/ionic.jpg_81
 tags:
   - ionic
 

@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2025-02-06T13:03+08:00
 title: Blog Function Update 2025 (2)
 slug: BlogFunctionUpdate2025(2)
-ogImage: https://cos.lhasa.icu/ArticlePictures/update.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/BlogFunctionUpdate2025(2)/update.jpg_81
 tags:
   - Update
   - Liquid

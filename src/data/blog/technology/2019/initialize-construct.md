@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-04-08T10:28+08:00
 title: _initialize() 和 __construct() 的区别
 slug: initialize-construct
-ogImage: https://cos.lhasa.icu/ArticlePictures/php.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/initialize-construct/php.jpg_81
 tags:
   - OOP
   - PHP

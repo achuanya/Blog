@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2018-08-31T09:44+08:00
 title: (转)为什么你写不好一个快速排序? 谈程序员的职业发展
 slug: Programmer-development
-ogImage: https://cos.lhasa.icu/ArticlePictures/fazhan.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Programmer-development/fazhan.jpg_81
 tags:
   - 发展
   - 算法

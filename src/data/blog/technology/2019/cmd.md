@@ -7,7 +7,7 @@ pubDatetime: 2019-02-12T12:44+08:00
 modDatetime: 2019-05-03T14:41+08:00
 title: Cmd 笔记(长期更新)
 slug: cmd
-ogImage: https://cos.lhasa.icu/ArticlePictures/cmd.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/cmd/cmd.jpg_81
 tags:
   - Cmd
   - Windows

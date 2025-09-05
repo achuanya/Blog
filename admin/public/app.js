@@ -445,21 +445,32 @@ class BlogAdmin {
         function transformImgAstroShortcode(srcText) {
           return srcText.replace(/<Img\s+([^>]*?)\/>/g, (_m, attrs) => {
             const pick = (name) => {
-              const m = attrs.match(new RegExp(`${name}\\s*=\\s*"([^"]*)"`, 'i'));
+              const m = attrs.match(new RegExp(`${name}\\s*=\\s*"([^"]*)"`,'i'));
               return m ? m[1] : '';
             };
+            
             const src = pick('src') || '';
             const alt = pick('alt') || '';
-            // caption: 'long' | 'short' | false（预览里用有无 alt 决定是否显示一行说明即可）
             const caption = pick('caption');
             const hasCaption = !!caption || !!alt;
+            
+            // 获取当前文章的slug - 修正：使用正确的元素id
+            const slugInput = document.querySelector('#canonicalURL');
+            const currentSlug = slugInput ? slugInput.value.trim() : '';
+            
+            // 拼接完整的图片URL
+            let fullImageUrl = src;
+            if (src && currentSlug && !src.startsWith('http')) {
+              // 如果src不是完整URL且存在slug，则拼接完整路径
+              fullImageUrl = `https://cos.lhasa.icu/ArticlePictures/${currentSlug}/${src}`;
+            }
 
             // 简化版的预览 HTML（不改变保存内容）
             const esc = (s) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
             const imgHtml = `
 <figure style="margin:1rem 0;text-align:center">
   <div style="position:relative;display:inline-block;max-width:100%">
-    <img src="${esc(src)}" alt="${esc(alt)}" title="${esc(alt)}"
+    <img src="${esc(fullImageUrl)}" alt="${esc(alt)}" title="${esc(alt)}"
          style="max-width:100%;height:auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1)" />
     ${hasCaption ? `<figcaption style="margin-top:6px;font-size:12px;color:#6b7280">${esc(alt)}</figcaption>` : ``}
   </div>

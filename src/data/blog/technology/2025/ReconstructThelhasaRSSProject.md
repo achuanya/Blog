@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2025-03-12T03:26+08:00
 title: 利用 Go + COS + GitHub 重构 RSS 爬虫
 slug: ReconstructThelhasaRSSProject
-ogImage: https://cos.lhasa.icu/ArticlePictures/golang.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/ReconstructThelhasaRSSProject/golang.jpg_81
 tags:
   - lhasaRSS
   - GoLang

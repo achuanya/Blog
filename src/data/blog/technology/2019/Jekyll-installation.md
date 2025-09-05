@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-03-29T09:27+08:00
 title: Jekyll 环境搭建 (Windows 10)
 slug: Jekyll-installation
-ogImage: https://cos.lhasa.icu/ArticlePictures/jekyll.png_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Jekyll-installation/jekyll.png_81
 tags:
   - Jekyll
   - Windows

@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2021-02-12T12:44+08:00
 title: Ubuntu Server部署日记
 slug: Ubuntu-Deployment
-ogImage: https://cos.lhasa.icu/ArticlePictures/ubuntu.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Ubuntu-Deployment/ubuntu.jpg_81
 tags:
   - Ubuntu
   - Linux

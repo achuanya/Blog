@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-09-25T09:41+08:00
 title: Docker Compose 快速构建 LNMP 笔记
 slug: Docker-LNMP
-ogImage: https://cos.lhasa.icu/ArticlePictures/xihu.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Docker-LNMP/xihu.jpg_81
 tags:
   - Docker
   - LNMP

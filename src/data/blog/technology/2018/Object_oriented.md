@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2018-09-23T11:28+08:00
 title:  面向对象(Object Oriented)学习笔记(一)
 slug: Object_oriented
-ogImage: https://cos.lhasa.icu/ArticlePictures/oop.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Object_oriented/oop.jpg_81
 tags:
   - OOP
   - PHP

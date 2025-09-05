@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-04-09T11:24+08:00
 title: Manjaro KDE 调教日记
 slug: Manjaro-KDE
-ogImage: https://cos.lhasa.icu/ArticlePictures/manjaro.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Manjaro-KDE/manjaro.jpg_81
 tags:
   - Manjaro
   - KDE

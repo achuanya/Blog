@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-12-19T11:26+08:00
 title: 爱上Go语言：常量与枚举
 slug: golang-consts
-ogImage: https://cos.lhasa.icu/ArticlePictures/golang.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/golang-consts/golang.jpg_81
 tags:
   - Goland
   - 常亮

@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2024-07-27T09:50+08:00
 title: 利用Go+Github Actions写个定时RSS爬虫
 slug: GrabLatestRSS
-ogImage: https://cos.lhasa.icu/ArticlePictures/1722043714404.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/GrabLatestRSS/1722043714404.jpg_81
 tags:
   - Golang
   - Github Actions

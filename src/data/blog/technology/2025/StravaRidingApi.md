@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2025-04-10T00:23+08:00
 title: Strava Riding Api 上线
 slug: StravaRidingApi
-ogImage: https://cos.lhasa.icu/ArticlePictures/strava_logo.webp_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/StravaRidingApi/strava_logo.webp_81
 tags:
   - API
   - STRAVA

@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-04-14T15:28+08:00
 title: ThinkPHP 6.0 下载安装与配置
 slug: ThinkPHP6.0-installation
-ogImage: https://cos.lhasa.icu/ArticlePictures/ThinkPHP.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/ThinkPHP6.0-installation/ThinkPHP.jpg_81
 tags:
   - ThinkPHP
   - PHP

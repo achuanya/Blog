@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-02-28T16:25+08:00
 title: ThinkPHP 笔记(路由实现与操作方法)
 slug: tp5
-ogImage: https://cos.lhasa.icu/ArticlePictures/ThinkPHP.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/tp5/ThinkPHP.jpg_81
 tags:
   - ThinkPHP
   - PHP

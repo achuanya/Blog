@@ -7,7 +7,7 @@ pubDatetime: 2018-09-24T12:44+08:00
 modDatetime: 2019-02-15T13:27+08:00
 title: Linux 命令笔记(长期更新)
 slug: linux-command
-ogImage: https://cos.lhasa.icu/ArticlePictures/linux.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/linux-command/linux.jpg_81
 tags:
   - Linux
   

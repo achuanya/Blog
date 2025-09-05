@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-07-31T08:21+08:00
 title: ThinkPHP Save 方法引发的错误
 slug: tp-save
-ogImage: https://cos.lhasa.icu/ArticlePictures/ThinkPHP.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/tp-save/ThinkPHP.jpg_81
 tags:
   - ThinkPHP
   - Save

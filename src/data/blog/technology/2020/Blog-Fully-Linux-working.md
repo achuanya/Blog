@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-04-07T18:10+08:00
 title: (转)谈 Linux，Windows 和 Mac
 slug: Blog-Fully-Linux-working
-ogImage: https://cos.lhasa.icu/ArticlePictures/linux.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Blog-Fully-Linux-working/linux.jpg_81
 tags:
   - Linux
   - Windows

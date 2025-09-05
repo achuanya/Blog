@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-02-28T12:15+08:00
 title: 第一次校招面试总结
 slug: interview
-ogImage: https://cos.lhasa.icu/ArticlePictures/zongjie.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/interview/zongjie.jpg_81
 tags:
   - 校招
   - 面试

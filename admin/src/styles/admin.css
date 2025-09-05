@@ -1,7 +1,7 @@
+@charset "UTF-8";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 /* 全局基础样式 */
 @layer base {
   html, body {
@@ -9,99 +9,189 @@
   }
   body {
     @apply bg-[#7db9de] text-slate-800 antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 }
-
 /* 组件样式（映射你现有的类名） */
 @layer components {
   /* 布局与卡片 */
-  .page { @apply flex justify-center gap-5 p-8; }
-  .main-card { @apply w-[820px] max-w-[calc(100vw-320px)] bg-white rounded-[10px] shadow-card overflow-hidden; }
-  .main-card .container { @apply max-w-[820px] mx-auto px-6 pt-6 pb-7; }
-
+  .page {
+    @apply flex justify-center gap-5 p-8;
+  }
+  .main-card {
+    @apply w-[820px] max-w-[calc(100vw-320px)] bg-white rounded-[10px] shadow-card overflow-hidden;
+  }
+  .main-card .container {
+    @apply max-w-[820px] mx-auto px-6 pt-6 pb-7;
+  }
   /* 容器与头部 */
-  .container { @apply max-w-[1200px] mx-auto p-5; }
-  .header { @apply bg-white p-5 rounded-lg shadow mb-5; }
-  .header h1 { @apply text-slate-800 mb-2; }
-
+  .container {
+    @apply max-w-[1200px] mx-auto p-5;
+  }
+  .header {
+    @apply bg-white p-5 rounded-lg shadow mb-5;
+  }
+  .header h1 {
+    @apply text-slate-800 mb-2;
+  }
   /* 操作按钮 */
-  .actions { @apply mb-5; }
-  .btn { @apply inline-block bg-[#3498db] text-white border-0 px-5 py-2 rounded cursor-pointer no-underline mr-2; }
-  .btn:hover { @apply bg-[#2980b9]; }
-  .btn-success { @apply bg-[#27ae60]; }
-  .btn-success:hover { @apply bg-[#229954]; }
-  .btn-danger { @apply bg-[#e74c3c]; }
-  .btn-danger:hover { @apply bg-[#c0392b]; }
-
+  .actions {
+    @apply mb-5;
+  }
+  .btn {
+    @apply inline-block bg-[#3498db] text-white border-0 px-5 py-2 rounded cursor-pointer no-underline mr-2;
+  }
+  .btn:hover {
+    @apply bg-[#2980b9];
+  }
+  .btn-success {
+    @apply bg-[#27ae60];
+  }
+  .btn-success:hover {
+    @apply bg-[#229954];
+  }
+  .btn-danger {
+    @apply bg-[#e74c3c];
+  }
+  .btn-danger:hover {
+    @apply bg-[#c0392b];
+  }
   /* 列表与卡片 */
-  .posts-grid { @apply grid gap-5; }
-  .post-card { @apply bg-white p-5 rounded-lg shadow; }
-  .post-meta { @apply text-slate-500 text-sm mb-2; }
-  .post-title { @apply text-lg font-semibold mb-2 text-slate-800; }
-  .post-description { @apply text-slate-600 leading-6 mb-4; }
-  .post-tags { @apply mb-4; }
-  .tag { @apply inline-block bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs mr-1; }
-
+  .posts-grid {
+    @apply grid gap-5;
+  }
+  .post-card {
+    @apply bg-white p-5 rounded-lg shadow;
+  }
+  .post-meta {
+    @apply text-slate-500 text-sm mb-2;
+  }
+  .post-title {
+    @apply text-lg font-semibold mb-2 text-slate-800;
+  }
+  .post-description {
+    @apply text-slate-600 leading-6 mb-4;
+  }
+  .post-tags {
+    @apply mb-4;
+  }
+  .tag {
+    @apply inline-block bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs mr-1;
+  }
   /* 模态框 */
-  .modal { @apply hidden fixed inset-0 bg-black/50 z-[1000]; }
-  .modal-content { @apply bg-white mx-auto my-12 p-5 w-[90%] max-w-[600px] rounded-lg max-h-[80vh] overflow-y-auto; }
-
+  .modal {
+    @apply hidden fixed inset-0 bg-black/50 z-[1000];
+  }
+  .modal-content {
+    @apply bg-white mx-auto my-12 p-5 w-[90%] max-w-[600px] rounded-lg max-h-[80vh] overflow-y-auto;
+  }
   /* 表单 */
-  .form-group { @apply mb-4; }
-  .form-group label { @apply block mb-1 font-semibold; }
+  .form-group {
+    @apply mb-4;
+  }
+  .form-group label {
+    @apply block mb-1 font-semibold;
+  }
   .form-group input,
   .form-group select,
-  .form-group textarea { @apply w-full p-2 border border-slate-200 rounded text-sm; }
-  .form-group textarea { @apply h-[200px] resize-y; }
-
-  .loading { @apply text-center p-10 text-slate-500; }
-
+  .form-group textarea {
+    @apply w-full p-2 border border-slate-200 rounded text-sm;
+  }
+  .form-group textarea {
+    @apply h-[200px] resize-y;
+  }
+  .loading {
+    @apply text-center p-10 text-slate-500;
+  }
   /* 顶部分类 tabs（保留 .tab / .nav-link / .spacer / .search-input 类名） */
-  .category-tabs { @apply flex items-center gap-2.5 py-1.5 pb-2.5 my-1.5 mb-4 border-b-2 border-[#408cc940]; }
-  .category-tabs .tab { @apply text-[14px] text-[#2a7db8] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline; }
-  .category-tabs .tab:hover { @apply bg-[#408cc91f]; }
-  .category-tabs .tab.active { @apply text-[#1e6ea6] bg-[#408cc92e]; }
-  .category-tabs .spacer { @apply flex-1; }
-  .category-tabs .nav-link { @apply text-[14px] text-[#2a7db8] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline ml-1.5; }
-  .category-tabs .nav-link:hover { @apply bg-[#408cc91f]; }
-  .category-tabs .search-input { @apply ml-2 px-2 py-1.5 outline-none bg-transparent text-slate-800 w-40; }
-
+  .category-tabs {
+    @apply flex items-center gap-2.5 py-1.5 pb-2.5 my-1.5 mb-4 border-b-2 border-[#408cc940];
+  }
+  .category-tabs .tab {
+    @apply text-[14px] text-[#2a7db8] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline;
+  }
+  .category-tabs .tab:hover {
+    @apply bg-[#408cc91f];
+  }
+  .category-tabs .tab.active {
+    @apply text-[#1e6ea6] bg-[#408cc92e];
+  }
+  .category-tabs .spacer {
+    @apply flex-1;
+  }
+  .category-tabs .nav-link {
+    @apply text-[14px] text-[#2a7db8] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline ml-1.5;
+  }
+  .category-tabs .nav-link:hover {
+    @apply bg-[#408cc91f];
+  }
+  .category-tabs .search-input {
+    @apply ml-2 px-2 py-1.5 outline-none bg-transparent text-slate-800 w-40;
+  }
   /* 列表（按年分组） */
-  .year-group { @apply rounded-lg py-1.5; }
-  .year-header { @apply flex items-center gap-2.5 px-1.5 py-2 cursor-pointer select-none text-slate-800; }
-  .year-header .caret { @apply transition-transform duration-200; }
-  .year-group.collapsed .caret { transform: rotate(-90deg); }
-  .year-body { @apply pt-1.5; }
-  .year-group.collapsed .year-body { display: none; }
-
+  .year-group {
+    @apply rounded-lg py-1.5;
+  }
+  .year-header {
+    @apply flex items-center gap-2.5 px-1.5 py-2 cursor-pointer select-none text-slate-800;
+  }
+  .year-header .caret {
+    @apply transition-transform duration-200;
+  }
+  .year-group.collapsed .caret {
+    transform: rotate(-90deg);
+  }
+  .year-body {
+    @apply pt-1.5;
+  }
+  .year-group.collapsed .year-body {
+    display: none;
+  }
   /* 列表项 */
-  .post-list { @apply flex flex-col gap-2.5; }
-  .post-item { @apply grid items-center gap-3 p-2 rounded-md; }
-  .post-item:hover { @apply bg-[#408cc914]; }
-  .post-item { grid-template-columns: 50px 1fr auto; }
-
-  .thumb { @apply w-[50px] h-[50px] rounded-md overflow-hidden bg-[#e6eef5] flex items-center justify-center text-[#2a7db8] font-semibold text-xs; }
-  .thumb img { @apply w-full h-full object-cover block; }
-
-  .post-info .title { @apply text-slate-800 font-semibold no-underline; }
-  .post-info .title:hover { @apply underline; }
-  .post-info .date { @apply text-slate-500 text-[13px] mt-[2px]; }
-
+  .post-list {
+    @apply flex flex-col gap-2.5;
+  }
+  .post-item {
+    @apply grid items-center gap-3 p-2 rounded-md;
+  }
+  .post-item:hover {
+    @apply bg-[#408cc914];
+  }
+  .post-item {
+    grid-template-columns: 50px 1fr auto;
+  }
+  .thumb {
+    @apply w-[50px] h-[50px] rounded-md overflow-hidden bg-[#e6eef5] flex items-center justify-center text-[#2a7db8] font-semibold text-xs;
+  }
+  .thumb img {
+    @apply w-full h-full object-cover block;
+  }
+  .post-info .title {
+    @apply text-slate-800 font-semibold no-underline;
+  }
+  .post-info .title:hover {
+    @apply underline;
+  }
+  .post-info .date {
+    @apply text-slate-500 text-[13px] mt-[2px];
+  }
   /* ====== 新增：编辑视图（GitHub 风格） ====== */
-  .editor-view { @apply mt-2; }
-  .editor-header { @apply flex items-center gap-2 mb-4; }
-  .editor-header .spacer { @apply flex-1; }
-
+  .editor-view {
+    @apply mt-2;
+  }
+  .editor-header {
+    @apply flex items-center gap-2 mb-4;
+  }
+  .editor-header .spacer {
+    @apply flex-1;
+  }
   .editor-form .form-row-2col {
     @apply grid gap-4;
     grid-template-columns: 1fr 1fr;
   }
-
   .editor-form .flags {
     @apply flex items-center gap-5;
   }
-
   /* GitHub 风格 textarea */
   .gh-editor {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -112,46 +202,74 @@
     overflow-wrap: normal;
     overflow-x: auto;
   }
-
   .gh-textarea {
     @apply h-[120px] p-3 border border-slate-200 rounded bg-white;
   }
   /* ====== 新增：编辑器 tabs / 分屏 / 预览样式 ====== */
-  .editor-tabs { @apply flex items-center gap-2 mb-3 border-b border-slate-200; }
-  .editor-tabs .tab { @apply px-3 py-1.5 text-sm text-slate-600 rounded-t cursor-pointer; }
-  .editor-tabs .tab:hover { @apply bg-slate-100; }
-  .editor-tabs .tab.active { @apply text-slate-900 bg-white border border-b-0 border-slate-200; }
-  .editor-tabs .spacer { @apply flex-1; }
-  .editor-tabs .toggle { @apply text-sm text-slate-600 select-none; }
-
-  .editor-body { @apply grid gap-4; grid-template-columns: 1fr; }
-  .editor-body.split { grid-template-columns: 1fr 1fr; }
-  .editor-pane { @apply min-h-[200px]; }
-
-  .editor-preview { @apply border border-slate-200 rounded bg-white; }
-  .md-preview { @apply p-4 text-slate-800 leading-7; }
-  .md-preview h1 { @apply text-3xl font-bold mb-4 mt-6; }
-  .md-preview h2 { @apply text-2xl font-bold mb-3 mt-5; }
-  .md-preview h3 { @apply text-xl font-semibold mb-2.5 mt-4; }
-  .md-preview p { @apply mb-3; }
-  .md-preview ul { @apply list-disc pl-6 mb-3; }
-  .md-preview ol { @apply list-decimal pl-6 mb-3; }
-  .md-preview blockquote { @apply border-l-4 border-slate-200 pl-4 italic text-slate-600 my-3; }
-  .md-preview code { @apply bg-slate-100 rounded px-1 py-0.5 text-sm; }
-  .md-preview pre { @apply bg-slate-900 text-slate-100 rounded p-3 overflow-auto my-3; }
-  .md-preview a { @apply text-blue-600 underline; }
+  .editor-tabs {
+    @apply flex items-center gap-2 mb-3 border-b border-slate-200;
+  }
+  .editor-tabs .tab {
+    @apply px-3 py-1.5 text-sm text-slate-600 rounded-t cursor-pointer;
+  }
+  .editor-tabs .tab:hover {
+    @apply bg-slate-100;
+  }
+  .editor-tabs .tab.active {
+    @apply text-slate-900 bg-white border border-b-0 border-slate-200;
+  }
+  .editor-tabs .spacer {
+    @apply flex-1;
+  }
+  .editor-tabs .toggle {
+    @apply text-sm text-slate-600 select-none;
+  }
+  .editor-body {
+    @apply grid gap-4;
+    grid-template-columns: 1fr;
+  }
+  .editor-body.split {
+    grid-template-columns: 1fr 1fr;
+  }
+  .editor-pane {
+    @apply min-h-[200px];
+  }
+  .editor-preview {
+    @apply border border-slate-200 rounded bg-white;
+  }
+  .md-preview {
+    @apply p-4 text-slate-800 leading-7;
+  }
+  .md-preview h1 {
+    @apply text-3xl font-bold mb-4 mt-6;
+  }
+  .md-preview h2 {
+    @apply text-2xl font-bold mb-3 mt-5;
+  }
+  .md-preview h3 {
+    @apply text-xl font-semibold mb-2.5 mt-4;
+  }
+  .md-preview p {
+    @apply mb-3;
+  }
+  .md-preview ul {
+    @apply list-disc pl-6 mb-3;
+  }
+  .md-preview ol {
+    @apply list-decimal pl-6 mb-3;
+  }
+  .md-preview blockquote {
+    @apply border-l-4 border-slate-200 pl-4 italic text-slate-600 my-3;
+  }
+  .md-preview code {
+    @apply bg-slate-100 rounded px-1 py-0.5 text-sm;
+  }
+  .md-preview pre {
+    @apply bg-slate-900 text-slate-100 rounded p-3 overflow-auto my-3;
+  }
+  .md-preview a {
+    @apply text-blue-600 underline;
+  }
 }
 
-/* 隐藏滚动条（保留原跨浏览器实现） */
-/* Chrome / Safari / 新 Edge */
-*::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
-/* Firefox */
-* { scrollbar-width: none; }
-/* 旧版 IE / Edge */
-body { -ms-overflow-style: none; }
-
-/* 占位符样式（跨浏览器） */
-.category-tabs .search-input::placeholder { color: rgba(44,62,80,0.4); }
-.category-tabs .search-input::-webkit-input-placeholder { color: rgba(44,62,80,0.4); }
-.category-tabs .search-input:-ms-input-placeholder { color: rgba(44,62,80,0.4); }
-.category-tabs .search-input::-ms-input-placeholder { color: rgba(44,62,80,0.4); }
+/*# sourceMappingURL=admin.css.map */

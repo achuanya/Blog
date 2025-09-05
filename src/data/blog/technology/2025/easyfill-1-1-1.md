@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2025-06-02T23:27+08:00
 title: EasyFill 重大更新，全面提升用户体验
 slug: easyfill-1-1-1
-ogImage: https://cos.lhasa.icu/ArticlePictures/EasyFill128.webp_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/easyfill-1-1-1/EasyFill128.webp_81
 tags:
   - EasyFill
   - 扩展

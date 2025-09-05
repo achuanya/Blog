@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2018-09-03T12:44+08:00
 title: 致简写作神器 —— Markdown
 slug: Markdown
-ogImage: https://cos.lhasa.icu/ArticlePictures/markdown.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Markdown/markdown.jpg_81
 tags:
   - Markdown
   

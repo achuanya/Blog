@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-08-23T17:05+08:00
 title: (转)一个关于if else容易迷惑的问题
 slug: if-else-confuse
-ogImage: https://cos.lhasa.icu/ArticlePictures/php.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/if-else-confuse/php.jpg_81
 tags:
   - Bug
   - PHP

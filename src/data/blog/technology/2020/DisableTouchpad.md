@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2020-09-30T12:57+08:00
 title: Manjaro Linux 自动禁用触摸板
 slug: DisableTouchpad
-ogImage: https://cos.lhasa.icu/ArticlePictures/manjaro.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/DisableTouchpad/manjaro.jpg_81
 tags:
   - Manjaro
   - Linux

@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2024-08-07T14:26+08:00
 title: 写一个Chrome表单自动化插件
 slug: FormAutomationPlugin
-ogImage: https://cos.lhasa.icu/ArticlePictures/Form-automation-plugin.png_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/FormAutomationPlugin/Form-automation-plugin.png_81
 tags:
   - 扩展
   - JavaScript

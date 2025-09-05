@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-02-22T13:44+08:00
 title: Redis 笔记(安装与数据类型)
 slug: redis
-ogImage: https://cos.lhasa.icu/ArticlePictures/redis.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/redis/redis.jpg_81
 tags:
   - Redis
   - 数据库

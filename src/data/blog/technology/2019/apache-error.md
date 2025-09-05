@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-04-15T16:15+08:00
 title: 快速定位 Apache 错误
 slug: apache-error
-ogImage: https://cos.lhasa.icu/ArticlePictures/apache.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/apache-error/apache.jpg_81
 tags:
   - Linux
   - Apache

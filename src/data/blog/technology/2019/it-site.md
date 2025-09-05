@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-04-17T13:11+08:00
 title: 推荐 10 个优秀的技术栈社区
 slug: it-site
-ogImage: https://cos.lhasa.icu/ArticlePictures/jishuzhan.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/it-site/jishuzhan.jpg_81
 tags:
   - 技术栈
   - 社区

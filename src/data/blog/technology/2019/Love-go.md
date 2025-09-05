@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-07-05T10:18+08:00
 title: 爱上Go语言：终端命令
 slug: Love-go
-ogImage: https://cos.lhasa.icu/ArticlePictures/golang.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Love-go/golang.jpg_81
 tags:
   - Goland
   - Bash
