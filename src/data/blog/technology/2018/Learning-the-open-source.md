@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2018-08-31T13:28+08:00
 title: (转)如何学习开源项目
 slug: Learning-the-open-source
-ogImage: https://cos.lhasa.icu/ArticlePictures/openSource.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Learning-the-open-source/openSource.jpg_81
 tags:
   - 开源
   - 学习

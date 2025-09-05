@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-03-04T10:28+08:00
 title: 第一次校招复试总结
 slug: summarize
-ogImage: https://cos.lhasa.icu/ArticlePictures/zongjie.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/summarize/zongjie.jpg_81
 tags:
   - 校招
   - 面试

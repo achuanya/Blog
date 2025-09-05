@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2018-10-21T15:44+08:00
 title: 更换了域名、邮箱并修复了移动端 Bug
 slug: domain-name
-ogImage: https://cos.lhasa.icu/ArticlePictures/update.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/domain-name/update.jpg_81
 tags:
   - Update
   - Bug

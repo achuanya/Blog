@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2021-02-12T12:44+08:00
 title: PHP 笔记(长期更新)
 slug: php-notes
-ogImage: https://cos.lhasa.icu/ArticlePictures/php.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/php-notes/php.jpg_81
 tags:
   - PHP
   - OOP

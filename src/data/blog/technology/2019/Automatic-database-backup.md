@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2019-09-19T18:44+08:00
 title: 在 CentOS 下实现 MySQL 数据库定时自动备份
 slug: Automatic-database-backup
-ogImage: https://cos.lhasa.icu/ArticlePictures/centOS.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Automatic-database-backup/centOS.jpg_81
 tags:
   - MySQL
   - Linux
