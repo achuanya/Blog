@@ -6,7 +6,7 @@ category: life
 pubDatetime: 2019-06-04T11:54+08:00
 title: (转)一个程序员眼中的价值
 slug: phper-value
-ogImage: https://cos.lhasa.icu/ArticlePictures/jiazhi.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/phper-value/jiazhi.jpg_81
 tags:
   - 价值
   - 程序员

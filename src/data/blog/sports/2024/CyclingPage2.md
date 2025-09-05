@@ -6,7 +6,7 @@ category: sports
 pubDatetime: 2024-08-14T20:40+08:00
 title: 写一个骑行页面(二)
 slug: CyclingPage2
-ogImage: https://cos.lhasa.icu/ArticlePictures/3138bbfa27873a47be243177e9865ac.png_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/CyclingPage2/3138bbfa27873a47be243177e9865ac.png_81
 tags:
   - Update
   - 统计

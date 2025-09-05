@@ -6,7 +6,7 @@ category: life
 pubDatetime: 2024-01-22T12:36+08:00
 title: 我回来了
 slug: The_song_begins
-ogImage: https://cos.lhasa.icu/ArticlePictures/huilai.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/The_song_begins/huilai.jpg_81
 tags:
   - 回归
   - Blog

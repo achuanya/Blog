@@ -35,7 +35,7 @@ Astro Paper 这款主题性能极强，可拓展性也非常高，这也得益�
 
 ## Lighthouse 评分
 
-<Img src={`${IMAGES}/${frontmatter.slug}/AstroPaper-lighthouse-score.svg`} alt="Lighthouse 评分" exif={false} caption={false} />
+<Img src="AstroPaper-lighthouse-score.svg" alt="Lighthouse 评分" exif={false} caption={false} />
 
 下面就把新增的功能一一道来。
 
@@ -117,7 +117,7 @@ export const onRequest = defineMiddleware((context, next) => {
 1. 光标悬浮可切换月数据
 2. 点击日期可查看当天运动详情
 
-<Img src={`${IMAGES}/${frontmatter.slug}/sportsdonghua.webp`} alt="EasyFill·我的信息" exif={false} caption={false} />
+<Img src="sportsdonghua.webp" alt="EasyFill·我的信息" exif={false} caption={false} />
 
 ## EXIF 元数据显示
 
@@ -130,18 +130,18 @@ export const onRequest = defineMiddleware((context, next) => {
 ```jsx
 import Img from "@/components/Img.astro";
 
-<Img src={`${IMAGES}/${frontmatter.slug}/20250524003018.jpg`} />
+<Img src="20250524003018.jpg" />
 ```
 
-<Img src={`${IMAGES}/rain-ride-scarlet-maple/20250524003018.jpg`} alt="EXIF 示例" caption={false} />
+<Img src="rain-ride-scarlet-maple/20250524003018.jpg" alt="EXIF 示例" caption={false} />
 
 ## 图片标签
 
 所有图片默认使用长标签，支持切换为短标签或禁用标签
 
-<Img src={`${IMAGES}/${frontmatter.slug}/20250530173339.jpg`} alt="义乌美术馆一角" />
+<Img src="20250530173339.jpg" alt="义乌美术馆一角" />
 
-<Img src={`${IMAGES}/${frontmatter.slug}/20250530173339.jpg`} alt="义乌美术馆一角" caption="short" />
+<Img src="20250530173339.jpg" alt="义乌美术馆一角" caption="short" />
 
 若想在文章中启用 EXIF，需要将 .md 改为 .mdx，并引入组件：
 
@@ -149,7 +149,7 @@ import Img from "@/components/Img.astro";
 import Img from "@/components/Img.astro";
 
 <Img 
-  src={`${IMAGES}/${frontmatter.slug}/20250530173339.jpg`}
+  src="20250530173339.jpg"
   alt="义乌美术馆一角"
   caption="short" // false 表示不显示
 />

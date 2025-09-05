@@ -6,7 +6,7 @@ category: life
 pubDatetime: 2019-08-31T05:18+08:00
 title: 阿川的个人博客 "创建一周年啦!"
 slug: Blog-anniversary
-ogImage: https://cos.lhasa.icu/ArticlePictures/1.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Blog-anniversary/1.jpg_81
 tags:
   - 一周年
   - Blog

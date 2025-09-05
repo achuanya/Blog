@@ -11,9 +11,59 @@ export interface Props {
   caption?: false | 'long' | 'short';
   exif?: boolean;
   showExif?: boolean;
+  slug?: string; // 可选：手动指定slug，如果不提供则自动获取
 }
 
-const { src, alt, class: className, style, caption = "long", exif = true, showExif = true } = Astro.props;
+const { src, alt, class: className, style, caption = "long", exif = true, showExif = true, slug } = Astro.props;
+
+// 自动获取 slug 的改进版本
+const getFrontmatterSlug = (): string | undefined => {
+  try {
+    // 方法1: 尝试从 Astro.props 中获取 frontmatter
+    const frontmatter = (Astro as any).props?.frontmatter || (Astro as any).frontmatter;
+    if (frontmatter?.slug) {
+      return frontmatter.slug;
+    }
+    
+    // 方法2: 尝试从 URL 路径中提取 slug
+    const pathname = Astro.url.pathname;
+    const pathSegments = pathname.split('/').filter(Boolean);
+    if (pathSegments.length > 0) {
+      return pathSegments[pathSegments.length - 1];
+    }
+    
+    return undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+// 构建完整的图片路径
+const buildImagePath = (imageSrc: string, imageSlug?: string): string => {
+  // 如果src已经是完整的URL（包含http或https），直接返回
+  if (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')) {
+    return imageSrc;
+  }
+  
+  // 如果src包含IMAGES路径，说明已经是完整路径，直接返回
+  if (imageSrc.includes('cos.lhasa.icu/ArticlePictures')) {
+    return imageSrc;
+  }
+  
+  // 优先使用手动传递的slug，否则自动获取frontmatter.slug
+  const finalSlug = imageSlug || getFrontmatterSlug();
+  
+  // 如果有slug，构建带slug的路径
+  if (finalSlug) {
+    return `${IMAGES}/${finalSlug}/${imageSrc}`;
+  }
+  
+  // 否则直接拼接到IMAGES路径
+  return `${IMAGES}/${imageSrc}`;
+};
+
+// 构建最终的图片路径
+const finalSrc = buildImagePath(src, slug);
 
 // 确定是否显示 EXIF
 const shouldShowExif = showExif && exif !== false;
@@ -28,13 +78,13 @@ const generateExifUrl = (imageSrc: string): string => {
   return imageSrc.replace(IMAGES, EXIF);
 };
 
-const exifUrl = shouldShowExif ? generateExifUrl(src) : undefined;
+const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
 ---
 
 <figure class={`img-container ${className || ''}`} style={style}>
   <div class="img-wrapper">
     <img 
-      src={src} 
+      src={finalSrc} 
       alt={alt} 
       title={alt} 
       loading="lazy" 

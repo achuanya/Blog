@@ -6,7 +6,7 @@ category: technology
 pubDatetime: 2024-02-05T17:33+08:00
 title: 腾讯云COS文件跨域
 slug: Tencent-cloud-COS-file-cross-domain
-ogImage: https://cos.lhasa.icu/ArticlePictures/Tencent-cloud-COS-file-cross-domains.png_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/Tencent-cloud-COS-file-cross-domain/Tencent-cloud-COS-file-cross-domains.png_81
 tags:
   - COS
   - 跨域
@@ -31,16 +31,16 @@ import Img from "@/components/Img.astro";
 
 腾讯云COS跨域访问CORS配置如下：
 
-<Img src={`${IMAGES}/Tencent%20cloud%20cos%20cross-domain%20configuration.jpg`} alt="腾讯云COS跨域访问CORS设置" exif={false} />
+<Img src="Tencent%20cloud%20cos%20cross-domain%20configuration.jpg" alt="腾讯云COS跨域访问CORS设置" exif={false} caption={false} />
 
 配置好后又遇到麻烦了，字体太大了，一个字体文件17.9M！网站都脱垮了
 
-<Img src={`${IMAGES}/Textloading.jpg`} alt="网站被拖垮了" exif={false} />
+<Img src="Textloading.jpg" alt="网站被拖垮了" exif={false} caption={false} />
 
 这里做一下处理，取子集压缩文字，需要用到 [FontSmaller][1] 和 现代汉语常用3500汉字
 
 取子集压缩之后字体文件大小为1.94M
 
-<Img src={`${IMAGES}/Textloading2.png`} alt="取子集压缩后的效果" exif={false} />
+<Img src="Textloading2.png" alt="取子集压缩后的效果" exif={false} caption={false} />
 
 [1]: https://fontsmaller.github.io/

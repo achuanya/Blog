@@ -6,7 +6,7 @@ category: life
 pubDatetime: 2024-02-02T15:50+08:00
 title: 技术亦福亦是祸
 slug: TechnologyBlessingAndCurse
-ogImage: https://cos.lhasa.icu/ArticlePictures/TechnologyBlessingAndCurse.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/TechnologyBlessingAndCurse/TechnologyBlessingAndCurse.jpg_81
 tags:
   - 思考
   - 资本

@@ -6,7 +6,7 @@ category: life
 pubDatetime: 2019-03-26T10:17+08:00
 title: 今日随笔
 slug: thoughts
-ogImage: https://cos.lhasa.icu/ArticlePictures/suibi.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/thoughts/suibi.jpg_81
 tags:
   - 随笔
   

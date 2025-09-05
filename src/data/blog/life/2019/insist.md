@@ -6,7 +6,7 @@ category: life
 pubDatetime: 2019-02-23T10:44+08:00
 title: (转)微不足道的坚持
 slug: insist
-ogImage: https://cos.lhasa.icu/ArticlePictures/jianchi.jpg_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/insist/jianchi.jpg_81
 tags:
   - 坚持
   - 毅力
