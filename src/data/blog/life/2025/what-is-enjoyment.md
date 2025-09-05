@@ -2,7 +2,7 @@
 author: 游钓四方
 draft: false
 featured: false
-category: technology
+category: life
 pubDatetime: 2025-08-30T17:05+08:00
 title: 何为享受
 slug: what-is-enjoyment

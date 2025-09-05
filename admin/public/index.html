@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客后台管理系统</title>
+    <!-- 保留：Tailwind 构建后的样式文件 -->
+    <link rel="stylesheet" href="/assets/admin.css" />
+</head>
+<body>
+    <!-- 新增布局包裹：开始 -->
+    <div class="page">
+        <div class="main-card">
+            <div class="container">
+                <div class="header">
+                    <h1>lhasa's Blog</h1>
+                </div>
+
+                <!-- 顶部分类标签：由 JS 动态注入 -->
+                <div class="category-tabs" id="category-tabs">
+                    <!-- JS will inject: 全部 + 本地分类 -->
+                </div>
+
+                <div id="posts-container">
+                    <div class="loading">正在加载文章列表...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 新增布局包裹：结束 -->
+    <!-- 移除：原模态框（编辑/新建） -->
+    <!-- 此处不再有 post-modal，改为由 JS 在 posts-container 内渲染编辑器 -->
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

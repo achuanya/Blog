@@ -1,0 +1,26 @@
+{
+  "name": "blog-admin",
+  "version": "1.0.0",
+  "description": "Astro Paper 博客后台管理系统",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "dev:css": "tailwindcss -i ./src/styles/admin.css -o ./public/assets/admin.css --watch",
+    "build:css": "tailwindcss -i ./src/styles/admin.css -o ./public/assets/admin.css --minify"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.10",
+    "express": "^4.18.2",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
+    "slugify": "^1.6.6"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
+  }
+}
