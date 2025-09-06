@@ -4,7 +4,7 @@ export const state = {
   siteBase: 'https://lhasa.icu',
   view: 'list', // 'list' | 'editor'
   allPosts: [],
-  activeCategory: 'all',
+  activeCategory: 'drafts',
   currentEditSlug: null,
 };
 
@@ -14,6 +14,13 @@ export function setPosts(posts) {
 
 export function setActiveCategory(cat) {
   state.activeCategory = cat || 'all';
+  
+  // 动态导入并更新导航卡片状态
+  import('./nav-card.js').then(({ updateNavCardFromCategory }) => {
+    updateNavCardFromCategory(state.activeCategory);
+  }).catch(() => {
+    // 如果导航卡片模块未加载，忽略错误
+  });
 }
 
 export function setView(v) {

@@ -4,9 +4,9 @@ draft: true
 featured: false
 category: technology
 pubDatetime: 2025-07-09T00:10+08:00
-title: 实战防范 PCDN
+title: 使用鉴权对付PCDN
 slug: pcdn
-ogImage: https://cos.lhasa.icu/ArticlePictures/EasyFill128.webp_81
+ogImage: https://cos.lhasa.icu/ArticlePictures/pcdn/pcdn.jpg
 tags:
   - EasyFill
   - JavaScript

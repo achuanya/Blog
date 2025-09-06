@@ -5,123 +5,206 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
   const container = document.getElementById('posts-container');
   container.innerHTML = buildEditorHTML(post);
 
-  container.querySelector('#back-to-list')?.addEventListener('click', () => onBack?.());
-  container.querySelector('#save-post')?.addEventListener('click', () => onSave?.());
+  // 顶部栏交互
+  // 根据当前是否在配置视图，动态决定返回行为
+  const root = container.querySelector('#me-root');
+  const backBtn = container.querySelector('#me-back');
+  const updateBackBehavior = () => {
+  if (!backBtn) return;
+  const inMeta = root?.classList.contains('meta-view');
+  backBtn.setAttribute('title', inMeta ? '返回编辑' : '返回');
+  backBtn.setAttribute('aria-label', inMeta ? '返回编辑' : '返回');
+  };
+  updateBackBehavior();
+  
+  backBtn?.addEventListener('click', () => {
+  if (root?.classList.contains('meta-view')) {
+  // 在配置界面时，返回到编辑界面
+  root.classList.remove('meta-view');
+  updateBackBehavior();
+  } else {
+  // 否则返回文章列表
+  onBack?.();
+  }
+  });
 
+  // 绑定配置面板保存按钮
+  container.querySelector('#me-save-meta')?.addEventListener('click', () => {
+    syncMetaFields();
+    ensureDescriptionFilled();
+    onSave?.();
+  });
+
+  // 同步配置界面字段到隐藏字段
+  const syncMetaFields = () => {
+    const titleMeta = container.querySelector('#title-meta');
+    const titleHidden = container.querySelector('#title');
+    if (titleMeta && titleHidden) {
+      titleHidden.value = titleMeta.value;
+    }
+  };
+
+  // 监听标题字段变化，实时同步
+  container.querySelector('#title-meta')?.addEventListener('input', syncMetaFields);
+  // container.querySelector('#me-next')?.addEventListener('click', () => {
+  // 改为：切换到配置界面视图（隐藏编辑器，显示配置项）
+  // const root = container.querySelector('#me-root');
+  // root?.classList.add('meta-view');
+  // })
+  container.querySelector('#me-next')?.addEventListener('click', () => {
+  // 切换到配置界面视图：保留顶部栏，并将 me-meta-panel 移入 .mobile-editor 作为子级
+  const mobile = root?.querySelector('.mobile-editor');
+  const panel = root?.querySelector('#me-meta-panel');
+  if (mobile && panel && panel.parentElement !== mobile) {
+  mobile.appendChild(panel);
+  }
+  root?.classList.add('meta-view');
+  updateBackBehavior();
+  });
+  // container.querySelector('#me-meta-close')?.addEventListener('click', () => {
+  // 从配置界面返回编辑器
+  // const root = container.querySelector('#me-root');
+  // root?.classList.remove('meta-view');
+  // })
+  container.querySelector('#me-meta-delete')?.addEventListener('click', () => {
+    // 删除文章功能
+    if (confirm('确定要删除这篇文章吗？此操作不可撤销。')) {
+      onDelete?.();
+    }
+  });
+
+  // ===== 封面上传/预览：仿微信素材风格 =====
+  const coverBox = container.querySelector('#me-cover');
+  const ogInput = container.querySelector('#ogImage-meta');
+  const updateCoverUI = () => {
+    const url = (ogInput?.value || '').trim();
+    if (!coverBox) return;
+    if (url) {
+      coverBox.classList.add('has-img');
+      coverBox.style.backgroundImage = `url("${url.replace(/"/g, '\\"')}")`;
+    } else {
+      coverBox.classList.remove('has-img');
+      coverBox.style.backgroundImage = '';
+    }
+  };
+  updateCoverUI();
+  coverBox?.addEventListener('click', () => {
+    const current = (ogInput?.value || '').trim();
+    const val = prompt('请输入封面图 URL（留空则移除）', current);
+    if (val === null) return;
+    if (ogInput) ogInput.value = val.trim();
+    updateCoverUI();
+  });
+
+  // 表单阻止默认提交
+  container.querySelector('#editor-form')?.addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    syncMetaFields();
+    ensureDescriptionFilled();
+    onSave?.();
+  });
+
+  // Ctrl/Cmd+S 快捷保存
+  container.querySelector('#editor-form')?.addEventListener('keydown', (ev) => {
+    const isSave = (ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's';
+    if (isSave) { ev.preventDefault(); syncMetaFields(); ensureDescriptionFilled(); onSave?.(); }
+  });
+
+  // ====== SimpleMDE 初始化 ======
+  let simpleMDE = null;
+  const editorContainer = container.querySelector('#content');
+  const titleInput = container.querySelector('#title-meta');
+  const descInput = container.querySelector('#description');
+
+  // 初始化 SimpleMDE
+  const initSimpleMDE = () => {
+    if (typeof SimpleMDE === 'undefined') {
+      console.error('SimpleMDE not found');
+      return;
+    }
+
+    if (simpleMDE) {
+      simpleMDE.toTextArea();
+      simpleMDE = null;
+    }
+
+    // 创建textarea元素
+    const textarea = document.createElement('textarea');
+    textarea.value = post?.content || '';
+    editorContainer.innerHTML = '';
+    editorContainer.appendChild(textarea);
+
+    simpleMDE = new SimpleMDE({
+      element: textarea,
+      spellChecker: false,
+      status: false,
+      toolbar: [
+        'bold', 'italic', 'heading', '|',
+        'quote', 'unordered-list', 'ordered-list', '|',
+        'link', 'image', '|',
+        'preview', 'side-by-side', 'fullscreen', '|',
+        'guide'
+      ],
+      placeholder: '开始编写你的文章...',
+      autofocus: false,
+      tabSize: 2,
+      indentWithTabs: false,
+      lineWrapping: true,
+      styleSelectedText: false
+    });
+
+    // 监听内容变化
+    simpleMDE.codemirror.on('change', () => {
+      ensureDescriptionFilled();
+    });
+
+    // 添加快捷键支持
+    simpleMDE.codemirror.setOption('extraKeys', {
+      'Ctrl-S': () => {
+        syncMetaFields();
+        ensureDescriptionFilled();
+        onSave?.();
+      },
+      'Cmd-S': () => {
+        syncMetaFields();
+        ensureDescriptionFilled();
+        onSave?.();
+      }
+    });
+  };
+
+  // 延迟初始化 SimpleMDE
+  setTimeout(initSimpleMDE, 100);
+
+
+
+  const ensureDescriptionFilled = () => {
+    const raw = simpleMDE ? simpleMDE.value() : '';
+    const firstLine = raw.trim().split(/\n+/).find(Boolean) || '';
+    const summary = firstLine || raw.slice(0, 140).replace(/\s+/g, ' ').trim();
+    if (descInput) descInput.value = summary || '暂无描述';
+  };
+
+  // SimpleMDE 已在初始化时添加了内容变化监听
+
+  // 添加获取编辑器内容的方法
+  window.getEditorContent = () => {
+    return simpleMDE ? simpleMDE.value() : '';
+  };
+
+  // 清理函数
+  window.disposeSimpleMDE = () => {
+    if (simpleMDE) {
+      simpleMDE.toTextArea();
+      simpleMDE = null;
+    }
+  };
+
+  // 删除按钮（当存在旧文章时显示）
   const delBtn = container.querySelector('#delete-post');
   if (delBtn) {
     delBtn.addEventListener('click', () => onDelete?.());
   }
-
-  // Ctrl/Cmd+S
-  container.querySelector('#editor-form')?.addEventListener('keydown', (ev) => {
-    const isSave = (ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's';
-    if (isSave) { ev.preventDefault(); onSave?.(); }
-  });
-
-  // Markdown 预览 & 分屏
-  const md = window.markdownit ? window.markdownit({ html: true, linkify: true, breaks: true }) : null;
-  const editorBody = container.querySelector('#editor-body');
-  const textarea = container.querySelector('#content');
-  const previewPane = container.querySelector('#editor-preview');
-  const previewEl = container.querySelector('#md-preview');
-  const splitToggle = container.querySelector('#split-toggle');
-  const tabs = container.querySelectorAll('.editor-tabs .tab');
-
-  const setActiveTab = (name) => {
-    tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === name));
-  };
-  const updateLayout = () => {
-    if (!editorBody || !previewPane) return;
-    if (splitToggle && splitToggle.checked) {
-      editorBody.classList.add('split');
-      previewPane.style.display = '';
-    } else {
-      editorBody.classList.remove('split');
-      const active = container.querySelector('.editor-tabs .tab.active')?.getAttribute('data-tab');
-      previewPane.style.display = (active === 'preview') ? '' : 'none';
-    }
-  };
-  const renderPreview = () => {
-    if (!md || !textarea || !previewEl) return;
-    const raw = textarea.value || '';
-    const transformed = transformImgAstroShortcode(raw);
-    previewEl.innerHTML = md.render(transformed);
-  };
-
-  tabs.forEach(t => {
-    t.addEventListener('click', () => {
-      setActiveTab(t.getAttribute('data-tab'));
-      updateLayout();
-      renderPreview();
-    });
-  });
-  splitToggle?.addEventListener('change', () => { updateLayout(); renderPreview(); });
-  textarea?.addEventListener('input', () => renderPreview());
-  updateLayout();
-  renderPreview();
-
-  // 插入 import
-  container.querySelector('#insert-import')?.addEventListener('click', () => {
-    const el = textarea; if (!el) return;
-    const snippet = '\nimport Img from "@/components/Img.astro";\n';
-    if (el.value.includes('import Img from "@/components/Img.astro"')) {
-      alert('Import 语句已存在！'); return;
-    }
-    const lines = el.value.split('\n');
-    let insertIndex = 0;
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].trim().startsWith('import ')) insertIndex = i + 1;
-      else if (lines[i].trim() === '' && insertIndex > 0) break;
-      else if (lines[i].trim() !== '' && !lines[i].trim().startsWith('import ')) break;
-    }
-    lines.splice(insertIndex, 0, snippet.trim());
-    el.value = lines.join('\n');
-    const newCursorPos = lines.slice(0, insertIndex + 1).join('\n').length;
-    el.selectionStart = el.selectionEnd = newCursorPos;
-    el.focus();
-    requestAnimationFrame(renderPreview);
-  });
-
-  // 插入 Img
-  container.querySelector('#insert-img-astro')?.addEventListener('click', () => {
-    const el = textarea; if (!el) return;
-    const snippet = '\n<Img src={`${IMAGES}/${frontmatter.slug}/`} alt="" exif={true} caption={true} />\n';
-    const start = el.selectionStart ?? el.value.length;
-    const end = el.selectionEnd ?? el.value.length;
-    el.value = el.value.slice(0, start) + snippet + el.value.slice(end);
-    el.selectionStart = el.selectionEnd = start + snippet.length;
-    el.focus();
-    requestAnimationFrame(renderPreview);
-  });
-}
-
-function transformImgAstroShortcode(srcText) {
-  return srcText.replace(/<Img\s+([^>]*?)\/>/g, (_m, attrs) => {
-    const pick = (name) => {
-      const m = attrs.match(new RegExp(`${name}\\s*=\\s*"([^"]*)"`,'i'));
-      return m ? m[1] : '';
-    };
-    const src = pick('src') || '';
-    const alt = pick('alt') || '';
-    const caption = pick('caption');
-    const hasCaption = !!caption || !!alt;
-    const slugInput = document.querySelector('#canonicalURL');
-    const currentSlug = slugInput ? slugInput.value.trim() : '';
-    let fullImageUrl = src;
-    if (src && currentSlug && !src.startsWith('http')) {
-      fullImageUrl = `https://cos.lhasa.icu/ArticlePictures/${currentSlug}/${src}`;
-    }
-    const imgHtml = `
-<figure style="margin:1rem 0;text-align:center">
-  <div style="position:relative;display:inline-block;max-width:100%">
-    <img src="${escapeHtml(fullImageUrl)}" alt="${escapeHtml(alt)}" title="${escapeHtml(alt)}"
-         style="max-width:100%;height:auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1)" />
-    ${hasCaption ? `<figcaption style="margin-top:6px;font-size:12px;color:#6b7280">${escapeHtml(alt)}</figcaption>` : ``}
-  </div>
-</figure>`.trim();
-    return imgHtml;
-  });
 }
 
 function buildEditorHTML(post) {
@@ -137,81 +220,223 @@ function buildEditorHTML(post) {
   const content = post?.content || '';
 
   return `
-  <div class="editor-view">
-    <div class="editor-header">
-      <button id="back-to-list" class="btn">返回列表</button>
-      <div class="spacer"></div>
-      ${!isNew ? '<button id="delete-post" class="btn btn-danger">删除</button>' : ''}
-      <button id="save-post" class="btn btn-success">保存</button>
-    </div>
+  <style>
+    /* 简洁移动编辑器样式（只作用当前视图） */
+    .mobile-editor { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,.06); }
+    .me-topbar { display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid #eef2f7; }
+    .me-topbar .icon-btn, .me-topbar .text-btn { height:32px; display:inline-flex; align-items:center; justify-content:center; gap:4px; border-radius:6px; color:#000; text-decoration:none; padding:6px 8px; border:none; background:transparent; cursor:pointer; font-size:14px; min-width:auto; }
+    .me-topbar .icon-btn:hover, .me-topbar .text-btn:hover { color:#666; }
+    .me-topbar .spacer { flex:1; }
+    .me-topbar .text-btn[aria-disabled="true"] { color:#94a3b8; cursor:default; }
+    .me-topbar .icon-btn svg, .me-topbar .text-btn svg { width:16px; height:16px; flex-shrink:0; }
+    .me-topbar .icon-btn span, .me-topbar .text-btn span { font-size:14px; line-height:1; }
 
-    <form id="editor-form" class="editor-form">
-      <div class="form-row-2col">
-        <div class="form-group">
-          <label>标题</label>
-          <input id="title" type="text" value="${escapeHtml(title)}" />
-        </div>
-        <div class="form-group">
-          <label>分类</label>
-          <select id="category">
-            <option value="technology" ${category==='technology'?'selected':''}>技术</option>
-            <option value="life" ${category==='life'?'selected':''}>生活</option>
-            <option value="sports" ${category==='sports'?'selected':''}>运动</option>
-            <option value="startup" ${category==='startup'?'selected':''}>创业</option>
-          </select>
-        </div>
-      </div>
+    /* 隐藏滚动条（跨浏览器） */
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* 直接作用于编辑相关容器，确保编辑模式下均隐藏 */
+    #posts-container, .mobile-editor, .me-editor, .me-content { -ms-overflow-style:none; scrollbar-width:none; }
+    #posts-container::-webkit-scrollbar, .mobile-editor::-webkit-scrollbar, .me-editor::-webkit-scrollbar, .me-content::-webkit-scrollbar { display:none; }
 
-      <div class="form-group">
-        <label>描述</label>
-        <textarea id="description" class="gh-textarea">${escapeHtml(description)}</textarea>
-      </div>
+    .me-editor { padding:12px; display:flex; flex-direction:column; min-height:0; }
+    .me-title { width:100%; border:0; outline:none; font-size:22px; font-weight:600; color:#0f172a; padding:0px 0 20px 0;; }
+    .me-title::placeholder { color:#94a3b8; }
+    .me-content { width:100%; flex:1 1 auto; min-height:0; border:0; outline:none; padding:0; resize:none; font-size:16px; line-height:1.75; color:#0f172a; overflow:hidden; position:relative; }
+    .me-content .CodeMirror { border:0; height:auto; min-height:300px; font-size:16px; line-height:1.75; }
+    .me-content .CodeMirror-scroll { min-height:300px; }
+    .me-content .editor-toolbar { border:0; border-bottom:1px solid #eef2f7; background:#f8fafc; }
+    .me-content .editor-toolbar a { color:#64748b !important; }
+    .me-content .editor-toolbar a:hover { background:#e2e8f0 !important; color:#0f172a !important; }
+    .me-content .editor-toolbar.fullscreen { z-index:9999; }
+    .me-content .CodeMirror.CodeMirror-fullscreen { z-index:9999; }
 
-      <div class="form-row-2col">
-        <div class="form-group">
-          <label>标签 (逗号分隔)</label>
-          <input id="tags" type="text" value="${escapeHtml(tags)}" />
-        </div>
-        <div class="form-group">
-          <label>OG 图片</label>
-          <input id="ogImage" type="text" value="${escapeHtml(ogImage)}" />
-        </div>
-      </div>
+    /* 元信息面板（默认作为弹层定义） */
+    .me-meta-panel { position:fixed; inset:0; background:rgba(0,0,0,.25); display:none; align-items:flex-end; z-index:50; opacity:0; transition:opacity .2s ease; }
+    .me-meta-panel.open { display:flex; opacity:1; }
+    .me-meta-sheet { width:100%; background:#fff; border-radius:16px 16px 0 0; padding:14px; max-height:80vh; overflow:auto; }
+    .me-meta-row { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:10px; }
+    .me-meta-row label { display:block; font-weight:600; margin-bottom:6px; color:#0f172a; }
+    .me-meta-row input, .me-meta-row select, .me-meta-row textarea { width:100%; border:1px solid #e2e8f0; border-radius:8px; padding:8px; font-size:14px; }
+    .me-meta-actions { display:flex; justify-content:flex-end; gap:8px; padding-top:6px; }
+    .btn { display:inline-block; background:#01c676; color:#fff; border:none; border-radius:8px; padding:8px 25px; cursor:pointer; }
+    .btn-outline { background:#e6eae9; color:#000; }
 
-      <div class="form-row-2col">
-        <div class="form-group">
-          <label>Slug（可编辑）</label>
-          <input id="canonicalURL" type="text" value="${escapeHtml(slug)}" />
-        </div>
-        <div class="form-group">
-          <label>时区</label>
-          <input id="timezone" type="text" value="Asia/Shanghai" disabled />
-        </div>
-      </div>
+    /* 视图容器，用于在“下一步”时切换到配置界面（非弹窗） */
+    #me-root { position:relative; }
+    #me-root .mobile-editor { transition: opacity .2s ease; }
+    /* 在配置视图下保留顶部栏，仅隐藏编辑表单与工具栏 */
+    #me-root.meta-view .me-editor { display:none; }
 
-      <div class="form-group flags">
-        <label><input id="featured" type="checkbox" ${featured?'checked':''}/> 置顶</label>
-        <label><input id="draft" type="checkbox" ${draft?'checked':''}/> 草稿</label>
-        <label><input id="useMDX" type="checkbox" ${post?.filename?.endsWith('.mdx')?'checked':''}/> 使用 MDX</label>
-      </div>
+    #me-root.meta-view #me-next { display:none; }
+    #me-root.meta-view .me-meta-panel { position:static; inset:auto; background:transparent; display:block; opacity:1; }
+    #me-root.meta-view .me-meta-sheet { border-radius:12px; max-height:none; height:auto; min-height:60vh; }
 
-      <div class="editor-tabs">
-        <span class="tab active" data-tab="write">Write</span>
-        <span class="tab" data-tab="preview">Preview</span>
+    /* 新增：在配置界面将操作区贴紧底部，设定高度与背景色 */
+    #me-root.meta-view .me-meta-sheet { display:flex; flex-direction:column; overflow:auto; }
+    #me-root.meta-view .me-meta-actions { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px 12px; background-color: #f2f6f5; border-top: 1px solid #eef2f7; z-index: 60; }
+
+    /* ===== 仿微信风格：封面 / 列表单元 / 开关 ===== */
+    .meta-cover { margin-bottom:12px; }
+    .cover-uploader { height:170px; border:1px dashed #e5e7eb; border-radius:10px; background:#f8fafc; display:flex; align-items:center; justify-content:center; color:#94a3b8; cursor:pointer; position:relative; overflow:hidden; }
+    .cover-uploader .placeholder { display:flex; flex-direction:column; align-items:center; gap:6px; pointer-events:none; }
+    .cover-uploader .placeholder .plus { font-size:28px; line-height:1; }
+    .cover-uploader.has-img { border:none; background-size:cover; background-position:center; color:transparent; }
+    .cover-uploader.has-img .placeholder { display:none; }
+
+    .form-list { background:#fff; border:1px solid #eef2f7; border-radius:12px; overflow:hidden; }
+    .form-cell { display:flex; align-items:center; gap:10px; padding:12px 12px; border-bottom:1px solid #eef2f7; background-color: #f5f9fa; }
+    .form-cell:last-child { border-bottom:none; }
+    .form-cell label { flex:0 0 86px; color:#0f172a; font-weight:600; }
+    .form-cell .control { flex:1 1 auto; }
+    .form-cell input[type="text"], .form-cell select { width:100%; border:0; outline:none; background:transparent; font-size:14px; color:#0f172a; }
+
+    .meta-block { margin-top:12px; }
+    .meta-block .block-title { font-weight:600; color:#0f172a; margin:10px 0 6px; }
+    .desc-input { width:100%; min-height:100px; border:1px solid #e5e7eb; border-radius:10px; padding:10px; font-size:14px; }
+
+    .switch { position:relative; display:inline-block; width:44px; height:26px; }
+    .switch input { display:none; }
+    .switch .slider { position:absolute; inset:0; background:#98989a; border-radius:999px; transition:.2s; }
+    .switch .slider::before { content:""; position:absolute; width:20px; height:20px; left:3px; top:3px; background:#fff; border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:.2s; }
+    .switch input:checked + .slider { background:#01c676; }
+    .switch input:checked + .slider::before { transform:translateX(18px); }
+
+    /* ===== Desktop fixes: keep toolbar at the bottom and textarea fills above it ===== */
+    @media (min-width: 768px) {
+      /* 让编辑视图占满可视高度 */
+      #me-root { min-height: 100vh; display: flex; }
+      #me-root .mobile-editor { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+      #me-root .me-editor { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+      #me-root .me-content { flex: 1 1 auto; min-height: 0; overflow: auto; }
+
+      /* 配置界面宽度与 .main-card 保持一致（仅桌面端） */
+      #me-root.meta-view .me-meta-sheet { width: 768px !important; max-width: none; margin-left: auto; margin-right: auto; }
+      /* 让底部操作条与面板同宽（768px），并水平居中 */
+      #me-root.meta-view .me-meta-actions { left: 50%; transform: translateX(-50%); width: 768px !important; padding-left: 14px; padding-right: 14px; }
+    }
+  </style>
+
+  <div id="me-root" class="me-root" role="group" aria-label="文章编辑与配置">
+    <div class="mobile-editor" role="region" aria-label="编辑器">
+      <div class="me-topbar">
+        <button id="me-back" class="icon-btn" title="Previous" aria-label="Previous">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M15 6l-6 6l6 6" />
+          </svg>
+          <span>Previous</span>
+        </button>
         <div class="spacer"></div>
-        <label class="toggle"><input id="split-toggle" type="checkbox" /> Split View</label>
-        <button id="insert-import" type="button" class="btn">+ import Img</button>
-        <button id="insert-img-astro" type="button" class="btn">+ <Img /></button>
+        <span id="me-next" class="text-btn" role="button" aria-disabled="false">
+          <span>Next</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M9 6l6 6l-6 6" />
+          </svg>
+        </span>
       </div>
 
-      <div id="editor-body" class="editor-body">
-        <div class="editor-pane">
-          <textarea id="content" class="gh-editor" placeholder="在此编写 Markdown/MDX...">${escapeHtml(content)}</textarea>
-        </div>
-        <div id="editor-preview" class="editor-pane editor-preview" style="display:none">
-          <div id="md-preview" class="md-preview"></div>
+      <form id="editor-form" class="me-editor">
+        <div id="content" class="me-content no-scrollbar"></div>
+
+        <!-- 隐藏/默认字段，保持与保存逻辑兼容 -->
+        <input id="title" type="hidden" value="${escapeHtml(title)}" />
+        <input id="description" type="hidden" value="${escapeHtml(description)}" />
+        <select id="category" style="display:none">
+          <option value="technology" ${category==='technology'?'selected':''}>技术</option>
+          <option value="life" ${category==='life'?'selected':''}>生活</option>
+          <option value="sports" ${category==='sports'?'selected':''}>运动</option>
+          <option value="startup" ${category==='startup'?'selected':''}>创业</option>
+        </select>
+        <input id="tags" type="hidden" value="${escapeHtml(tags)}" />
+        <input id="ogImage" type="hidden" value="${escapeHtml(ogImage)}" />
+        <input id="canonicalURL" type="hidden" value="${escapeHtml(slug)}" />
+        <input id="timezone" type="hidden" value="Asia/Shanghai" />
+        <input id="featured" type="checkbox" style="display:none" ${featured?'checked':''} />
+        <input id="draft" type="checkbox" style="display:none" ${draft?'checked':''} />
+        <input id="useMDX" type="checkbox" style="display:none" ${post?.filename?.endsWith?.('.mdx')?'checked':''} />
+      </form>
+
+      <!-- 配置界面（移动为 mobile-editor 的子级，保留顶部栏） -->
+      <div id="me-meta-panel" class="me-meta-panel" aria-hidden="true">
+        <div class="me-meta-sheet" role="dialog" aria-modal="true" aria-label="文章设置">
+          <!-- 列表单元：基本信息 -->
+          <div class="form-list">
+            <div class="form-cell">
+              <label>标题</label>
+              <div class="control"><input id="title-meta" type="text" value="${escapeHtml(title)}" placeholder="输入标题" /></div>
+            </div>
+            <div class="form-cell">
+              <label>Slug</label>
+              <div class="control"><input id="canonicalURL-meta" type="text" value="${escapeHtml(slug)}" placeholder="唯一ID" /></div>
+            </div>
+            <div class="form-cell">
+              <label>分类</label>
+              <div class="control">
+                <select id="category-meta">
+                  <option value="technology" ${category==='technology'?'selected':''}>技术</option>
+                  <option value="life" ${category==='life'?'selected':''}>生活</option>
+                  <option value="sports" ${category==='sports'?'selected':''}>运动</option>
+                  <option value="startup" ${category==='startup'?'selected':''}>创业</option>
+                </select>
+              </div>
+            </div>
+            <!-- 封面：移动到分类下方 -->
+            <div class="form-cell">
+              <label>封面</label>
+              <div class="control"><input id="ogImage-meta" type="text" value="${escapeHtml(ogImage)}" placeholder="是封面也是OG" /></div>
+            </div>
+            <div class="form-cell">
+              <label>标签</label>
+              <div class="control"><input id="tags-meta" type="text" value="${escapeHtml(tags)}" placeholder="英文逗号分隔" /></div>
+            </div>
+          </div>
+
+          <!-- 描述 -->
+          <div class="meta-block">
+            <textarea id="description-meta" class="desc-input" placeholder="描述...">${escapeHtml(description)}</textarea>
+          </div>
+
+          <!-- 更多设置 -->
+          <div class="meta-block">
+            <div class="form-list">
+              <div class="form-cell">
+                <label>置顶</label>
+                <div class="control">
+                  <label class="switch">
+                    <input id="featured-meta" type="checkbox" ${featured?'checked':''} />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-cell">
+                <label>草稿</label>
+                <div class="control">
+                  <label class="switch">
+                    <input id="draft-meta" type="checkbox" ${draft?'checked':''} />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-cell">
+                <label>MDX</label>
+                <div class="control">
+                  <label class="switch">
+                    <input id="useMDX-meta" type="checkbox" ${post?.filename?.endsWith?.('.mdx')?'checked':''} />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="me-meta-actions">
+            <button id="me-meta-delete" type="button" class="btn btn-outline" style="color:#000;">删除</button>
+            <button id="me-save-meta" type="button" class="btn">保存</button>
+          </div>
         </div>
       </div>
-    </form>
-  </div>`;
+    </div>
+  </div>
+  `;
 }

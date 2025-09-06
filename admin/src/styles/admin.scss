@@ -2,76 +2,273 @@
 @tailwind components;
 @tailwind utilities;
 
+// =====================
+// SCSS Variables & Mixins
+// =====================
+$brand-blue: #2a7db8;
+$brand-blue-600: #1e6ea6;
+$brand-blue-100: #e6eef5;
+$green-500: #27ae60;
+$green-600: #229954;
+$red-500: #e74c3c;
+$red-600: #c0392b;
+$primary-text: #0f172a; // slate-900
+$muted-text: #64748b;   // slate-500
+$border-color: #e2e8f0; // slate-200
+$card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+
+@mixin focus-ring {
+  outline: 2px solid rgba(42, 125, 184, 0.45);
+  outline-offset: 2px;
+}
+
+@mixin card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: $card-shadow;
+}
+
+// ===============
+// Global Base
+// ===============
 /* 全局基础样式 */
 @layer base {
-  html, body {
-    @apply h-full;
-  }
+  html, body { @apply h-full; }
   body {
-    @apply bg-[#7db9de] text-slate-800 antialiased;
+    @apply text-slate-800 antialiased;
+    background: #7db9de;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* 移动端去掉蓝色背景，使用白色背景 */
+  @media (max-width: 767.98px) {
+    body {
+      background: #fff;
+    }
+  }
+  
+  ::selection { background: rgba(42,125,184,.18); color: $primary-text; }
+
+  /* 减少动画动效，提升可访问性 */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
   }
 }
 
 /* 组件样式（映射你现有的类名） */
 @layer components {
   /* 布局与卡片 */
-  .page { @apply flex justify-center gap-5 p-8; }
-  .main-card { @apply w-[820px] max-w-[calc(100vw-320px)] bg-white rounded-[10px] shadow-card overflow-hidden; }
-  .main-card .container { @apply max-w-[820px] mx-auto px-6 pt-6 pb-7; }
+  .page { @apply flex justify-center gap-4 p-4 md:gap-5 md:p-8; }
+  
+  /* 移动端页面布局调整 */
+  @media (max-width: 767.98px) {
+    .page { @apply p-0; }
+  }
+  
+  // 修改：方角 & 最大宽度 768px
+  .main-card { @apply w-full max-w-[768px] bg-white rounded-none shadow-card overflow-hidden; }
+  
+  /* 移动端main-card全屏显示 */
+  @media (max-width: 767.98px) {
+    .main-card { 
+      @apply w-full max-w-none h-screen;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+  
+  .main-card .container { @apply max-w-[820px] mx-auto px-4 pt-5 pb-6 md:px-6 md:pt-6 md:pb-7; }
+  
+  /* 移动端容器调整 */
+  @media (max-width: 767.98px) {
+    .main-card .container {
+      @apply max-w-none px-4 pt-4 pb-4 h-full;
+    }
+  }
 
   /* 容器与头部 */
-  .container { @apply max-w-[1200px] mx-auto p-5; }
-  .header { @apply bg-white p-5 rounded-lg shadow mb-5; }
+  .container { @apply max-w-[1200px] mx-auto p-4 md:p-5; }
+  .header { @apply bg-white p-4 md:p-5 rounded-lg shadow mb-4 md:mb-5; }
   .header h1 { @apply text-slate-800 mb-2; }
 
   /* 操作按钮 */
-  .actions { @apply mb-5; }
-  .btn { @apply inline-block bg-[#3498db] text-white border-0 px-5 py-2 rounded cursor-pointer no-underline mr-2; }
-  .btn:hover { @apply bg-[#2980b9]; }
-  .btn-success { @apply bg-[#27ae60]; }
-  .btn-success:hover { @apply bg-[#229954]; }
-  .btn-danger { @apply bg-[#e74c3c]; }
-  .btn-danger:hover { @apply bg-[#c0392b]; }
+  .actions { @apply mb-4 md:mb-5; }
+  .btn { @apply inline-block text-white border-0 px-4 py-2 rounded cursor-pointer no-underline mr-2 select-none; background-color: #01c676; }
+  .btn:hover { background-color: #01a561; }
+  .btn:focus-visible { @include focus-ring; }
+  .btn-success { background-color: $green-500; }
+  .btn-success:hover { background-color: $green-600; }
+  .btn-danger { background-color: $red-500; }
+  .btn-danger:hover { background-color: $red-600; }
 
-  /* 列表与卡片 */
-  .posts-grid { @apply grid gap-5; }
-  .post-card { @apply bg-white p-5 rounded-lg shadow; }
-  .post-meta { @apply text-slate-500 text-sm mb-2; }
-  .post-title { @apply text-lg font-semibold mb-2 text-slate-800; }
-  .post-description { @apply text-slate-600 leading-6 mb-4; }
-  .post-tags { @apply mb-4; }
-  .tag { @apply inline-block bg-slate-100 text-slate-800 px-2 py-1 rounded text-xs mr-1; }
-
-  /* 模态框 */
+  /* 模态框 - 保留，可能在未来使用 */
   .modal { @apply hidden fixed inset-0 bg-black/50 z-[1000]; }
-  .modal-content { @apply bg-white mx-auto my-12 p-5 w-[90%] max-w-[600px] rounded-lg max-h-[80vh] overflow-y-auto; }
-
-  /* 表单 */
-  .form-group { @apply mb-4; }
-  .form-group label { @apply block mb-1 font-semibold; }
-  .form-group input,
-  .form-group select,
-  .form-group textarea { @apply w-full p-2 border border-slate-200 rounded text-sm; }
-  .form-group textarea { @apply h-[200px] resize-y; }
 
   .loading { @apply text-center p-10 text-slate-500; }
 
+  /* Navigation 旋转头像菜单 */
+  .navigation {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    z-index: 2;
+  }
+
+  /* 隐藏的checkbox控制器 */
+  .navigation-toggle {
+    display: none;
+    
+    &:checked ~ {
+      .navigation-mask {
+        display: block;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .navigation-list {
+        pointer-events: auto;
+        transform: rotate(0);
+        opacity: 1;
+      }
+      .navigation-avatar {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  /* 头像样式与动画 */
+  .navigation-avatar {
+    transition: transform .3s;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    z-index: 2;
+    border: 2px solid #fff;
+    background-color: #fff;
+    overflow: hidden;
+    display: block;
+    cursor: pointer;
+    position: relative;
+    
+    &:before {
+      content: "";
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-image: url(https://via.placeholder.com/40x40/7db9de/ffffff?text=U);
+      background-size: cover;
+    }
+  }
+
+  /* 全屏遮罩层 */
+  .navigation-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: none;
+  }
+
+  /* 菜单列表样式与动画 */
+  .navigation-list {
+    transition: all .3s;
+    pointer-events: none;
+    list-style: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    background-color: rgb(80, 80, 80);
+    opacity: 0;
+    overflow: hidden;
+    transform: rotate(-90deg);
+    transform-origin: calc(100% - 20px) 20px;
+    width: 160px;
+    border-radius: 5px 25px 5px 5px;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 菜单项样式 */
+  .navigation-item {
+    position: relative;
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 1px solid rgba(100, 100, 100, .8);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: rgb(50,50,50);
+    }
+    
+    &.current, &:hover {
+      .navigation-item-link {
+        color: #fff;
+      }
+      .icon {
+        fill: #fff;
+      }
+    }
+  }
+
+  .navigation-item-link {
+    transition: all .3s;
+    color: rgb(200, 200, 200);
+    display: flex;
+    overflow: hidden;
+    line-height: 42px;
+    text-decoration: none;
+    align-items: center;
+    padding: 0 13.5px;
+  }
+
+  .icon {
+    margin-right: 13.5px;
+    width: 16px;
+    height: 16px;
+    fill: rgb(200, 200, 200);
+    transition: fill .3s;
+  }
+
+  /* 响应式设计 */
+  @media screen and (max-width: 450px) {
+    .navigation {
+      top: 8px;
+      right: 8px;
+    }
+  }
+
   /* 顶部分类 tabs（保留 .tab / .nav-link / .spacer / .search-input 类名） */
-  .category-tabs { @apply flex items-center gap-2.5 py-1.5 pb-2.5 my-1.5 mb-4 border-b-2 border-[#408cc940]; }
-  .category-tabs .tab { @apply text-[14px] text-[#2a7db8] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline; }
-  .category-tabs .tab:hover { @apply bg-[#408cc91f]; }
-  .category-tabs .tab.active { @apply text-[#1e6ea6] bg-[#408cc92e]; }
+  .category-tabs { @apply flex items-center gap-2 py-1.5 pb-2.5 my-1.5 mb-4 border-b-2; border-color: rgba(64,140,201,0.25); }
+  .category-tabs .tab { @apply text-[14px] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline; color: $brand-blue; }
+  .category-tabs .tab:hover { background-color: rgba(64,140,201,0.12); }
+  .category-tabs .tab.active { color: $brand-blue-600; background-color: rgba(64,140,201,0.18); }
+  .category-tabs .tab:focus-visible { @include focus-ring; }
   .category-tabs .spacer { @apply flex-1; }
-  .category-tabs .nav-link { @apply text-[14px] text-[#2a7db8] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline ml-1.5; }
-  .category-tabs .nav-link:hover { @apply bg-[#408cc91f]; }
-  .category-tabs .search-input { @apply ml-2 px-2 py-1.5 outline-none bg-transparent text-slate-800 w-40; }
+  .category-tabs .nav-link { @apply text-[14px] px-2.5 py-1.5 rounded cursor-pointer select-none no-underline ml-1.5; color: $brand-blue; }
+  .category-tabs .nav-link:hover { background-color: rgba(64,140,201,0.12); }
+  .category-tabs .nav-link:focus-visible { @include focus-ring; }
+  .category-tabs .search-icon { @apply ml-2 p-1.5 cursor-pointer rounded; color: #000; transition: color 0.2s ease; }
+  .category-tabs .search-icon:hover { color: #7db9de; }
+  .category-tabs .search-icon svg { @apply w-5 h-5; }
 
   /* 列表（按年分组） */
   .year-group { @apply rounded-lg py-1.5; }
-  .year-header { @apply flex items-center gap-2.5 px-1.5 py-2 cursor-pointer select-none text-slate-800; }
+  .year-header { @apply flex items-center gap-2.5 px-1.5 py-2 cursor-pointer select-none; color: $primary-text; }
+  .year-header:focus-visible { @include focus-ring; }
   .year-header .caret { @apply transition-transform duration-200; }
-  .year-group.collapsed .caret { transform: rotate(-90deg); }
+  .year-header .caret svg { @apply w-4 h-4; transition: all 0.2s ease; }
+  .year-group.collapsed .caret svg { transform: rotate(0deg); }
+  .year-group:not(.collapsed) .caret svg { transform: rotate(90deg); }
   .year-body { @apply pt-1.5; }
   .year-group.collapsed .year-body { display: none; }
 
@@ -79,65 +276,107 @@
   .post-list { @apply flex flex-col gap-2.5; }
   .post-item { @apply grid items-center gap-3 p-2 rounded-md; }
   .post-item:hover { @apply bg-[#408cc914]; }
-  .post-item { grid-template-columns: 50px 1fr auto; }
+  /* 默认移动端两列：缩略图 + 信息 */
+  .post-item { grid-template-columns: 40px 1fr; }
+  @media (min-width: 768px) { .post-item { grid-template-columns: 50px 1fr auto; } }
 
-  .thumb { @apply w-[50px] h-[50px] rounded-md overflow-hidden bg-[#e6eef5] flex items-center justify-center text-[#2a7db8] font-semibold text-xs; }
+  .thumb { @apply rounded-md overflow-hidden flex items-center justify-center text-xs; width: 40px; height: 40px; background-color: $brand-blue-100; color: $brand-blue; font-weight: 600; }
+  @media (min-width: 768px) { .thumb { width: 50px; height: 50px; } }
   .thumb img { @apply w-full h-full object-cover block; }
 
-  .post-info .title { @apply text-slate-800 font-semibold no-underline; }
+  .post-info .title { @apply font-semibold no-underline; color: $primary-text; }
   .post-info .title:hover { @apply underline; }
-  .post-info .date { @apply text-slate-500 text-[13px] mt-[2px]; }
+  .post-info .title:focus-visible { @include focus-ring; }
+  .post-info .date { @apply text-[13px] mt-[2px]; color: $muted-text; }
 
-  /* ====== 新增：编辑视图（GitHub 风格） ====== */
+  /* ====== 编辑视图（GitHub 风格） ====== */
   .editor-view { @apply mt-2; }
   .editor-header { @apply flex items-center gap-2 mb-4; }
   .editor-header .spacer { @apply flex-1; }
 
-  .editor-form .form-row-2col {
-    @apply grid gap-4;
-    grid-template-columns: 1fr 1fr;
+  .editor-form .form-row-2col { @apply grid gap-4; grid-template-columns: 1fr; }
+  @media (min-width: 768px) { .editor-form .form-row-2col { grid-template-columns: 1fr 1fr; } }
+
+  .editor-form .flags { @apply flex items-center gap-5; }
+
+  /* ===== 移动端编辑全屏模式（由 JS 切换 body.mobile-editor-active） ===== */
+  @media (max-width: 767.98px) {
+    // 取消强制视口高度与内层滚动，直接展示全部内容
+    body.mobile-editor-active { background:#fff; height:auto; overflow:visible; }
+    body.mobile-editor-active .page { padding:0; }
+    body.mobile-editor-active .main-card { width:100%; max-width:768px; height:auto; border-radius:0; box-shadow:none; }
+    body.mobile-editor-active .main-card .container { max-width:none; padding:0; height:auto; }
+    body.mobile-editor-active .header { display:none !important; }
+    body.mobile-editor-active .category-tabs { display:none !important; }
+    body.mobile-editor-active #posts-container { height:auto; min-height:0; display:block; flex-direction:unset; overflow:visible; }
+    body.mobile-editor-active .mobile-editor { border-radius:0 !important; box-shadow:none !important; min-height:auto; display:block; flex-direction:unset; }
+    body.mobile-editor-active .mobile-editor .me-editor { flex:none; overflow:visible; }
   }
 
-  .editor-form .flags {
-    @apply flex items-center gap-5;
+  /* ===== 桌面端编辑全屏模式（由 JS 切换 body.editor-active） ===== */
+  // 取消强制视口高度与内层滚动，直接展示全部内容
+  body.editor-active { background:#fff; height:auto; overflow:visible; }
+  body.editor-active .page { padding:0; }
+  body.editor-active .main-card { width:100%; max-width:768px; height:auto; border-radius:0; box-shadow:none; }
+  body.editor-active .main-card .container { max-width:none; padding:0; height:auto; }
+  body.editor-active .header { display:none !important; }
+  body.editor-active .category-tabs { display:none !important; }
+  body.editor-active #posts-container { height:auto; min-height:0; display:block; flex-direction:unset; overflow:visible; }
+  body.editor-active .mobile-editor { border-radius:0 !important; box-shadow:none !important; min-height:auto; display:block; flex-direction:unset; }
+  body.editor-active .mobile-editor .me-editor { flex:none; overflow:visible; }
+  @media (min-width: 768px) {
+    .main-card { width: 768px !important; max-width: none; }
   }
 
-  /* GitHub 风格 textarea */
-  .gh-editor {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    @apply h-[520px] p-3 border border-slate-200 rounded bg-white;
-    line-height: 1.5;
-    tab-size: 2;
-    white-space: pre;
-    overflow-wrap: normal;
-    overflow-x: auto;
+  /* 隐藏滚动条（跨浏览器兼容） */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE 和 Edge */
+    scrollbar-width: none; /* Firefox */
+    overflow: -moz-scrollbars-none; /* 旧版 Firefox */
   }
-
-  .gh-textarea {
-    @apply h-[120px] p-3 border border-slate-200 rounded bg-white;
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
   }
-  /* ====== 新增：编辑器 tabs / 分屏 / 预览样式 ====== */
-  .editor-tabs { @apply flex items-center gap-2 mb-3 border-b border-slate-200; }
-  .editor-tabs .tab { @apply px-3 py-1.5 text-sm text-slate-600 rounded-t cursor-pointer; }
-  .editor-tabs .tab:hover { @apply bg-slate-100; }
-  .editor-tabs .tab.active { @apply text-slate-900 bg-white border border-b-0 border-slate-200; }
-  .editor-tabs .spacer { @apply flex-1; }
-  .editor-tabs .toggle { @apply text-sm text-slate-600 select-none; }
-
-  .editor-body { @apply grid gap-4; grid-template-columns: 1fr; }
-  .editor-body.split { grid-template-columns: 1fr 1fr; }
-  .editor-pane { @apply min-h-[200px]; }
-
-  .editor-preview { @apply border border-slate-200 rounded bg-white; }
-  .md-preview { @apply p-4 text-slate-800 leading-7; }
-  .md-preview h1 { @apply text-3xl font-bold mb-4 mt-6; }
-  .md-preview h2 { @apply text-2xl font-bold mb-3 mt-5; }
-  .md-preview h3 { @apply text-xl font-semibold mb-2.5 mt-4; }
-  .md-preview p { @apply mb-3; }
-  .md-preview ul { @apply list-disc pl-6 mb-3; }
-  .md-preview ol { @apply list-decimal pl-6 mb-3; }
-  .md-preview blockquote { @apply border-l-4 border-slate-200 pl-4 italic text-slate-600 my-3; }
-  .md-preview code { @apply bg-slate-100 rounded px-1 py-0.5 text-sm; }
-  .md-preview pre { @apply bg-slate-900 text-slate-100 rounded p-3 overflow-auto my-3; }
-  .md-preview a { @apply text-blue-600 underline; }
+  
+  /* 全局滚动条隐藏 - 应用到所有可能出现滚动条的元素 */
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: -moz-scrollbars-none;
+  }
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  
+  /* 直接作用于编辑相关容器，确保编辑模式下均隐藏 */
+  #posts-container, .mobile-editor, .me-editor, .me-content,
+  .CodeMirror, .CodeMirror-scroll, .editor-toolbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: -moz-scrollbars-none;
+  }
+  #posts-container::-webkit-scrollbar, .mobile-editor::-webkit-scrollbar,
+  .me-editor::-webkit-scrollbar, .me-content::-webkit-scrollbar,
+  .CodeMirror::-webkit-scrollbar, .CodeMirror-scroll::-webkit-scrollbar,
+  .editor-toolbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  
+  /* 通用滚动条隐藏类 - 可应用到任何需要隐藏滚动条的元素 */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: -moz-scrollbars-none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
