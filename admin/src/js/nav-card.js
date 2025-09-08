@@ -67,27 +67,37 @@
  }
  
  // 切换到指定分类（同步 tabs 与列表渲染）
- function switchToCategory(categoryName) {
-   // 动态导入并更新分类状态
-   import('./state.js').then(({ setActiveCategory, state }) => {
-     setActiveCategory(categoryName);
- 
-     // 更新顶部 category-tabs 的高亮
-     try {
-       document.querySelectorAll('.category-tabs .tab[data-cat]')
-         .forEach(t => {
-           t.classList.toggle('active', t.getAttribute('data-cat') === state.activeCategory);
-         });
-     } catch (_) {}
- 
-     // 使用路由切换到列表，确保编辑态/布局状态同步更新
-     try {
-       window.location.hash = '#/list';
-     } catch (_) {}
-   }).catch(err => {
-     console.error('切换分类失败:', err);
-   });
- }
+function switchToCategory(categoryName) {
+  // 动态导入并更新分类状态
+  import('./state.js').then(({ setActiveCategory, state }) => {
+    setActiveCategory(categoryName);
+
+    // 更新顶部 category-tabs 的高亮
+    try {
+      document.querySelectorAll('.category-tabs .tab[data-cat]')
+        .forEach(t => {
+          t.classList.toggle('active', t.getAttribute('data-cat') === state.activeCategory);
+        });
+    } catch (_) {}
+
+    // 只有当前不在列表页面时才切换路由，避免重复设置相同哈希值
+    const currentHash = window.location.hash;
+    if (currentHash !== '#/list' && !currentHash.startsWith('#/list')) {
+      try {
+        window.location.hash = '#/list';
+      } catch (_) {}
+    } else {
+      // 如果已经在列表页面，直接触发列表重新渲染
+      try {
+        import('./views.list.js').then(({ renderListView }) => {
+          renderListView({ onEdit: (slug) => window.location.hash = `#/edit/${encodeURIComponent(slug)}` });
+        });
+      } catch (_) {}
+    }
+  }).catch(err => {
+    console.error('切换分类失败:', err);
+  });
+}
  
  // 处理新建文章
  function handleNewPost() {

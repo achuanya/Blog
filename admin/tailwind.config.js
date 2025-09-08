@@ -3,6 +3,7 @@ export default {
   content: [
     "./public/**/*.html",
     "./public/**/*.js",
+    "./src/**/*.js",
     "./src/styles/**/*.{css,scss}"
   ],
   theme: {

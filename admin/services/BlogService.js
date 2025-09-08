@@ -77,20 +77,24 @@ export class BlogService {
           const files = await fs.readdir(yearPath);
           
           for (const file of files) {
-            const fileSlug = path.basename(file, path.extname(file));
-            if (fileSlug === slug) {
+            if (file.endsWith('.md') || file.endsWith('.mdx')) {
               const filePath = path.join(yearPath, file);
               const content = await fs.readFile(filePath, 'utf-8');
               const { data, content: markdown } = matter(content);
               
-              return {
-                slug,
-                category,
-                year,
-                filename: file,
-                content: markdown,
-                ...data
-              };
+              // 使用frontmatter中的slug，如果没有则使用文件名
+              const postSlug = data.slug || path.basename(file, path.extname(file));
+              
+              if (postSlug === slug) {
+                return {
+                  slug: postSlug,
+                  category,
+                  year,
+                  filename: file,
+                  content: markdown,
+                  ...data
+                };
+              }
             }
           }
         }

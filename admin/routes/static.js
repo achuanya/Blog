@@ -6,9 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const router = express.Router();
 
-// 主页
-router.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
+// Express服务器专注于API服务，前端页面由Vite处理
+// 如需静态文件服务，可在此添加具体的静态资源路由
 
 export { router as staticRouter };

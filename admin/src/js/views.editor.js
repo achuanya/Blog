@@ -81,7 +81,7 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
     if (!coverBox) return;
     if (url) {
       coverBox.classList.add('has-img');
-      coverBox.style.backgroundImage = `url("${url.replace(/"/g, '\\"')}")`;
+      coverBox.style.backgroundImage = `url("${url.replace(/"/g, '\\"')}")`;;
     } else {
       coverBox.classList.remove('has-img');
       coverBox.style.backgroundImage = '';
@@ -261,7 +261,7 @@ function buildEditorHTML(post) {
     .btn { display:inline-block; background:#01c676; color:#fff; border:none; border-radius:8px; padding:8px 25px; cursor:pointer; }
     .btn-outline { background:#e6eae9; color:#000; }
 
-    /* 视图容器，用于在“下一步”时切换到配置界面（非弹窗） */
+    /* 视图容器，用于在"下一步"时切换到配置界面（非弹窗） */
     #me-root { position:relative; }
     #me-root .mobile-editor { transition: opacity .2s ease; }
     /* 在配置视图下保留顶部栏，仅隐藏编辑表单与工具栏 */
