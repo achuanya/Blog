@@ -82,6 +82,9 @@ export function renderCategoryTabs(categories) {
   if (!tabsWrap) return;
   tabsWrap.innerHTML = '';
 
+  // 检查是否为移动端
+  const isMobile = window.innerWidth < 768;
+
   // 草稿标签置顶
   const draftTab = document.createElement('span');
   draftTab.className = 'tab' + (state.activeCategory === 'drafts' ? ' active' : '');
@@ -89,21 +92,24 @@ export function renderCategoryTabs(categories) {
   draftTab.textContent = '草稿';
   tabsWrap.appendChild(draftTab);
 
-  // 全部标签
-  const allTab = document.createElement('span');
-  allTab.className = 'tab' + (state.activeCategory === 'all' ? ' active' : '');
-  allTab.dataset.cat = 'all';
-  allTab.textContent = '全部';
-  tabsWrap.appendChild(allTab);
+  // 移动端只显示草稿、新建和设置，PC端显示完整分类
+  if (!isMobile) {
+    // 全部标签
+    const allTab = document.createElement('span');
+    allTab.className = 'tab' + (state.activeCategory === 'all' ? ' active' : '');
+    allTab.dataset.cat = 'all';
+    allTab.textContent = '全部';
+    tabsWrap.appendChild(allTab);
 
-  // 其他分类
-  categories.forEach(c => {
-    const tab = document.createElement('span');
-    tab.className = 'tab' + (state.activeCategory === c.name ? ' active' : '');
-    tab.dataset.cat = c.name;
-    tab.textContent = c.displayName || c.name;
-    tabsWrap.appendChild(tab);
-  });
+    // 其他分类
+    categories.forEach(c => {
+      const tab = document.createElement('span');
+      tab.className = 'tab' + (state.activeCategory === c.name ? ' active' : '');
+      tab.dataset.cat = c.name;
+      tab.textContent = c.displayName || c.name;
+      tabsWrap.appendChild(tab);
+    });
+  }
 
   const spacer = document.createElement('div');
   spacer.className = 'spacer';
@@ -123,17 +129,32 @@ export function renderCategoryTabs(categories) {
   settings.textContent = '设置';
   tabsWrap.appendChild(settings);
 
-  const searchIcon = document.createElement('div');
-  searchIcon.className = 'search-icon';
-  searchIcon.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-      <path d="M21 21l-6 -6" />
-    </svg>
-  `;
-  searchIcon.setAttribute('aria-label', 'Search');
-  tabsWrap.appendChild(searchIcon);
+  // 移动端不显示搜索图标
+  if (!isMobile) {
+    const searchIcon = document.createElement('div');
+    searchIcon.className = 'search-icon';
+    searchIcon.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+        <path d="M21 21l-6 -6" />
+      </svg>
+    `;
+    searchIcon.setAttribute('aria-label', 'Search');
+    tabsWrap.appendChild(searchIcon);
+  }
+
+  // 监听窗口大小变化，自动重新渲染
+  if (!window.categoryTabsResizeListener) {
+    window.categoryTabsResizeListener = () => {
+      // 防抖处理
+      clearTimeout(window.categoryTabsResizeTimeout);
+      window.categoryTabsResizeTimeout = setTimeout(() => {
+        renderCategoryTabs(categories);
+      }, 100);
+    };
+    window.addEventListener('resize', window.categoryTabsResizeListener);
+  }
 }
 
 function filterPostsByCategory(category, allPosts) {
