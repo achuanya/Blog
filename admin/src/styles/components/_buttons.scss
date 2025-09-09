@@ -1,0 +1,35 @@
+// ===============
+// Button Components
+// ===============
+
+@layer components {
+  /* 操作按钮 */
+  .btn { 
+    @apply inline-block text-white border-0 px-4 py-2 rounded cursor-pointer no-underline mr-2 select-none; 
+    background-color: #01c676; 
+  }
+  
+  .btn:hover { 
+    background-color: #01a561; 
+  }
+  
+  .btn:focus-visible { 
+    @include focus-ring; 
+  }
+  
+  .btn-success { 
+    background-color: $green-500; 
+  }
+  
+  .btn-success:hover { 
+    background-color: $green-600; 
+  }
+  
+  .btn-danger { 
+    background-color: $red-500; 
+  }
+  
+  .btn-danger:hover { 
+    background-color: $red-600; 
+  }
+}

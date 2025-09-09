@@ -1,0 +1,139 @@
+// ===============
+// Navigation Component
+// ===============
+
+@layer components {
+  /* Navigation 旋转头像菜单 */
+  .navigation {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    z-index: 2;
+  }
+
+  /* 隐藏的checkbox控制器 */
+  .navigation-toggle {
+    display: none;
+    
+    &:checked ~ {
+      .navigation-mask {
+        display: block;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .navigation-list {
+        pointer-events: auto;
+        transform: rotate(0);
+        opacity: 1;
+      }
+      .navigation-avatar {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  /* 头像样式与动画 */
+  .navigation-avatar {
+    transition: transform .3s;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    z-index: 2;
+    border: 2px solid #fff;
+    background-color: #fff;
+    overflow: hidden;
+    display: block;
+    cursor: pointer;
+    position: relative;
+    
+    &:before {
+      content: "";
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-image: url(/assets/images/logo.png);
+      background-size: cover;
+      background-position: center;
+    }
+  }
+
+  /* 全屏遮罩层 */
+  .navigation-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: none;
+  }
+
+  /* 菜单列表样式与动画 */
+  .navigation-list {
+    transition: all .3s;
+    pointer-events: none;
+    list-style: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    background-color: rgb(80, 80, 80);
+    opacity: 0;
+    overflow: hidden;
+    transform: rotate(-90deg);
+    transform-origin: calc(100% - 20px) 20px;
+    width: 160px;
+    border-radius: 5px 25px 5px 5px;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 菜单项样式 */
+  .navigation-item {
+    position: relative;
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 1px solid rgba(100, 100, 100, .8);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: rgb(50,50,50);
+    }
+    
+    &.current, &:hover {
+      .navigation-item-link {
+        color: #fff;
+      }
+      .icon {
+        fill: #fff;
+      }
+    }
+  }
+
+  .navigation-item-link {
+    transition: all .3s;
+    color: rgb(200, 200, 200);
+    display: flex;
+    overflow: hidden;
+    line-height: 42px;
+    text-decoration: none;
+    align-items: center;
+    padding: 0 13.5px;
+  }
+
+  .icon {
+    margin-right: 13.5px;
+    width: 16px;
+    height: 16px;
+    fill: rgb(200, 200, 200);
+    transition: fill .3s;
+  }
+}

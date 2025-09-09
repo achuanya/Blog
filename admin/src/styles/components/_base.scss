@@ -1,0 +1,87 @@
+// ===============
+// Global Base Styles
+// ===============
+
+/* 全局基础样式 */
+@layer base {
+  html, body { @apply h-full; }
+  body {
+    @apply text-slate-800 antialiased;
+    background: #7db9de;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* 移动端去掉蓝色背景，使用白色背景 */
+  @media (max-width: 767.98px) {
+    body {
+      background: #fff;
+    }
+  }
+  
+  ::selection { background: rgba(42,125,184,.18); color: $primary-text; }
+
+  /* 减少动画动效，提升可访问性 */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+}
+
+/* 通用工具类 */
+@layer components {
+  .loading { @apply text-center p-10 text-slate-500; }
+  
+  /* 模态框 - 保留，可能在未来使用 */
+  .modal { @apply hidden fixed inset-0 bg-black/50 z-[1000]; }
+  
+  /* 隐藏滚动条（跨浏览器兼容） */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE 和 Edge */
+    scrollbar-width: none; /* Firefox */
+    overflow: -moz-scrollbars-none; /* 旧版 Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
+  }
+  
+  /* 全局滚动条隐藏 - 应用到所有可能出现滚动条的元素 */
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: -moz-scrollbars-none;
+  }
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  
+  /* 直接作用于编辑相关容器，确保编辑模式下均隐藏 */
+  #posts-container, .mobile-editor, .me-editor, .me-content,
+  .CodeMirror, .CodeMirror-scroll, .editor-toolbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: -moz-scrollbars-none;
+  }
+  #posts-container::-webkit-scrollbar, .mobile-editor::-webkit-scrollbar,
+  .me-editor::-webkit-scrollbar, .me-content::-webkit-scrollbar,
+  .CodeMirror::-webkit-scrollbar, .CodeMirror-scroll::-webkit-scrollbar,
+  .editor-toolbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  
+  /* 通用滚动条隐藏类 - 可应用到任何需要隐藏滚动条的元素 */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: -moz-scrollbars-none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}

@@ -1,0 +1,160 @@
+// ===============
+// Editor Component
+// ===============
+
+@layer components {
+  /* ====== 编辑视图（GitHub 风格） ====== */
+  .editor-view { 
+    @apply mt-2; 
+  }
+  
+  .editor-header { 
+    @apply flex items-center gap-2 mb-4; 
+  }
+  
+  .editor-header .spacer { 
+    @apply flex-1; 
+  }
+
+  .editor-form .form-row-2col { 
+    @apply grid gap-4; 
+    grid-template-columns: 1fr; 
+  }
+  
+  @media (min-width: 768px) { 
+    .editor-form .form-row-2col { 
+      grid-template-columns: 1fr 1fr; 
+    } 
+  }
+
+  .editor-form .flags { 
+    @apply flex items-center gap-5; 
+  }
+
+  /* ===== 移动端编辑全屏模式（由 JS 切换 body.mobile-editor-active） ===== */
+  @media (max-width: 767.98px) {
+    // 取消强制视口高度与内层滚动，直接展示全部内容
+    body.mobile-editor-active { 
+      background:#fff; 
+      height:auto; 
+      overflow:visible; 
+    }
+    
+    body.mobile-editor-active .page { 
+      padding:0; 
+    }
+    
+    body.mobile-editor-active .main-card { 
+      width:100%; 
+      max-width:768px; 
+      height:auto; 
+      border-radius:0; 
+      box-shadow:none; 
+    }
+    
+    body.mobile-editor-active .main-card .container { 
+      max-width:none; 
+      padding:0; 
+      height:auto; 
+    }
+    
+    body.mobile-editor-active .header { 
+      display:none !important; 
+    }
+    
+    body.mobile-editor-active .category-tabs { 
+      display:none !important; 
+    }
+    
+    body.mobile-editor-active .navigation { 
+      display:none !important; 
+    }
+    
+    body.mobile-editor-active #posts-container { 
+      height:auto; 
+      min-height:0; 
+      display:block; 
+      flex-direction:unset; 
+      overflow:visible; 
+    }
+    
+    body.mobile-editor-active .mobile-editor { 
+      border-radius:0 !important; 
+      box-shadow:none !important; 
+      min-height:auto; 
+      display:block; 
+      flex-direction:unset; 
+    }
+    
+    body.mobile-editor-active .mobile-editor .me-editor { 
+      flex:none; 
+      overflow:visible; 
+    }
+  }
+
+  /* ===== 桌面端编辑全屏模式（由 JS 切换 body.editor-active） ===== */
+  // 取消强制视口高度与内层滚动，直接展示全部内容
+  body.editor-active { 
+    background:#fff; 
+    height:auto; 
+    overflow:visible; 
+  }
+  
+  body.editor-active .page { 
+    padding:0; 
+  }
+  
+  body.editor-active .main-card { 
+    width:100%; 
+    max-width:768px; 
+    height:auto; 
+    border-radius:0; 
+    box-shadow:none; 
+  }
+  
+  body.editor-active .main-card .container { 
+    max-width:none; 
+    padding:0; 
+    height:auto; 
+  }
+  
+  body.editor-active .header { 
+    display:none !important; 
+  }
+  
+  body.editor-active .category-tabs { 
+    display:none !important; 
+  }
+  
+  body.editor-active .navigation { 
+    display:none !important; 
+  }
+  
+  body.editor-active #posts-container { 
+    height:auto; 
+    min-height:0; 
+    display:block; 
+    flex-direction:unset; 
+    overflow:visible; 
+  }
+  
+  body.editor-active .mobile-editor { 
+    border-radius:0 !important; 
+    box-shadow:none !important; 
+    min-height:auto; 
+    display:block; 
+    flex-direction:unset; 
+  }
+  
+  body.editor-active .mobile-editor .me-editor { 
+    flex:none; 
+    overflow:visible; 
+  }
+  
+  @media (min-width: 768px) {
+    .main-card { 
+      width: 768px !important; 
+      max-width: none; 
+    }
+  }
+}

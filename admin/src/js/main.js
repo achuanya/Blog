@@ -4,10 +4,132 @@ import { initRouter } from './router.js';
 import { renderListView, bindCategoryTabs, renderCategoryTabs } from './views.list.js';
 import { renderEditorView } from './views.editor.js';
 import { initNavCard, updateNavCardFromCategory } from './nav-card.js';
+import componentManager from '../components/index.js';
 
 function setTabsVisible(visible) {
   const tabs = document.getElementById('category-tabs');
   if (tabs) tabs.style.display = visible ? '' : 'none';
+}
+
+// 绑定布局事件
+function bindLayoutEvents() {
+  // 监听导航变更事件
+  document.addEventListener('layout-navigation-change', (e) => {
+    const { navType } = e.detail;
+    console.log('导航切换到:', navType);
+    
+    // 根据导航类型更新路由和分类状态
+    switch (navType) {
+      case 'drafts':
+      case 'all':
+      case 'life':
+      case 'sports':
+      case 'startup':
+      case 'technology':
+        // 更新分类标签状态
+        if (layoutInstance) {
+          layoutInstance.setCategory(navType);
+        }
+        // 更新全局状态
+        import('./state.js').then(({ setActiveCategory }) => {
+          setActiveCategory(navType);
+        }).catch(err => {
+          console.error('更新分类状态失败:', err);
+        });
+        location.hash = '#/list';
+        break;
+      case 'new':
+        location.hash = '#/new';
+        break;
+      case 'search':
+        // TODO: 实现搜索功能
+        alert('搜索功能开发中...');
+        break;
+      case 'settings':
+        alert('设置功能开发中...');
+        break;
+    }
+  });
+  
+  // 监听分类变更事件
+  document.addEventListener('layout-category-change', (e) => {
+    const { category, categoryData } = e.detail;
+    console.log('分类切换到:', category, categoryData);
+    
+    // 更新状态
+    import('./state.js').then(({ setActiveCategory }) => {
+      setActiveCategory(category);
+    }).catch(err => {
+      console.error('更新分类状态失败:', err);
+    });
+    
+    // 跳转到列表页面
+    const currentHash = window.location.hash;
+    if (currentHash !== '#/list' && !currentHash.startsWith('#/list')) {
+      location.hash = '#/list';
+    } else {
+      // 如果已经在列表页面，直接重新渲染列表
+      import('./views.list.js').then(({ renderListView }) => {
+        renderListView({ onEdit: (slug) => location.hash = `#/edit/${encodeURIComponent(slug)}` });
+      }).catch(err => {
+        console.error('渲染列表失败:', err);
+      });
+    }
+    
+    // 更新导航卡片
+    if (window.updateNavCardFromCategory) {
+      updateNavCardFromCategory(categoryData);
+    }
+  });
+  
+  // 监听分类操作事件
+  document.addEventListener('layout-category-action', (e) => {
+    const { action } = e.detail;
+    console.log('分类操作:', action);
+    
+    switch (action) {
+      case 'create':
+        location.hash = '#/new';
+        break;
+      case 'settings':
+        alert('设置功能开发中...');
+        break;
+    }
+  });
+  
+  // 监听分类搜索事件
+  document.addEventListener('layout-category-search', (e) => {
+    console.log('搜索功能');
+    alert('搜索功能开发中...');
+  });
+}
+
+// 降级到原始HTML布局
+function fallbackToOriginalLayout() {
+  console.warn('降级到原始HTML布局');
+  const appContainer = document.getElementById('app-container');
+  if (appContainer) {
+    appContainer.innerHTML = `
+      <div class="page">
+        <div class="main-card">
+          <div class="container">
+            <nav class="navigation">
+              <!-- 原始导航HTML -->
+            </nav>
+            <div class="category-tabs" id="category-tabs">
+              <!-- 原始分类标签HTML -->
+            </div>
+            <div id="posts-container">
+              <div class="loading">正在加载文章列表...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // 使用原始初始化逻辑
+  bindCategoryTabs({ onCreate: () => location.hash = '#/new', onSettings: () => alert('设置开发中…') });
 }
 
 // ===== 移动端编辑视图全屏模式开关 =====
@@ -69,39 +191,130 @@ function setMobileEditorMode(active) {
   }
 }
 
-async function init() {
-  await loadPosts();
-  await loadCategories();
-  bindCategoryTabs({ onCreate: () => location.hash = '#/new', onSettings: () => alert('设置开发中…') });
+// 全局布局实例
+let layoutInstance = null;
 
-  // 初始化导航卡片
-  initNavCard();
-
-  initRouter({
-    onList: () => {
-      setTabsVisible(true);
-      setMobileEditorMode(false);
-      renderListView({ onEdit: (slug) => location.hash = `#/edit/${encodeURIComponent(slug)}` });
-    },
-    onNew: () => {
-      setTabsVisible(false);
-      setMobileEditorMode(true);
-      renderEditorView(blankPost(), { onBack: () => location.hash = '#/list', onSave: savePost, onDelete: null });
-    },
-    onEdit: (slug) => {
-      setTabsVisible(false);
-      setMobileEditorMode(true);
-      editPost(slug);
+// 全局滚轮事件处理
+function setupGlobalWheelScrolling() {
+  let mainContent = null;
+  
+  // 获取主内容区域的函数
+  const getMainContent = () => {
+    if (!mainContent || !document.contains(mainContent)) {
+      mainContent = document.getElementById('main-content');
     }
-  });
+    return mainContent;
+  };
+  
+  // 全局滚轮事件监听器
+  const handleGlobalWheel = (e) => {
+    const content = getMainContent();
+    if (!content) return;
+    
+    // 检查事件目标是否在主内容区域内
+    const isInsideMainContent = content.contains(e.target) || e.target === content;
+    
+    // 如果滚轮事件不在主内容区域内，则转发到主内容区域
+    if (!isInsideMainContent) {
+      e.preventDefault();
+      
+      // 计算滚动距离，增加滚动速度
+      const scrollSpeed = 4; // 滚动速度倍数
+      const deltaY = e.deltaY * scrollSpeed;
+      
+      // 平滑滚动到目标位置
+      const currentScrollTop = content.scrollTop;
+      const targetScrollTop = currentScrollTop + deltaY;
+      
+      content.scrollTo({
+        top: targetScrollTop,
+        behavior: 'auto' // 使用auto而不是smooth以提高响应速度
+      });
+    }
+  };
+  
+  // 添加全局滚轮事件监听器
+  document.addEventListener('wheel', handleGlobalWheel, { passive: false });
+  
+  // 返回清理函数
+  return () => {
+    document.removeEventListener('wheel', handleGlobalWheel);
+  };
+}
+
+async function init() {
+  try {
+    // 初始化组件管理器
+    await componentManager.init();
+    
+    // 创建应用布局
+    const appContainer = document.getElementById('app-container');
+    if (!appContainer) {
+      throw new Error('App container not found');
+    }
+    
+    // 加载数据
+    await loadPosts();
+    const categories = await loadCategories();
+    
+    // 创建布局组件
+    layoutInstance = await componentManager.createLayout(appContainer, {
+      activeNav: 'drafts',
+      activeCategory: state.activeCategory, // 使用全局状态中的默认分类
+      categories: categories || [],
+      content: '<div id="posts-container"><div class="loading">正在加载文章列表...</div></div>'
+    });
+    
+    // 绑定布局事件
+    bindLayoutEvents();
+    
+    // 初始化导航卡片
+    initNavCard();
+    
+    // 设置全局滚轮滚动
+    setupGlobalWheelScrolling();
+    
+    // 初始化路由
+    initRouter({
+      onList: () => {
+        layoutInstance.setCategoryTabsVisible(true);
+        setMobileEditorMode(false);
+        renderListView({ onEdit: (slug) => location.hash = `#/edit/${encodeURIComponent(slug)}` });
+      },
+      onNew: () => {
+        layoutInstance.setCategoryTabsVisible(false);
+        setMobileEditorMode(true);
+        renderEditorView(blankPost(), { onBack: () => location.hash = '#/list', onSave: savePost, onDelete: null });
+      },
+      onEdit: (slug) => {
+        layoutInstance.setCategoryTabsVisible(false);
+        setMobileEditorMode(true);
+        editPost(slug);
+      }
+    });
+    
+    console.log('应用初始化完成');
+  } catch (error) {
+    console.error('应用初始化失败:', error);
+    // 降级到原始HTML结构
+    fallbackToOriginalLayout();
+  }
 }
 
 async function loadCategories() {
   try {
     const categories = await api.getCategories();
-    renderCategoryTabs(categories);
+    // 如果有布局实例，更新分类
+    if (layoutInstance) {
+      layoutInstance.updateCategories(categories);
+    } else {
+      // 降级处理
+      renderCategoryTabs(categories);
+    }
+    return categories;
   } catch (e) {
     console.warn('加载分类失败：', e);
+    return [];
   }
 }
 
