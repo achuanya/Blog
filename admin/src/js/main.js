@@ -206,16 +206,35 @@ function setupGlobalWheelScrolling() {
     return mainContent;
   };
   
+  // 获取编辑器容器的函数
+  const getEditorContainer = () => {
+    return document.querySelector('.mobile-editor') || document.querySelector('#posts-container');
+  };
+  
   // 全局滚轮事件监听器
   const handleGlobalWheel = (e) => {
-    const content = getMainContent();
-    if (!content) return;
+    // 检查是否在编辑模式
+    const isEditorMode = document.body.classList.contains('editor-active') || document.body.classList.contains('mobile-editor-active');
     
-    // 检查事件目标是否在主内容区域内
-    const isInsideMainContent = content.contains(e.target) || e.target === content;
+    let targetContainer;
+    if (isEditorMode) {
+      // 编辑模式下，使用编辑器容器或直接使用body进行滚动
+      targetContainer = getEditorContainer();
+      if (!targetContainer) {
+        // 如果没有找到编辑器容器，直接让页面自然滚动
+        return;
+      }
+    } else {
+      // 非编辑模式下，使用主内容区域
+      targetContainer = getMainContent();
+      if (!targetContainer) return;
+    }
     
-    // 如果滚轮事件不在主内容区域内，则转发到主内容区域
-    if (!isInsideMainContent) {
+    // 检查事件目标是否在目标容器内
+    const isInsideTargetContainer = targetContainer.contains(e.target) || e.target === targetContainer;
+    
+    // 如果滚轮事件不在目标容器内，则转发到目标容器
+    if (!isInsideTargetContainer && !isEditorMode) {
       e.preventDefault();
       
       // 计算滚动距离，增加滚动速度
@@ -223,14 +242,15 @@ function setupGlobalWheelScrolling() {
       const deltaY = e.deltaY * scrollSpeed;
       
       // 平滑滚动到目标位置
-      const currentScrollTop = content.scrollTop;
+      const currentScrollTop = targetContainer.scrollTop;
       const targetScrollTop = currentScrollTop + deltaY;
       
-      content.scrollTo({
+      targetContainer.scrollTo({
         top: targetScrollTop,
         behavior: 'auto' // 使用auto而不是smooth以提高响应速度
       });
     }
+    // 编辑模式下让浏览器自然处理滚动，不进行拦截
   };
   
   // 添加全局滚轮事件监听器

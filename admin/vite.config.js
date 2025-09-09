@@ -1,12 +1,20 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-
 import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
 
 export default defineConfig({
-  // 项目根目录 - 修复为实际项目根目录
+  // 项目根目录
   root: '.',
+  
+  // 路径别名配置
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+      '@/components': resolve(__dirname, 'src/components'),
+      '@/lib': resolve(__dirname, 'src/lib')
+    }
+  },
   
   // 开发服务器配置
   server: {
@@ -50,7 +58,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // 移除不存在的variables.scss引用
+        // SCSS配置
       }
     },
     postcss: {
@@ -61,7 +69,7 @@ export default defineConfig({
     }
   },
   
-  // 优化配置
+  // 依赖优化
   optimizeDeps: {
     exclude: ['simplemde'],
     include: ['markdown-it']

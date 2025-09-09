@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import './globals.css';
 
 // =====================
 // SCSS 组件化导入
@@ -19,6 +17,7 @@
 // 导入UI组件
 @import 'components/navigation';
 @import 'components/category-tabs';
+@import 'components/year-progress';
 @import 'components/post-list';
 @import 'components/buttons';
 

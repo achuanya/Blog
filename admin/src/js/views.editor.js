@@ -292,7 +292,7 @@ function buildEditorHTML(post) {
     /* 元信息面板（默认作为弹层定义） */
     .me-meta-panel { position:fixed; inset:0; background:rgba(0,0,0,.25); display:none; align-items:flex-end; z-index:50; opacity:0; transition:opacity .2s ease; }
     .me-meta-panel.open { display:flex; opacity:1; }
-    .me-meta-sheet { width:100%; background:#fff; border-radius:16px 16px 0 0; padding:14px; max-height:80vh; overflow:auto; }
+    .me-meta-sheet { width:100%; background:#fff; border-radius:16px 16px 0 0; padding:14px; max-height:80vh; overflow:auto; -webkit-overflow-scrolling:touch; }
     .me-meta-row { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:10px; }
     .me-meta-row label { display:block; font-weight:600; margin-bottom:6px; color:#0f172a; }
     .me-meta-row input, .me-meta-row select, .me-meta-row textarea { width:100%; border:1px solid #e2e8f0; border-radius:8px; padding:8px; font-size:14px; }
@@ -311,7 +311,7 @@ function buildEditorHTML(post) {
     #me-root.meta-view .me-meta-sheet { border-radius:12px; max-height:none; height:auto; min-height:60vh; }
 
     /* 新增：在配置界面将操作区贴紧底部，设定高度与背景色 */
-    #me-root.meta-view .me-meta-sheet { display:flex; flex-direction:column; overflow:auto; }
+    #me-root.meta-view .me-meta-sheet { display:flex; flex-direction:column; overflow:auto; -webkit-overflow-scrolling:touch; }
     #me-root.meta-view .me-meta-actions { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px 12px; background-color: #f2f6f5; border-top: 1px solid #eef2f7; z-index: 60; }
 
     /* ===== 仿微信风格：封面 / 列表单元 / 开关 ===== */

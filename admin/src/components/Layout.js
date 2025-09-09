@@ -4,11 +4,13 @@
 import componentLoader from './ComponentLoader.js';
 import './Navigation.js';
 import './CategoryTabs.js';
+import './YearProgress.js';
 
 class LayoutComponent {
     constructor() {
         this.navigationInstance = null;
         this.categoryTabsInstance = null;
+        this.yearProgressInstance = null;
         this.isInitialized = false;
     }
 
@@ -62,6 +64,17 @@ class LayoutComponent {
                     }
                 );
                 this.categoryTabsInstance = tabsElement._categoryTabsInstance;
+            }
+
+            // 渲染年度进度条组件
+            const yearProgressContainer = this.element.querySelector('#year-progress-container');
+            if (yearProgressContainer) {
+                const progressElement = await componentLoader.render(
+                    'year-progress',
+                    yearProgressContainer,
+                    {}
+                );
+                this.yearProgressInstance = progressElement._yearProgressInstance;
             }
 
         } catch (error) {
@@ -201,6 +214,14 @@ class LayoutComponent {
     }
 
     /**
+     * 获取年度进度条实例
+     * @returns {YearProgressComponent|null}
+     */
+    getYearProgressInstance() {
+        return this.yearProgressInstance;
+    }
+
+    /**
      * 设置导航状态
      * @param {string} navType - 导航类型
      */
@@ -274,6 +295,9 @@ class LayoutComponent {
         }
         if (this.categoryTabsInstance) {
             this.categoryTabsInstance.destroy();
+        }
+        if (this.yearProgressInstance) {
+            this.yearProgressInstance.destroy();
         }
 
         // 移除事件监听器

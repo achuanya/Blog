@@ -5,14 +5,11 @@
 @layer components {
   /* 顶部分类 tabs（保留 .tab / .nav-link / .spacer / .search-input 类名） */
   .category-tabs { 
-    @apply flex items-center gap-2 pb-2.5 border-b-2; 
-    border-color: rgba(64,140,201,0.25);
+    @apply flex items-center gap-2 pb-3.5;
     position: sticky;
     top: 0;
-    background-color: white;
     z-index: 15;
-    /* 添加轻微阴影以增强固定效果 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
     /* 确保在移动端也能正确固定 */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);

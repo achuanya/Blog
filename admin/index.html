@@ -21,15 +21,15 @@
       body.mobile-editor-active .mobile-editor .me-editor { flex:1 1 auto; overflow:auto; }
 
       /* 桌面端编辑模式（JS 会在编辑/新建时为 body 加上 editor-active） */
-      body.editor-active { background:#fff; height:100vh; overflow:hidden; }
+      body.editor-active { background:#fff; height:auto; overflow:visible; }
       body.editor-active .page { padding:0; }
-      body.editor-active .main-card { width:100vw; max-width:none; height:100vh; border-radius:0; box-shadow:none; }
-      body.editor-active .main-card .container { max-width:none; padding:0; height:100vh; }
+      body.editor-active .main-card { width:100vw; max-width:none; height:auto; border-radius:0; box-shadow:none; }
+      body.editor-active .main-card .container { max-width:none; padding:0; height:auto; }
       body.editor-active .header { display:none !important; }
       body.editor-active .category-tabs { display:none !important; }
-      body.editor-active #posts-container { height:100vh; min-height:100vh; display:flex; flex-direction:column; overflow:auto; }
-      body.editor-active .mobile-editor { border-radius:0 !important; box-shadow:none !important; min-height:100vh; display:flex; flex-direction:column; }
-      body.editor-active .mobile-editor .me-editor { flex:1 1 auto; overflow:auto; }
+      body.editor-active #posts-container { height:auto; min-height:0; display:flex; flex-direction:column; overflow:visible; }
+      body.editor-active .mobile-editor { border-radius:0 !important; box-shadow:none !important; min-height:auto; display:flex; flex-direction:column; }
+      body.editor-active .mobile-editor .me-editor { flex:1 1 auto; overflow:visible; }
     </style>
 </head>
 <body>

@@ -5,12 +5,15 @@
 @layer components {
   /* 列表（按年分组） */
   .year-group { 
-    @apply rounded-lg py-1.5; 
+    @apply rounded-lg;
   }
   
   .year-header { 
-    @apply flex items-center gap-2.5 px-1.5 py-2 cursor-pointer select-none; 
+    @apply flex items-center gap-2.5 pb-3.5 cursor-pointer select-none;
     color: $primary-text; 
+  }
+  .year-group > :nth-child(n + 2) {
+    @apply pb-3.5;
   }
   
   .year-header:focus-visible { 
@@ -23,6 +26,7 @@
   
   .year-header .caret svg { 
     @apply w-4 h-4; 
+    color: #7a8b99;
     transition: all 0.2s ease; 
   }
   
@@ -33,22 +37,18 @@
   .year-group:not(.collapsed) .caret svg { 
     transform: rotate(90deg); 
   }
-  
-  .year-body { 
-    @apply pt-1.5; 
-  }
-  
+
   .year-group.collapsed .year-body { 
     display: none; 
   }
 
   /* 列表项 */
   .post-list { 
-    @apply flex flex-col gap-2.5; 
+    @apply flex flex-col gap-3.5; 
   }
   
   .post-item { 
-    @apply grid items-center gap-3 p-2 rounded-md; 
+    @apply grid items-center gap-3 rounded-md; 
   }
   
   .post-item:hover { 

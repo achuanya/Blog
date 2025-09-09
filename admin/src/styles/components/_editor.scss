@@ -90,6 +90,24 @@
       flex:none; 
       overflow:visible; 
     }
+    
+    /* 配置界面滚动修复 */
+    body.mobile-editor-active .me-meta-panel,
+    body.mobile-editor-active .me-meta-sheet { 
+      overflow:auto !important; 
+      -webkit-overflow-scrolling:touch;
+      /* 隐藏滚动条 - 跨浏览器兼容 */
+      -ms-overflow-style: none; /* IE/Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+    
+    /* Webkit浏览器隐藏滚动条 */
+    body.mobile-editor-active .me-meta-panel::-webkit-scrollbar,
+    body.mobile-editor-active .me-meta-sheet::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+      width: 0;
+      height: 0;
+    }
   }
 
   /* ===== 桌面端编辑全屏模式（由 JS 切换 body.editor-active） ===== */
@@ -149,6 +167,24 @@
   body.editor-active .mobile-editor .me-editor { 
     flex:none; 
     overflow:visible; 
+  }
+  
+  /* 配置界面滚动修复 */
+  body.editor-active .me-meta-panel,
+  body.editor-active .me-meta-sheet { 
+    overflow:auto !important; 
+    -webkit-overflow-scrolling:touch;
+    /* 隐藏滚动条 - 跨浏览器兼容 */
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  /* Webkit浏览器隐藏滚动条 */
+  body.editor-active .me-meta-panel::-webkit-scrollbar,
+  body.editor-active .me-meta-sheet::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
   }
   
   @media (min-width: 768px) {
