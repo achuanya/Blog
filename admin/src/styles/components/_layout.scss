@@ -96,8 +96,6 @@
   /* 移动端主内容区域优化 */
   @media (max-width: 767.98px) {
     #main-content {
-      padding-top: 0.5rem;
-      /* 确保移动端滚动条完全隐藏 */
       scrollbar-width: none;
       -ms-overflow-style: none;
     }

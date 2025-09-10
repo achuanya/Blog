@@ -70,6 +70,10 @@
       display:none !important; 
     }
     
+    body.mobile-editor-active #year-progress-container { 
+      display:none !important; 
+    }
+    
     body.mobile-editor-active #posts-container { 
       height:auto; 
       min-height:0; 
@@ -145,6 +149,10 @@
   }
   
   body.editor-active .navigation { 
+    display:none !important; 
+  }
+  
+  body.editor-active #year-progress-container { 
     display:none !important; 
   }
   

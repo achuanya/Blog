@@ -18,12 +18,13 @@ export default defineConfig({
   
   // 开发服务器配置
   server: {
-    port: 3000,
+    port: 3002,
     host: true,
+    allowedHosts: ['admin.lhasa.icu'],
     // 代理API请求到Express服务器
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:3003',
         changeOrigin: true,
         secure: false
       }
