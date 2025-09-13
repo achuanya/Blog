@@ -32,6 +32,8 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
   container.querySelector('#me-save-meta')?.addEventListener('click', () => {
     syncMetaFields();
     ensureDescriptionFilled();
+    // 保存成功后清除自动保存数据
+    clearAutoSave();
     onSave?.();
   });
 
@@ -45,7 +47,11 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
   };
 
   // 监听标题字段变化，实时同步
-  container.querySelector('#title-meta')?.addEventListener('input', syncMetaFields);
+  container.querySelector('#title-meta')?.addEventListener('input', () => {
+    syncMetaFields();
+    // 标题变化时也重置自动保存计时
+    lastSaveTime = Date.now();
+  });
   // container.querySelector('#me-next')?.addEventListener('click', () => {
   // 改为：切换到配置界面视图（隐藏编辑器，显示配置项）
   // const root = container.querySelector('#me-root');
@@ -101,14 +107,134 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
     ev.preventDefault();
     syncMetaFields();
     ensureDescriptionFilled();
+    // 保存成功后清除自动保存数据
+    clearAutoSave();
     onSave?.();
   });
 
   // Ctrl/Cmd+S 快捷保存
   container.querySelector('#editor-form')?.addEventListener('keydown', (ev) => {
     const isSave = (ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's';
-    if (isSave) { ev.preventDefault(); syncMetaFields(); ensureDescriptionFilled(); onSave?.(); }
+    if (isSave) { 
+      ev.preventDefault(); 
+      syncMetaFields(); 
+      ensureDescriptionFilled(); 
+      // 保存成功后清除自动保存数据
+      clearAutoSave();
+      onSave?.(); 
+    }
   });
+
+  // ====== 自动保存功能 ======
+  let autoSaveTimer = null;
+  let lastSaveTime = Date.now();
+  const AUTOSAVE_INTERVAL = 5000; // 5秒自动保存
+  const AUTOSAVE_KEY_PREFIX = 'blog_autosave_';
+  
+  // 获取当前文章的自动保存键
+  const getAutoSaveKey = () => {
+    const slug = post?.slug || 'new_post';
+    return `${AUTOSAVE_KEY_PREFIX}${slug}`;
+  };
+  
+  // 保存到localStorage
+  const saveToLocalStorage = () => {
+    if (!simpleMDE) return;
+    
+    const autoSaveData = {
+      title: titleInput?.value || '',
+      content: simpleMDE.value(),
+      timestamp: Date.now(),
+      slug: post?.slug || 'new_post'
+    };
+    
+    try {
+      localStorage.setItem(getAutoSaveKey(), JSON.stringify(autoSaveData));
+      lastSaveTime = Date.now();
+      updateAutoSaveStatus('已自动保存');
+    } catch (error) {
+      console.warn('自动保存失败:', error);
+      updateAutoSaveStatus('保存失败');
+    }
+  };
+  
+  // 从localStorage恢复内容
+  const restoreFromLocalStorage = () => {
+    try {
+      const saved = localStorage.getItem(getAutoSaveKey());
+      if (!saved) return null;
+      
+      const data = JSON.parse(saved);
+      // 检查是否是最近的保存（24小时内）
+      if (Date.now() - data.timestamp > 24 * 60 * 60 * 1000) {
+        localStorage.removeItem(getAutoSaveKey());
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.warn('恢复自动保存失败:', error);
+      return null;
+    }
+  };
+  
+  // 清除自动保存数据
+  const clearAutoSave = () => {
+    localStorage.removeItem(getAutoSaveKey());
+    updateAutoSaveStatus('');
+  };
+  
+  // 更新自动保存状态显示
+  const updateAutoSaveStatus = (message) => {
+    let statusEl = container.querySelector('#autosave-status');
+    if (!statusEl) {
+      statusEl = document.createElement('div');
+      statusEl.id = 'autosave-status';
+      statusEl.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      `;
+      document.body.appendChild(statusEl);
+    }
+    
+    statusEl.textContent = message;
+    if (message) {
+      statusEl.style.opacity = '1';
+      setTimeout(() => {
+        statusEl.style.opacity = '0';
+      }, 2000);
+    } else {
+      statusEl.style.opacity = '0';
+    }
+  };
+  
+  // 启动自动保存定时器
+  const startAutoSave = () => {
+    if (autoSaveTimer) clearInterval(autoSaveTimer);
+    autoSaveTimer = setInterval(() => {
+      if (simpleMDE && Date.now() - lastSaveTime > AUTOSAVE_INTERVAL) {
+        saveToLocalStorage();
+      }
+    }, AUTOSAVE_INTERVAL);
+  };
+  
+  // 停止自动保存
+  const stopAutoSave = () => {
+    if (autoSaveTimer) {
+      clearInterval(autoSaveTimer);
+      autoSaveTimer = null;
+    }
+  };
 
   // ====== SimpleMDE 初始化 ======
   let simpleMDE = null;
@@ -156,7 +282,29 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
     // 监听内容变化
     simpleMDE.codemirror.on('change', () => {
       ensureDescriptionFilled();
+      // 内容变化时重置自动保存计时
+      lastSaveTime = Date.now();
     });
+    
+    // 检查是否有自动保存的内容需要恢复
+    const savedData = restoreFromLocalStorage();
+    if (savedData && savedData.content && savedData.content !== (post?.content || '')) {
+      const shouldRestore = confirm(
+        `检测到未保存的内容（${new Date(savedData.timestamp).toLocaleString()}），是否恢复？`
+      );
+      if (shouldRestore) {
+        simpleMDE.value(savedData.content);
+        if (titleInput && savedData.title) {
+          titleInput.value = savedData.title;
+        }
+        updateAutoSaveStatus('已恢复自动保存内容');
+      } else {
+        clearAutoSave();
+      }
+    }
+    
+    // 启动自动保存
+    startAutoSave();
 
     // 添加快捷键支持
     simpleMDE.codemirror.setOption('extraKeys', {
@@ -192,11 +340,48 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
     return simpleMDE ? simpleMDE.value() : '';
   };
 
+  // 页面卸载前的保存提醒
+  const handleBeforeUnload = (event) => {
+    if (simpleMDE) {
+      // 自动保存当前内容
+      saveToLocalStorage();
+      
+      // 检查是否有未保存的更改
+      const currentContent = simpleMDE.value();
+      const currentTitle = titleInput?.value || '';
+      const originalContent = post?.content || '';
+      const originalTitle = post?.title || '';
+      
+      if (currentContent !== originalContent || currentTitle !== originalTitle) {
+        const message = '您有未保存的更改，确定要离开吗？内容已自动保存到本地。';
+        event.preventDefault();
+        event.returnValue = message;
+        return message;
+      }
+    }
+  };
+  
+  // 添加页面卸载监听
+  window.addEventListener('beforeunload', handleBeforeUnload);
+  
   // 清理函数
   window.disposeSimpleMDE = () => {
+    // 停止自动保存
+    stopAutoSave();
+    
+    // 移除页面卸载监听
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    
+    // 清理SimpleMDE
     if (simpleMDE) {
       simpleMDE.toTextArea();
       simpleMDE = null;
+    }
+    
+    // 清理状态显示元素
+    const statusEl = document.querySelector('#autosave-status');
+    if (statusEl) {
+      statusEl.remove();
     }
   };
 
