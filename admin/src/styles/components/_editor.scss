@@ -201,4 +201,10 @@
       max-width: none; 
     }
   }
+
+  /* ===== SimpleMDE 样式覆盖 ===== */
+  /* 移除工具栏按钮的透明度 */
+  .editor-toolbar {
+    opacity: 1 !important;
+  }
 }

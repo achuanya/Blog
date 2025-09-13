@@ -181,6 +181,8 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
   // 清除自动保存数据
   const clearAutoSave = () => {
     localStorage.removeItem(getAutoSaveKey());
+    // 同时清除拒绝标记
+    sessionStorage.removeItem(`${getAutoSaveKey()}_rejected`);
     updateAutoSaveStatus('');
   };
   
@@ -299,7 +301,10 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
         }
         updateAutoSaveStatus('已恢复自动保存内容');
       } else {
+        // 用户选择不恢复，清除自动保存数据并标记用户已拒绝恢复
         clearAutoSave();
+        // 设置一个标记，表示用户已经拒绝了恢复，避免页面卸载时重新保存
+        sessionStorage.setItem(`${getAutoSaveKey()}_rejected`, 'true');
       }
     }
     
@@ -343,8 +348,8 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
   // 页面卸载前的保存提醒
   const handleBeforeUnload = (event) => {
     if (simpleMDE) {
-      // 自动保存当前内容
-      saveToLocalStorage();
+      // 检查用户是否已经拒绝过恢复，如果是则不再自动保存
+      const hasRejected = sessionStorage.getItem(`${getAutoSaveKey()}_rejected`) === 'true';
       
       // 检查是否有未保存的更改
       const currentContent = simpleMDE.value();
@@ -352,7 +357,11 @@ export function renderEditorView(post, { onBack, onSave, onDelete }) {
       const originalContent = post?.content || '';
       const originalTitle = post?.title || '';
       
-      if (currentContent !== originalContent || currentTitle !== originalTitle) {
+      const hasChanges = currentContent !== originalContent || currentTitle !== originalTitle;
+      
+      // 只有在有更改且用户没有拒绝过恢复的情况下才自动保存
+      if (hasChanges && !hasRejected) {
+        saveToLocalStorage();
         const message = '您有未保存的更改，确定要离开吗？内容已自动保存到本地。';
         event.preventDefault();
         event.returnValue = message;
@@ -423,7 +432,7 @@ function buildEditorHTML(post) {
     #posts-container, .mobile-editor, .me-editor, .me-content { -ms-overflow-style:none; scrollbar-width:none; }
     #posts-container::-webkit-scrollbar, .mobile-editor::-webkit-scrollbar, .me-editor::-webkit-scrollbar, .me-content::-webkit-scrollbar { display:none; }
 
-    .me-editor { padding:12px; display:flex; flex-direction:column; min-height:0; }
+    .me-editor { display:flex; flex-direction:column; min-height:0; }
     .me-title { width:100%; border:0; outline:none; font-size:22px; font-weight:600; color:#0f172a; padding:0px 0 20px 0;; }
     .me-title::placeholder { color:#94a3b8; }
     .me-content { width:100%; flex:1 1 auto; min-height:0; border:0; outline:none; padding:0; resize:none; font-size:16px; line-height:1.75; color:#0f172a; overflow:hidden; position:relative; }
@@ -432,8 +441,7 @@ function buildEditorHTML(post) {
     /* SimpleMDE 工具栏置顶样式 */
     .me-content .editor-toolbar { 
       border:0; 
-      border-bottom:1px solid #eef2f7; 
-      background:#f8fafc; 
+      background:#fff; 
       position: sticky !important;
       top: 0 !important;
       z-index: 1000 !important;
@@ -461,7 +469,6 @@ function buildEditorHTML(post) {
     /* CodeMirror Fullscreen 模式样式 */
     .me-content .CodeMirror.CodeMirror-fullscreen { 
       z-index: 9998 !important;
-      padding-top: 50px !important; /* 为置顶工具栏留出空间 */
     }
     
     /* Side-by-Side 模式下的 CodeMirror 样式修复 */
