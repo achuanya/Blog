@@ -1,0 +1,46 @@
+---
+author: 游钓四方
+draft: false
+featured: false
+category: technology
+pubDatetime: 2025-09-16T11:21+08:00
+title: EasyFill 1.2 发布：黑名单功能上线
+slug: EasyFill-1-2-0
+ogImage: https://cos.lhasa.icu/ArticlePictures/easyfill-1-1-1/EasyFill128.webp_81
+tags:
+  - EasyFill
+  - 扩展
+  - 开源
+  - 独立开发者
+description: EasyFill 1.2 发布：黑名单功能上线
+---
+import Img from "@/components/Img.astro";
+
+距离上一次更新已经有一段时间了，最近抽空折腾了一下，在 **EasyFill v1.2** 中带来了一些实用的新特性，特别是 **黑名单功能**。
+
+### 本次更新亮点
+
+- **防抖机制**：避免频繁触发填充操作，更加顺滑稳定。
+- **黑名单设置**：支持官方规则和用户自定义两种模式。
+- **自定义黑名单管理**：支持添加、删除、拖拽上传和导出，操作更直观。
+- **数据同步优化**：无论手动还是自动更新，都会跳过缓存，确保数据时效性。
+- **隐私政策更新**：新增黑名单数据处理条款，解释用途。  
+
+<Img src="FillSettings.png" alt="架构图" exif={false} caption={false} />
+
+隐私条款部分其实没啥复杂的，只是做了明确说明：插件仅有两个外部公开文件链接，其余所有数据都采用 **本地加密存储（chrome.storage.local）**，没有隐私泄露的风险。
+
+## 立即体验
+
+**EasyFill v1.2** 已正式发布：
+
+- **新用户**：Chrome Web Store 搜索 "[EasyFill](https://chromewebstore.google.com/detail/eamchegekphehbmebccbapnihegngobm?utm_source=item-share-cb)" 安装
+- **现有用户**：魔法联网后 Chrome 扩展将自动更新到最新版本
+- **开发者**：访问 [github.com/achuanya/EasyFill](https://github.com/achuanya/EasyFill) 查看源代码
+- **大陆访问**：[点此下载 easyfill-1.2.0-chrome.zip](https://cos.lhasa.icu/EasyFill/Version/easyfill-1.2.0-chrome.zip)
+
+安装方式也很简单：下载后解压到文件夹，进入 **Chrome → 管理扩展程序 → 加载未打包的扩展**，选择解压目录即可。其他基于 Chromium 内核的浏览器同样适用。
+
+---
+
+**EasyFill - 简易填充，让每一次评论更自然，与你的博友互动无缝连接**
