@@ -3,7 +3,7 @@ author: 游钓四方
 draft: false
 featured: false
 category: technology
-pubDatetime: 2025-09-18T09:18+08:00
+pubDatetime: 2025-09-18T08:44+08:00
 title: EasyFill v1.3 发布：支持SPA机制、优化 Shadow DOM 遍历逻辑
 slug: EasyFill-1-3-0
 ogImage: https://cos.lhasa.icu/ArticlePictures/EasyFill-1-3-0/EasyFill128.webp_81
