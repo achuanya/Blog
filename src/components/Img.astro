@@ -441,16 +441,18 @@ document.addEventListener('astro:page-load', initLightGallery);
       let touchStartY = 0;
       let touchStartTime = 0;
 
-      const handleTouchStart = (e: TouchEvent) => {
+      const handleTouchStart = (e: Event) => {
         // 记录触摸开始的位置和时间，不阻止默认滚动行为
-        const touch = e.touches[0];
+        const touchEvent = e as TouchEvent;
+        const touch = touchEvent.touches[0];
         touchStartX = touch.clientX;
         touchStartY = touch.clientY;
         touchStartTime = Date.now();
       };
 
-      const handleTouchEnd = (e: TouchEvent) => {
-        const touch = e.changedTouches[0];
+      const handleTouchEnd = (e: Event) => {
+        const touchEvent = e as TouchEvent;
+        const touch = touchEvent.changedTouches[0];
         const touchEndX = touch.clientX;
         const touchEndY = touch.clientY;
         const touchEndTime = Date.now();
