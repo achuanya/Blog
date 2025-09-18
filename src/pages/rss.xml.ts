@@ -62,6 +62,6 @@ export async function GET(context: any) {
     site: SITE.website,
     items,
     customData: `<language>${SITE.lang || "zh-CN"}</language>\n${logo}`,
-    stylesheet: "/style/rss.xsl"
+    stylesheet: "https://cos.lhasa.icu/assets/style/rss.xsl"
   });
 }

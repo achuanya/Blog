@@ -8,7 +8,6 @@ import IconTelegram from "@/assets/icons/IconTelegram.svg"; // Telegram图标
 // import IconPinterest from "@/assets/icons/IconPinterest.svg"; // Pinterest图标
 import IconDouyin from "@/assets/icons/IconDouyin.svg";     // 抖音图标
 import IconMastodon from "@/assets/icons/IconMastodon.svg"; // Mastodon图标
-import IconZhihu from "@/assets/icons/IconZhihu.svg";       // 知乎图标
 import { SITE } from "@/config";
 
 interface Social {
@@ -31,12 +30,6 @@ export const SOCIALS: Social[] = [
     href: "https://www.douyin.com/user/MS4wLjABAAAAKa6NwPUcIhC4qAwdvPjfGSyyENvEk1rGPBJVRQIQmCo", // 抖音用户页面
     linkTitle: `${SITE.title} on Douyin`,              // 链接标题
     icon: IconDouyin,                                  // 抖音图标
-  },
-  {
-    name: "Zhihu",                                   // 知乎平台
-    href: "https://www.zhihu.com/people/lhasaicu",  // 知乎用户页面
-    linkTitle: `${SITE.title} on Zhihu`,            // 链接标题
-    icon: IconZhihu,                                // 知乎图标
   },
   {
     name: "Mail",                                    // 电子邮件
