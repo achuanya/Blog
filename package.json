@@ -24,6 +24,7 @@
     "dayjs": "^1.11.13",
     "dotenv": "^17.1.0",
     "katex": "^0.16.22",
+    "lightgallery.js": "github:sachinchoolur/lightgallery.js#b9c80891859cf015007f0f4597b657d5af59fb2c",
     "lodash.kebabcase": "^4.1.1",
     "rehype-katex": "^7.0.1",
     "remark-collapse": "^0.1.2",

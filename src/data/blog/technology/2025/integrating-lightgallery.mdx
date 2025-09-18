@@ -1,0 +1,120 @@
+---
+author: 游钓四方
+draft: true
+featured: true
+category: technology
+pubDatetime: 2025-09-18T18:39+08:00
+title: 集成 LightGallery 灯箱
+slug: integrating-lightgallery
+ogImage: https://cos.lhasa.icu/ArticlePictures/integrating-lightgallery/lightgallerylogo.png_81
+tags:
+  - LightGallery
+  - Update
+description: 集成 LightGallery
+---
+import Img from "@/components/Img.astro";
+
+月初，一个博友留言反馈讲到文章页面图片看不清楚，今下午花点时间，收拾了一下
+
+LightGallery 这款灯箱我老博客用过，后来换到 Astro 就搁置了
+
+```html file="src/components/Img.astro"
+<figure class={`img-container ${className || ''}`} style={style}>
+  <div class="img-wrapper lightgallery-wrapper">
+    <!-- EXIF -->
+    {shouldShowExif && (
+      <div class="exif-tooltip" data-exif-tooltip>
+        <div class="exif-content">
+          <div class="exif-loading">Loading EXIF data...</div>
+        </div>
+      </div>
+    )}
+    
+    <!-- LightGallery -->
+    <a href={finalSrc} 
+       data-src={finalSrc} 
+       data-lg-size="1600-2400" 
+       data-sub-html={alt}
+       class="lightgallery-link">
+      <img 
+        src={finalSrc} 
+        alt={alt}
+        title={alt}
+        loading="lazy"
+        class="img-main"
+        data-exif-url={exifUrl ? exifUrl + "?exif" : undefined}
+        data-show-exif={shouldShowExif} />
+    </a>
+    
+    <!-- 标签 -->
+    {caption && (
+      <figcaption class={`img-caption caption-${caption === 'long' ? 'bar' : 'tag'}`}>
+        <span class="caption-text">{alt}</span>
+      </figcaption>
+    )}
+  </div>
+</figure>
+
+<script is:inline>
+function initLightGallery() {
+  // 全局初始化
+  const galleryContainer = document.body;
+  
+  // 销毁
+  if (galleryContainer.lightGalleryInstance) {
+    galleryContainer.lightGalleryInstance.destroy();
+  }
+  
+  galleryContainer.lightGalleryInstance = window.lightGallery(galleryContainer, {
+    selector: '.lightgallery-wrapper > a',
+    subHtmlSelectorRelative: true,
+    mousewheel: true,
+    download: false,
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initLightGallery);
+document.addEventListener('astro:page-load', initLightGallery);
+</script>
+```
+
+<Img
+  src="moon-8579189.jpg"
+  alt="Canon EOS R7 RF100-400mm F5.6-8 IS USM 400.0mm · ƒ/8.0 · 1/200s · ISO 800 © Michael Kleinsasser"
+  exif={false}
+/>
+
+经过这段时间的调教，博客插入图片较为人性化了，只需要输入文件名，它会自动处理路径
+
+- 图片统一路径：cos + slug + name
+
+```html
+<Img
+  src="moon-8579189.jpg"
+  alt="Canon EOS R7 RF100-400mm F5.6-8 IS USM 400.0mm · ƒ/8.0 · 1/200s · ISO 800 © Michael Kleinsasser"
+  exif={false}
+/>
+```
+
+感觉还有进一步优化的空间，如果抛弃键值对，直接按照顺序传参，想必最简洁不过了
+
+ - 图片 URL
+ - 图片描述
+ - EXIF（Boolean）
+ - 标签（Boolean）
+
+```html
+<IMG 
+  "moon-8579189.jpg"
+  "Canon EOS R7 RF100-400mm F5.6-8 IS USM 400.0mm · ƒ/8.0 · 1/200s · ISO 800 © Michael Kleinsasser"
+  "false"
+  "false"
+>
+```
+
+有时候想想也是，看似隐式优于显式想法，实际上和过去接手的屎山一样，可读性极差，别人一眼看过去，完全不知道：`"false" "false"`代表啥。说到底，屎山并不是一行行代码堆出来的，而是“偷懒”习惯养成的。
+
+
+## help
+
+- [LightGallery docs](https://www.lightgalleryjs.com/docs/getting-started/)

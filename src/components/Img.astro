@@ -19,13 +19,13 @@ const { src, alt, class: className, style, caption = "long", exif = true, showEx
 // 自动获取 slug 的改进版本
 const getFrontmatterSlug = (): string | undefined => {
   try {
-    // 方法1: 尝试从 Astro.props 中获取 frontmatter
+    // 尝试从 Astro.props 中获取 frontmatter
     const frontmatter = (Astro as any).props?.frontmatter || (Astro as any).frontmatter;
     if (frontmatter?.slug) {
       return frontmatter.slug;
     }
     
-    // 方法2: 尝试从 URL 路径中提取 slug
+    // 尝试从 URL 路径中提取 slug
     const pathname = Astro.url.pathname;
     const pathSegments = pathname.split('/').filter(Boolean);
     if (pathSegments.length > 0) {
@@ -82,21 +82,7 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
 ---
 
 <figure class={`img-container ${className || ''}`} style={style}>
-  <div class="img-wrapper">
-    <img 
-      src={finalSrc} 
-      alt={alt} 
-      title={alt} 
-      loading="lazy" 
-      class="img-main" 
-      data-exif-url={exifUrl ? exifUrl + "?exif" : undefined}
-      data-show-exif={shouldShowExif}
-    />
-    {caption && (
-      <figcaption class={`img-caption caption-${caption === 'long' ? 'bar' : 'tag'}`}>
-        <span class="caption-text">{alt}</span>
-      </figcaption>
-    )}
+  <div class="img-wrapper lightgallery-wrapper">
     {shouldShowExif && (
       <div class="exif-tooltip" data-exif-tooltip>
         <div class="exif-content">
@@ -104,8 +90,47 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
         </div>
       </div>
     )}
+    
+    <a href={finalSrc} 
+       data-src={finalSrc} 
+       data-lg-size="1600-2400" 
+       data-sub-html={alt}
+       class="lightgallery-link">
+      <img 
+      src={finalSrc} 
+      alt={alt}
+      title={alt}
+      loading="lazy"
+      class="img-main"
+      data-exif-url={exifUrl ? exifUrl + "?exif" : undefined}
+      data-show-exif={shouldShowExif} />
+    </a>
+    
+    {caption && (
+    <figcaption class={`img-caption caption-${caption === 'long' ? 'bar' : 'tag'}`}>
+      <span class="caption-text">{alt}</span>
+      </figcaption>
+    )}
   </div>
 </figure>
+
+<script is:inline>
+function initLightGallery() {
+  const galleryContainer = document.body;
+  if (galleryContainer.lightGalleryInstance) {
+      galleryContainer.lightGalleryInstance.destroy();
+  }
+  
+  galleryContainer.lightGalleryInstance = window.lightGallery(galleryContainer, {
+      selector: '.lightgallery-wrapper > a',
+      subHtmlSelectorRelative: true,
+      mousewheel: true,
+      download: false,
+  });
+}
+document.addEventListener('DOMContentLoaded', initLightGallery);
+document.addEventListener('astro:page-load', initLightGallery);
+</script>
 
 <script>
   interface ExifData {
@@ -336,7 +361,7 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
     
     images.forEach((img) => {
       const exifUrl = img.getAttribute('data-exif-url');
-      const tooltip = img.parentElement?.querySelector('[data-exif-tooltip]') as HTMLElement;
+      const tooltip = img.closest('.img-wrapper')?.querySelector('[data-exif-tooltip]') as HTMLElement;
       
       if (!tooltip) return;
 
@@ -396,8 +421,16 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
         }
       };
 
+      // 为图片和包装器都添加事件监听器
+      const imgWrapper = img.closest('.img-wrapper');
+      
       img.addEventListener('mouseenter', showTooltip);
       img.addEventListener('mouseleave', hideTooltip);
+      
+      if (imgWrapper) {
+        imgWrapper.addEventListener('mouseenter', showTooltip);
+        imgWrapper.addEventListener('mouseleave', hideTooltip);
+      }
       
       // 鼠标进入工具提示区域时取消隐藏
       tooltip.addEventListener('mouseenter', cancelHide);
@@ -408,18 +441,16 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
       let touchStartY = 0;
       let touchStartTime = 0;
 
-      img.addEventListener('touchstart', (e) => {
+      const handleTouchStart = (e: TouchEvent) => {
         // 记录触摸开始的位置和时间，不阻止默认滚动行为
-        const touchEvent = e as TouchEvent;
-        const touch = touchEvent.touches[0];
+        const touch = e.touches[0];
         touchStartX = touch.clientX;
         touchStartY = touch.clientY;
         touchStartTime = Date.now();
-      });
+      };
 
-      img.addEventListener('touchend', (e) => {
-        const touchEvent = e as TouchEvent;
-        const touch = touchEvent.changedTouches[0];
+      const handleTouchEnd = (e: TouchEvent) => {
+        const touch = e.changedTouches[0];
         const touchEndX = touch.clientX;
         const touchEndY = touch.clientY;
         const touchEndTime = Date.now();
@@ -440,7 +471,15 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
             tooltip.classList.remove('show');
           }, 3000); // Auto hide after 3 seconds on touch
         }
-      });
+      };
+
+      img.addEventListener('touchstart', handleTouchStart);
+      img.addEventListener('touchend', handleTouchEnd);
+      
+      if (imgWrapper) {
+        imgWrapper.addEventListener('touchstart', handleTouchStart);
+        imgWrapper.addEventListener('touchend', handleTouchEnd);
+      }
     });
   }
 
@@ -550,7 +589,7 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
     visibility: hidden;
     transform: translateY(-100%);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 10;
+    z-index: 20;
     pointer-events: none;
   }
 

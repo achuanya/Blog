@@ -15,6 +15,7 @@ import { slugifyStr } from "@/utils/slugify";
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
 import { SITE } from "@/config";
+import 'lightgallery.js/dist/css/lightgallery.css';
 
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -166,6 +167,7 @@ const nextPost =
       }
     </div>
     <br />
+    <script is:inline src="https://cos.lhasa.icu/assets/lightgalleryjs/lightgallery.min.js"></script>
     <div id="Comments"></div>
   </main>
   <Footer />
