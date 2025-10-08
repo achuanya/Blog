@@ -108,6 +108,8 @@ export default defineConfig({
     server: {
       // 允许的主机名
       allowedHosts: ["lhasa.icu"],
+      // 允许外部设备访问
+      host: "0.0.0.0",
     },
     
     // 全局常量

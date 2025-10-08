@@ -225,6 +225,9 @@ document.addEventListener('astro:page-load', initLightGallery);
         deviceName = "Samsung Galaxy S23 Ultra";
       }
       settings.push(deviceName);
+    } else {
+      // 如果找不到设备型号，默认为 Xiaomi 15
+      settings.push("Xiaomi 15");
     }
 
     if (settings.length >= 6) {
@@ -285,6 +288,7 @@ document.addEventListener('astro:page-load', initLightGallery);
     const focalLengths = ['24', '35', '50', '85', '135'];
     const devices = [
       'Samsung Galaxy S23 Ultra',
+      'Xiaomi 15',
     ];
 
     const aperture = apertures[hash % apertures.length];

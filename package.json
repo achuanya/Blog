@@ -3,7 +3,7 @@
   "type": "module",
   "version": "5.5.0",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "astro dev --host 0.0.0.0",
     "build": "astro check && astro build && pagefind --site dist && cp -r dist/pagefind public/",
     "build:auth": "astro check && astro build && pagefind --site dist && cp -r dist/pagefind public/ && node scripts/cdn-auth-modular.js",
     "cdn:auth": "node scripts/cdn-auth-modular.js",
