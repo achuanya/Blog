@@ -68,7 +68,7 @@ function createFeedCardHTML(item, siteTimezone, fallbackOgImageGlobal) {
   const description = `By ${item.blog_name}`;
   const shortDescription = description.length > 40 ? description.substring(0, 40) + "..." : description;
 
-  const defaultImageClass = "w-[76px] sm:w-[81.78px] h-auto object-cover rounded-md aspect-square group-hover:opacity-90 transition-opacity duration-300";
+  const defaultImageClass = "w-[76px] sm:w-[50px] h-auto object-cover rounded-md aspect-square group-hover:opacity-90 transition-opacity duration-300";
 
   let imgSrc = item.avatar || '';
   if ((!imgSrc || imgSrc.trim() === "") && fallbackOgImageGlobal) {
@@ -78,9 +78,9 @@ function createFeedCardHTML(item, siteTimezone, fallbackOgImageGlobal) {
   const onerrorHandler = fallbackOgImageGlobal ? `this.onerror=null; this.src='${fallbackOgImageGlobal}';` : '';
 
   return `
-    <li class="my-6 flex flex-row gap-6 items-start">
+    <li class="my-6 grid grid-cols-[auto_1fr] items-center gap-4">
       ${imgSrc ? `
-        <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="shrink-0 mx-auto my-auto">
+        <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="shrink-0">
           <img
             src="${imgSrc}"
             alt="${item.title}"
@@ -90,17 +90,17 @@ function createFeedCardHTML(item, siteTimezone, fallbackOgImageGlobal) {
           />
         </a>
       ` : ''}
-      <div class="flex-grow">
+      <div>
         <a
           href="${item.link}" target="_blank" rel="noopener noreferrer"
           class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 focus-visible:no-underline focus-visible:underline-offset-0"
         >
           <h3 class="text-lg font-medium decoration-dashed hover:underline">${item.title}</h3>
         </a>
-        <div class="flex items-end space-x-2 opacity-80 mt-1">
+        <div class="flex items-center gap-x-2 opacity-80">
           ${calendarIconSvg}
           <span class="sr-only">Published:</span>
-          <span class="text-sm italic">
+          <span class="text-sm">
             <time datetime="${isoTimestamp}">${displayDate}</time>
             ${displayTime ? `
             <span aria-hidden="true"> | </span>
@@ -109,9 +109,6 @@ function createFeedCardHTML(item, siteTimezone, fallbackOgImageGlobal) {
             ` : ''}
           </span>
         </div>
-        <p class="mt-2 text-sm text-gray-700 dark:text-gray-300 hidden sm:block">
-          ${shortDescription}
-        </p>
       </div>
     </li>
   `;
@@ -204,4 +201,4 @@ export async function initFeeds(siteTimezone, fallbackOgImageGlobal, initialItem
   }
 
   await fetchFeeds();
-} 
+}
