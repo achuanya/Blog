@@ -1,0 +1,79 @@
+<section class="mx-auto w-full max-w-app px-4 pb-6">
+  <div class="flex gap-0.5 sm:gap-1">
+    <!-- 左侧大图占位 -->
+    <div class="relative w-[60%] sm:flex-1 min-w-0" style="aspect-ratio: 3 / 2;">
+      <div class="absolute inset-0 overflow-hidden lightgallery-wrapper">
+        <a href="https://cos.lhasa.icu/ArticlePictures/2025-10-9-double-ride-beiyu-line/20251008232441_299_266.jpg" 
+           data-src="https://cos.lhasa.icu/ArticlePictures/2025-10-9-double-ride-beiyu-line/20251008232441_299_266.jpg" 
+           data-lg-size="1600-2400" 
+           data-sub-html="傍晚时的柏峰水库"
+           class="lightgallery-link block h-full w-full">
+          <img class="h-full w-full object-cover" src="https://cos.lhasa.icu/ArticlePictures/2025-10-9-double-ride-beiyu-line/20251008232441_299_266.jpg" alt="双骑北峪线精彩瞬间">
+        </a>
+      </div>
+    </div>
+
+    <!-- 右侧四宫格占位 -->
+    <div class="grid w-[40%] sm:w-[45%] sm:min-w-[220px] grid-cols-2 grid-rows-2 gap-0.5 sm:gap-1">
+      <div class="relative overflow-hidden lightgallery-wrapper" style="aspect-ratio: 1 / 1;">
+        <a href="https://cos.lhasa.icu/ArticlePictures/dragon-boat-cycling-beiyuxian/202505311954481.jpg" 
+           data-src="https://cos.lhasa.icu/ArticlePictures/dragon-boat-cycling-beiyuxian/202505311954481.jpg" 
+           data-lg-size="1600-2400" 
+           data-sub-html="端午骑行：柏峰水库"
+           class="lightgallery-link block h-full w-full">
+          <img class="h-full w-full object-cover" src="https://cos.lhasa.icu/ArticlePictures/dragon-boat-cycling-beiyuxian/202505311954481.jpg" alt="端午骑行北峪县">
+        </a>
+      </div>
+      <div class="relative overflow-hidden lightgallery-wrapper" style="aspect-ratio: 1 / 1;">
+        <a href="https://cos.lhasa.icu/ArticlePictures/RidingRecordOne/qixingfu.jpg" 
+           data-src="https://cos.lhasa.icu/ArticlePictures/RidingRecordOne/qixingfu.jpg" 
+           data-lg-size="1600-2400" 
+           data-sub-html="PAS NORMAL STUDIOS Essential Jersey XS"
+           class="lightgallery-link block h-full w-full">
+          <img class="h-full w-full object-cover" src="https://cos.lhasa.icu/ArticlePictures/RidingRecordOne/qixingfu.jpg" alt="骑行记录 - 七星福">
+        </a>
+      </div>
+      <div class="relative overflow-hidden lightgallery-wrapper" style="aspect-ratio: 1 / 1;">
+        <a href="https://cos.lhasa.icu/ArticlePictures/rain-ride-scarlet-maple/20250524003018.jpg" 
+           data-src="https://cos.lhasa.icu/ArticlePictures/rain-ride-scarlet-maple/20250524003018.jpg" 
+           data-lg-size="1600-2400" 
+           data-sub-html="枫赤线上面的盘山公路"
+           class="lightgallery-link block h-full w-full">
+          <img class="h-full w-full object-cover" src="https://cos.lhasa.icu/ArticlePictures/rain-ride-scarlet-maple/20250524003018.jpg" alt="雨骑红枫叶">
+        </a>
+      </div>
+      <div class="relative overflow-hidden lightgallery-wrapper" style="aspect-ratio: 1 / 1;">
+        <a href="https://cos.lhasa.icu/ArticlePictures/RidingRecordOne/zhuangbei1.jpg" 
+           data-src="https://cos.lhasa.icu/ArticlePictures/RidingRecordOne/zhuangbei1.jpg" 
+           data-lg-size="1600-2400" 
+           data-sub-html="军火展示"
+           class="lightgallery-link block h-full w-full">
+          <img class="h-full w-full object-cover" src="https://cos.lhasa.icu/ArticlePictures/RidingRecordOne/zhuangbei1.jpg" alt="骑行装备展示">
+        </a>
+        <!-- 蒙版 -->
+        <!-- <div class="absolute inset-0 bg-black/40"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="text-sm sm:px-4 sm:py-2 sm:text-xl font-semibold text-foreground">+18</span>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+function initSportsLightGallery() {
+  const galleryContainer = document.body;
+  if (galleryContainer.lightGalleryInstance) {
+      galleryContainer.lightGalleryInstance.destroy();
+  }
+  
+  galleryContainer.lightGalleryInstance = window.lightGallery(galleryContainer, {
+      selector: '.lightgallery-wrapper > a',
+      subHtmlSelectorRelative: true,
+      mousewheel: true,
+      download: false,
+  });
+}
+document.addEventListener('DOMContentLoaded', initSportsLightGallery);
+document.addEventListener('astro:page-load', initSportsLightGallery);
+</script>

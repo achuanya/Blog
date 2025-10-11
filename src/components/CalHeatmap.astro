@@ -1,0 +1,531 @@
+<!-- 热力图容器 - 响应式布局，最大宽度限制，居中显示 -->
+<div class="w-full max-w-3xl mx-auto py-2 px-4">
+  <!-- 热力图渲染容器 -->
+  <div id="cal-heatmap" class="w-full"></div>
+  <!-- 加载状态提示 -->
+  <div id="loading" class="text-center text-gray-500 py-4">Loading sports data...</div>
+</div>
+
+<script is:inline data-astro-rerun>
+  // Cal-Heatmap 组件 - 支持 Astro 客户端导航和主题切换
+  (function () {
+    // 单例模式存储 Cal-Heatmap 实例
+    window.calHeatmapInstance = window.calHeatmapInstance || null;
+    // 存储当前主题
+    window.calHeatmapCurrentTheme = window.calHeatmapCurrentTheme || null;
+
+    /**
+     * 检测当前主题
+     * @returns {string} 'light' 或 'dark'
+     */
+    function detectTheme() {
+      // 检查 HTML 元素的 data-theme 属性
+      const htmlElement = document.documentElement;
+      const dataTheme = htmlElement.getAttribute('data-theme');
+      
+      if (dataTheme === 'dark' || dataTheme === 'light') {
+        return dataTheme;
+      }
+      
+      // 检查 body 或 html 的 class
+      if (htmlElement.classList.contains('dark') || document.body.classList.contains('dark')) {
+        return 'dark';
+      }
+      
+      // 检查 CSS 媒体查询
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+      
+      return 'light';
+    }
+
+    /**
+     * 获取主题配色方案
+     * @param {string} theme - 主题名称 ('light' and 'dark')
+     * @returns {Object} 配色方案对象
+     */
+    function getThemeColorScheme(theme) {
+      if (theme === 'dark') {
+        // Dark 主题 - 橙色配色方案
+        return {
+          type: 'threshold',
+          range: ['#ffffcc', '#fff2b3', '#ffe199', '#ffd080', '#ffbf66', '#ffae4d', '#ff9d33', '#ff8c1a', '#ff7b00', '#2d1b0e'],
+          domain: [0, 20, 40, 60, 80, 100, 150, 200, 250, 300]
+        };
+      } else {
+        // Light 主题 - 蓝色配色方案
+        return {
+          type: 'threshold',
+          range: ['#f0f9ff', '#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8', '#0ea5e9', '#0284c7', '#0369a1', '#075985', '#0c4a6e'],
+          domain: [0, 20, 40, 60, 80, 100, 150, 200, 250, 300]
+        };
+      }
+    }
+
+    /**
+     * 获取骑行文章数据
+     * @returns {Promise<Array>} 骑行文章数据数组
+     */
+    async function fetchSportsArticles() {
+      try {
+        const response = await fetch('/data/sports-articles.json');
+        const data = await response.json();
+        return data.articles || [];
+      } catch (error) {
+        console.error('Error fetching sports articles:', error);
+        return [];
+      }
+    }
+
+    /**
+     * 获取 Strava 运动数据
+     * @returns {Promise<Array>} 处理后的运动数据数组
+     */
+    async function fetchStravaData() {
+      try {
+        // 从远程API获取原始运动数据（已经是转换过的数据）
+        const response = await fetch('https://cos.lhasa.icu/assets/strava_data.json');
+        const data = await response.json();
+        
+        const processedData = [];    // 处理后的数据数组
+        const dailyTotals = {};      // 按日期聚合的距离总计
+        const dailyDetails = {};     // 按日期聚合的详细数据
+        
+        // 遍历所有运动记录，按日期聚合数据
+        data.forEach(activity => {
+          const date = activity.start_date_local;  // 获取运动日期（本地时间）
+          const distance = activity.distance || 0; // 获取运动距离，默认为0
+          
+          // 累加同一天的运动距离
+          if (dailyTotals[date]) {
+            dailyTotals[date] += distance;
+          } else {
+            dailyTotals[date] = distance;
+          }
+          
+          // 聚合同一天的详细数据
+          if (!dailyDetails[date]) {
+            dailyDetails[date] = {
+              activities: [],
+              totalDistance: 0,
+              totalMovingTime: 0,
+              totalElapsedTime: 0,
+              totalElevationGain: 0,
+              totalCalories: 0,
+              maxSpeed: 0,
+              maxHeartRate: 0,
+              heartRateSum: 0,
+              heartRateCount: 0,
+              speedSum: 0,
+              speedCount: 0
+            };
+          }
+          
+          const dayData = dailyDetails[date];
+          dayData.activities.push(activity);
+          dayData.totalDistance += distance;
+          
+          // 处理时间格式 - 如果是字符串格式 "HH.MM"，转换为分钟数
+          let movingTimeMinutes = 0;
+          if (typeof activity.moving_time === 'string' && activity.moving_time.includes('.')) {
+            const [hours, minutes] = activity.moving_time.split('.');
+            movingTimeMinutes = parseInt(hours) * 60 + parseInt(minutes);
+          } else {
+            movingTimeMinutes = activity.moving_time || 0;
+          }
+          
+          let elapsedTimeMinutes = 0;
+          if (typeof activity.elapsed_time === 'string' && activity.elapsed_time.includes('.')) {
+            const [hours, minutes] = activity.elapsed_time.split('.');
+            elapsedTimeMinutes = parseInt(hours) * 60 + parseInt(minutes);
+          } else {
+            elapsedTimeMinutes = activity.elapsed_time || 0;
+          }
+          
+          dayData.totalMovingTime += movingTimeMinutes;
+          dayData.totalElapsedTime += elapsedTimeMinutes;
+          dayData.totalElevationGain += activity.total_elevation_gain || 0;
+          dayData.totalCalories += activity.kilojoules || 0;
+          
+          if (activity.max_speed && activity.max_speed > dayData.maxSpeed) {
+            dayData.maxSpeed = activity.max_speed;
+          }
+          if (activity.max_heartrate && activity.max_heartrate > dayData.maxHeartRate) {
+            dayData.maxHeartRate = activity.max_heartrate;
+          }
+          if (activity.average_heartrate) {
+            dayData.heartRateSum += activity.average_heartrate;
+            dayData.heartRateCount++;
+          }
+          if (activity.average_speed) {
+            dayData.speedSum += activity.average_speed;
+            dayData.speedCount++;
+          }
+        });
+        
+        // 将聚合后的数据转换为热力图所需格式（直接使用原始数据，只添加单位符号）
+        Object.entries(dailyTotals).forEach(([date, distance]) => {
+          const details = dailyDetails[date];
+          processedData.push({
+            date: date,                              // 日期
+            value: distance,                         // 距离（直接使用原始数据）
+            details: {
+              date: date,
+              distance: details.totalDistance,       // 距离（m）
+              duration: details.totalMovingTime,     // 时间（分钟）
+              elapsedTime: details.totalElapsedTime, // 总时间（分钟）
+              averageSpeed: details.speedCount > 0 ? details.speedSum / details.speedCount : 0, // 平均速度（m/s）
+              maxSpeed: details.maxSpeed,            // 最大速度（m/s）
+              totalElevationGain: details.totalElevationGain, // 爬升（m）
+              averageHeartRate: details.heartRateCount > 0 ? details.heartRateSum / details.heartRateCount : 0, // 平均心率（bpm）
+              maxHeartRate: details.maxHeartRate,    // 最大心率（bpm）
+              calories: details.totalCalories        // 卡路里（kcal）
+            }
+          });
+        });
+        
+        return processedData;
+      } catch (error) {
+        console.error('Error fetching Strava data:', error);
+        return [];  // 出错时返回空数组
+      }
+    }
+
+    /**
+     * 销毁 Cal-Heatmap 实例
+     */
+    function destroyCalHeatmap() {
+      if (window.calHeatmapInstance) {
+        try {
+          // 清理 Cal-Heatmap 实例
+          if (typeof window.calHeatmapInstance.destroy === 'function') {
+            window.calHeatmapInstance.destroy();
+          }
+          
+          // 清理容器内容
+          const container = document.getElementById('cal-heatmap');
+          if (container) {
+            container.innerHTML = '';
+          }
+          
+          // 清理全局变量
+          window.calHeatmapInstance = null;
+          window.calHeatmapCurrentTheme = null;
+          
+          console.log('Cal-Heatmap 实例已销毁');
+        } catch (err) {
+          console.error('销毁 Cal-Heatmap 实例失败:', err);
+          // 强制清理容器
+          const container = document.getElementById('cal-heatmap');
+          if (container) {
+            container.innerHTML = '';
+          }
+          window.calHeatmapInstance = null;
+          window.calHeatmapCurrentTheme = null;
+        }
+      }
+    }
+
+    /**
+     * 初始化 Cal-Heatmap 实例
+     */
+    async function initCalHeatmap() {
+      const container = document.getElementById('cal-heatmap');
+      const loadingElement = document.getElementById('loading');
+      
+      if (!container) {
+        console.warn('Cal-Heatmap 容器未找到');
+        return;
+      }
+
+      // 检测当前主题
+      const currentTheme = detectTheme();
+      
+      // 如果容器已经包含热力图实例且主题未变化，跳过初始化
+      if (container.querySelector('.ch-container') && window.calHeatmapCurrentTheme === currentTheme) {
+        console.log('Cal-Heatmap 实例已存在且主题未变化，跳过初始化');
+        return;
+      }
+
+      // 如果主题发生变化，先销毁旧实例
+      if (window.calHeatmapCurrentTheme && window.calHeatmapCurrentTheme !== currentTheme) {
+        console.log(`主题从 ${window.calHeatmapCurrentTheme} 切换到 ${currentTheme}，重新初始化`);
+        destroyCalHeatmap();
+      }
+
+      try {
+        // 显示加载状态
+        if (loadingElement) {
+          loadingElement.style.display = 'block';
+          loadingElement.textContent = 'Loading sports data...';
+        }
+
+        // 使用全局加载的 Cal-Heatmap 和 Tooltip 插件
+         const CalHeatmap = window.CalHeatmap;
+         const Tooltip = window.Tooltip;
+
+         // 检查资源是否已加载
+          if (!CalHeatmap || !Tooltip) {
+            console.error('Cal-Heatmap 或 Tooltip 插件未正确加载');
+            return;
+          }
+
+          // CSS 样式已在页面级别静态加载，无需动态添加
+
+        // 获取处理后的运动数据和骑行文章数据
+        const stravaData = await fetchStravaData();
+        const sportsArticles = await fetchSportsArticles();
+        
+        // 获取当前主题的配色方案
+        const colorScheme = getThemeColorScheme(currentTheme);
+        
+        // 创建 Cal-Heatmap 实例
+        const cal = new CalHeatmap();
+        
+        // 渲染热力图配置
+        await cal.paint({
+          range: 1,                    // 显示范围：1年
+          itemSelector: '#cal-heatmap', // 渲染容器选择器
+          theme: currentTheme,         // 设置主题
+          
+          // 数据配置
+          data: {
+            source: stravaData,        // 数据源
+            x: 'date',                 // X轴字段（日期）
+            y: 'value'                 // Y轴字段（数值）
+          },
+          
+          // 主域配置（年）
+          domain: {
+            type: 'year',              // 域类型：年
+            gutter: 10,                // 间距
+            label: { text: null }      // 不显示标签
+          },
+          
+          // 子域配置（日）
+          subDomain: {
+            type: 'day',               // 子域类型：日
+            width: 11.5,                 // 宽度
+            height: 11.5,                // 高度
+            radius: 3,                 // 圆角
+            gutter: 2.4,                 // 间距
+          },
+          
+          // 日期配置
+          date: {
+            highlight: [
+              new Date(),              // 高亮今天
+            ],
+          },
+          
+          // 颜色比例配置 - 根据主题动态设置
+          scale: {
+            color: colorScheme
+          }
+        }, [
+          // 添加 Tooltip 插件配置
+          [
+            Tooltip,
+            {
+              text: function(timestamp, value, dayjsDate) {
+              // 查找对应日期的详细数据
+              const dateStr = dayjsDate.format('YYYY-MM-DD');
+              const dataPoint = stravaData.find(d => d.date === dateStr);
+              
+              // 如果没有运动数据，则不显示 tooltip
+              if (!dataPoint || !dataPoint.details) {
+                return null;
+              }
+              
+              const details = dataPoint.details;
+              
+              // 查找一周内的骑行文章
+              const currentDate = new Date(dateStr);
+              const oneWeekAgo = new Date(currentDate);
+              oneWeekAgo.setDate(currentDate.getDate() - 7);
+              
+              const weeklyArticles = sportsArticles.filter(article => {
+                const articleDate = new Date(article.date);
+                return articleDate >= oneWeekAgo && articleDate <= currentDate;
+              }).sort((a, b) => new Date(b.date) - new Date(a.date)); // 按日期倒序排列
+              
+              // 根据主题设置tooltip样式变量
+              const theme = detectTheme();
+              const tooltipVars = theme === 'dark' ? {
+                '--tooltip-bg': 'var(--tooltip-bg)',
+                '--tooltip-title': 'var(--tooltip-title)',
+                '--tooltip-divider': 'var(--tooltip-divider)',
+                '--tooltip-param-name': 'var(--tooltip-param-name)',
+                '--tooltip-param-value': 'var(--tooltip-param-value)',
+                '--tooltip-article-title': 'var(--tooltip-article-title)'
+              } : {
+                '--tooltip-bg': 'var(--tooltip-bg)',
+                '--tooltip-title': 'var(--tooltip-title)',
+                '--tooltip-divider': 'var(--tooltip-divider)',
+                '--tooltip-param-name': 'var(--tooltip-param-name)',
+                '--tooltip-param-value': 'var(--tooltip-param-value)',
+                '--tooltip-article-title': 'var(--tooltip-article-title)'
+              };
+              
+              return `<div class="px-3 py-2.5" style="${Object.entries(tooltipVars).map(([key, value]) => `${key}: ${value}`).join('; ')};">
+                <div class="font-semibold text-sm mb-2 pb-1.5 border-b" style="color: var(--tooltip-title); border-color: var(--tooltip-divider);">${dayjsDate.format('YYYY年MM月DD日')}</div>
+                <div class="flex justify-between items-center mb-1.5 py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">距离:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${details.distance} km</span>
+                </div>
+                <div class="flex justify-between items-center mb-1.5 py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">用时:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${Math.floor(details.duration / 60)}h ${details.duration % 60}m</span>
+                </div>
+                <div class="flex justify-between items-center mb-1.5 py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">平均速度:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${details.averageSpeed.toFixed(1)} km/h</span>
+                </div>
+                <div class="flex justify-between items-center mb-1.5 py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">最高速度:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${details.maxSpeed.toFixed(1)} km/h</span>
+                </div>
+                <div class="flex justify-between items-center mb-1.5 py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">总爬升:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${Math.round(details.totalElevationGain)} m</span>
+                </div>
+                ${details.averageHeartRate > 0 ? `
+                <div class="flex justify-between items-center mb-1.5 py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">平均心率:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${Math.round(details.averageHeartRate)} bpm</span>
+                </div>` : ''}
+                ${details.maxHeartRate > 0 ? `
+                <div class="flex justify-between items-center mb-1.5 py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">最高心率:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${details.maxHeartRate} bpm</span>
+                </div>` : ''}
+                ${details.calories > 0 ? `
+                <div class="flex justify-between items-center py-0.5">
+                  <span class="font-medium min-w-20 text-left" style="color: var(--tooltip-param-name);">卡路里:</span>
+                  <span class="font-semibold text-right ml-3" style="color: var(--tooltip-param-value);">${Math.round(details.calories)} cal</span>
+                </div>` : ''}
+                ${weeklyArticles.length > 0 ? `
+                <div class="mt-2.5 pt-2.5 border-t" style="border-color: var(--tooltip-divider);">
+                  ${weeklyArticles.slice(0, 3).map(article => `
+                    <div class="mb-1.5 last:mb-0">
+                      <div class="font-medium text-sm leading-relaxed" style="color: var(--tooltip-article-title);">${article.title}</div>
+                    </div>
+                  `).join('')}
+                  ${weeklyArticles.length > 3 ? `
+                  ` : ''}
+                </div>` : ''}
+              </div>`;
+            }
+            }
+          ]
+        ]);
+
+        // 存储实例引用和当前主题
+        window.calHeatmapInstance = cal;
+        window.calHeatmapCurrentTheme = currentTheme;
+        
+        // 隐藏加载提示
+        if (loadingElement) {
+          loadingElement.style.display = 'none';
+        }
+        
+        console.log(`Cal-Heatmap 初始化完成，当前主题: ${currentTheme}`);
+        
+      } catch (error) {
+        console.error('Cal-Heatmap 初始化失败:', error);
+        // 显示错误信息
+        if (loadingElement) {
+          loadingElement.textContent = 'Error loading sports data';
+          loadingElement.style.color = '#ef4444';
+        }
+      }
+    }
+
+    /**
+     * 检查主题是否发生变化并重新初始化
+     */
+    function checkThemeChange() {
+      const currentTheme = detectTheme();
+      if (window.calHeatmapCurrentTheme && window.calHeatmapCurrentTheme !== currentTheme) {
+        console.log(`检测到主题变化: ${window.calHeatmapCurrentTheme} -> ${currentTheme}`);
+        initCalHeatmap();
+      }
+    }
+
+    /**
+     * 页面加载处理
+     */
+    function handlePageLoad() {
+      console.log('Cal-Heatmap 页面加载处理开始');
+      
+      // 先销毁旧实例
+      destroyCalHeatmap();
+      
+      // 检查是否存在热力图容器
+      const container = document.getElementById('cal-heatmap');
+      if (container && container.offsetParent !== null) {
+        // 等待 DOM 稳定后初始化
+        setTimeout(() => {
+          initCalHeatmap();
+        }, 200);
+      }
+    }
+
+    /**
+     * 页面切换前清理
+     */
+    function handleBeforeSwap() {
+      console.log('Cal-Heatmap 页面切换前清理');
+      destroyCalHeatmap();
+    }
+
+    /**
+     * 单次设置事件监听
+     */
+    function setupCalHeatmap() {
+      if (window._calHeatmapInitialized) return;
+      window._calHeatmapInitialized = true;
+
+      // 页面切换事件
+      document.addEventListener('astro:before-swap', handleBeforeSwap);
+      document.addEventListener('astro:after-swap', handlePageLoad);
+
+      // 主题变化监听
+      if (window.matchMedia) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', checkThemeChange);
+      }
+
+      // 监听DOM变化以检测主题切换
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && 
+              (mutation.attributeName === 'data-theme' || mutation.attributeName === 'class')) {
+            checkThemeChange();
+          }
+        });
+      });
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme', 'class']
+      });
+
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+
+      // 初始加载
+      if (document.readyState === 'complete') {
+        handlePageLoad();
+      } else {
+        document.addEventListener('DOMContentLoaded', handlePageLoad);
+      }
+    }
+
+    // 启动 Cal-Heatmap
+    setupCalHeatmap();
+  })();
+</script>

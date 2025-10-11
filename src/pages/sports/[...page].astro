@@ -7,7 +7,9 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Card from "@/components/Card.astro";
 import Pagination from "@/components/Pagination.astro";
-import Sports from "@/components/Sports.astro";
+// import Sports from "@/components/Sports.astro";
+import SportsPlaceholder from "@/components/SportsPlaceholder.astro";
+import CalHeatmap from "@/components/CalHeatmap.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
 import { SITE } from "@/config";
 
@@ -22,8 +24,22 @@ const { page } = Astro.props;
 ---
 
 <Layout title={`Sports | ${SITE.title}`}>
+  <!-- LightGallery 灯箱 - 仅在 Sports 页面加载 -->
+  <link slot="head" href="https://cos.lhasa.icu/assets/lightgalleryjs/lightgallery.min.css" rel="stylesheet" />
+  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/lightgalleryjs/lightgallery.min.js"></script>
+  
+  <!-- Cal-Heatmap 资源 - 静态加载 -->
+  <link slot="head" href="https://cos.lhasa.icu/assets/cal-heatmap/cal-heatmap.css" rel="stylesheet" />
+  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/d3.v7.min.js"></script>
+  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/cal-heatmap.min.js"></script>
+  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/popper.min.js"></script>
+  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/Tooltip.min.js"></script>
+  
   <Header />
-  <Sports />
+  <!-- <Sports /> -->
+  <SportsPlaceholder />
+  <CalHeatmap />
+  
   <Main pageTitle="Sports" pageDesc="">
     <ul>
       {page.data.map(data => <Card {...data} />)}

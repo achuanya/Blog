@@ -147,6 +147,9 @@ const structuredData = {
     <ClientRouter />
     <script is:inline src="/toggle-theme.js"></script>
     
+    <!-- 页面特定的 head 内容 -->
+    <slot name="head" />
+    
     <!-- Artalk 评论系统 -->
     <link href="https://cos.lhasa.icu/assets/artalk/Artalk.css" rel="stylesheet" />
     <script is:inline src="https://cos.lhasa.icu/assets/artalk/Artalk.js"></script>

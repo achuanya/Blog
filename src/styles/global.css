@@ -8,30 +8,50 @@
 /* 浅色主题颜色变量定义 */
 :root,
 html[data-theme="light"] {
-  --background: #fdfdfd;    /* 背景色 - 浅灰白 */
-  --foreground: #282728;    /* 前景色（文字） - 深灰 */
-  --accent: #006cac;        /* 强调色 - 蓝色 */
-  --muted: #e6e6e6;         /* 静音色（次要元素） - 浅灰 */
-  --border: #ece9e9;        /* 边框色 - 浅灰 */
+  --background: #fdfdfd;    /* 背景色 */
+  --foreground: #282728;    /* 前景色（文字）*/
+  --accent: #006cac;        /* 强调色 */
+  --muted: #e6e6e6;         /* 静音色（次要元素） */
+  --border: #ece9e9;        /* 边框色 */
   
   /* 评论数统计专用颜色变量 */
   --comment-count-bg: #96d7f5;      /* 浅蓝色背景 */
   --comment-count-text: #fff;    /* 深蓝色文字 */
   --comment-count-hover-bg: #2ea9df; /* 悬停时的背景色 */
+  
+  /* Tooltip 专用颜色变量 - 浅色主题 */
+  --tooltip-bg: #ffffff;             /* Tooltip 背景色 */
+  --tooltip-border: #e1e5e9;         /* Tooltip 边框色 */
+  --tooltip-title: #0ea5e9;          /* Tooltip 标题颜色（蓝色主题色） */
+  --tooltip-divider: #e1e5e9;        /* Tooltip 分割线颜色 */
+  --tooltip-param-name: #6b7280;     /* Tooltip 参数名称颜色（灰色） */
+  --tooltip-param-value: #0284c7;    /* Tooltip 参数值颜色（深蓝色） */
+  --tooltip-article-title: #0969da;  /* Tooltip 文章标题颜色（GitHub 蓝） */
+  --tooltip-shadow: 0 8px 24px rgba(140, 149, 159, 0.2); /* Tooltip 阴影 */
 }
 
 /* 深色主题颜色变量定义 */
 html[data-theme="dark"] {
-  --background: #212737;    /* 背景色 - 深蓝灰 */
-  --foreground: #eaedf3;    /* 前景色（文字） - 浅灰白 */
+  --background: #212737;    /* 背景色 */
+  --foreground: #eaedf3;    /* 前景色（文字）*/
   --accent: #ff6b01;        /* 强调色 - 橙色 */
-  --muted: #343f60bf;       /* 静音色（次要元素） - 半透明蓝灰 */
+  --muted: #343f60bf;       /* 静音色（次要元素）*/
   --border: #ab4b08;        /* 边框色 - 深橙 */
   
   /* 评论数统计专用颜色变量 */
   --comment-count-bg: #374151;      /* 深灰色背景 */
   --comment-count-text: #e5e7eb;    /* 浅灰色文字 */
   --comment-count-hover-bg: #4b5563; /* 悬停时的背景色 */
+  
+  /* Tooltip 专用颜色变量 - 深色主题 */
+  --tooltip-bg: #161b22;             /* Tooltip 背景色 */
+  --tooltip-border: #30363d;         /* Tooltip 边框色 */
+  --tooltip-title: #ff8c1a;          /* Tooltip 标题颜色（橙色主题色） */
+  --tooltip-divider: #30363d;        /* Tooltip 分割线颜色 */
+  --tooltip-param-name: #8b949e;     /* Tooltip 参数名称颜色（灰色） */
+  --tooltip-param-value: #ffa657;    /* Tooltip 参数值颜色（亮橙色） */
+  --tooltip-article-title: #ff7b00;  /* Tooltip 文章标题颜色（橙色强调） */
+  --tooltip-shadow: 0 16px 32px rgba(1, 4, 9, 0.85); /* Tooltip 阴影 */
 }
 
 /* Tailwind 主题颜色映射配置 */
@@ -89,7 +109,7 @@ html[data-theme="dark"] {
 
 /* 激活导航项的样式 */
 .active-nav {
-  @apply underline decoration-wavy decoration-2 underline-offset-4;  /* 波浪下划线，2px粗细，4px偏移 */
+  @apply text-accent;  /* 使用强调色，移除下划线 */
 }
 
 /* 锚点滚动样式优化 */
@@ -120,4 +140,77 @@ html[data-theme="dark"] {
 .artalk-comment-count:empty::before {
   content: "0";
   opacity: 0.7;
+}
+
+/* Cal-Heatmap Tooltip 样式 - 使用专用颜色变量 */
+.ch-tooltip {
+  background: var(--tooltip-bg) !important;
+  border: 1px solid var(--tooltip-border) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: var(--tooltip-shadow) !important;
+  padding: 0 !important;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.4 !important;
+  max-width: 17.5rem !important;
+  z-index: 9999 !important;
+  color: var(--tooltip-text) !important;
+}
+
+/* 深色主题下的 tooltip 特殊样式 */
+html[data-theme="dark"] .ch-tooltip,
+#ch-tooltip[data-theme="dark"] {
+  background: var(--tooltip-bg) !important;
+  color: var(--tooltip-title) !important;
+}
+
+/* 浅色主题 - 无数据单元格样式 */
+:root .ch-subdomain-bg {
+  stroke: #1f23280d !important;
+}
+
+/* 深色主题 - 无数据单元格样式 */
+html[data-theme="dark"] .ch-subdomain-bg {
+  stroke-width: 1px !important;
+}
+
+/* 深色主题下的热力图颜色调整 - GitHub 风格 10 级配色 */
+html[data-theme="dark"] .ch-subdomain-bg[fill="#ebedf0"] {
+  fill: #161b22 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#9be9a8"] {
+  fill: #0e4429 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#40c463"] {
+  fill: #006d32 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#30a14e"] {
+  fill: #26a641 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#216e39"] {
+  fill: #39d353 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#1a5a2e"] {
+  fill: #2ea043 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#0d4d21"] {
+  fill: #238636 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#0a3f1a"] {
+  fill: #196c2e !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#073214"] {
+  fill: #0f5323 !important;
+}
+
+html[data-theme="dark"] .ch-subdomain-bg[fill="#05260f"] {
+  fill: #033a16 !important;
 }
