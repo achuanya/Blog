@@ -55,14 +55,8 @@ function createArchiveCardHTML(post, siteTimezone) {
           <h3 class="text-lg font-medium decoration-dashed hover:underline" style="view-transition-name: ${post.data.title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')}">${post.data.title}</h3>
         </a>
         <div class="flex items-end space-x-2 opacity-80">
-          <svg class="inline-block size-6 min-w-[1.375rem] scale-90" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-            <line x1="16" x2="16" y1="2" y2="6"></line>
-            <line x1="8" x2="8" y1="2" y2="6"></line>
-            <line x1="3" x2="21" y1="10" y2="10"></line>
-          </svg>
           <span class="sr-only">Published:</span>
-          <span class="text-sm italic">
+          <span class="text-xs italic">
             <time datetime="${pubDate.iso}">${pubDate.date}</time>
           </span>
         </div>
