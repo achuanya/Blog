@@ -126,7 +126,7 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
         `conic-gradient(var(--accent), var(--accent) ${scrollPercent}%, transparent ${scrollPercent}%)`
       );
 
-      const isVisible = scrollTop / scrollTotal > 0.3;
+      const isVisible = scrollTop / scrollTotal > 0.01;
 
       if (isVisible !== lastVisible) {
         btnContainer.classList.toggle("opacity-100", isVisible);

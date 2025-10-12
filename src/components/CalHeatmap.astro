@@ -1,7 +1,7 @@
-<!-- 热力图容器 - 响应式布局，最大宽度限制，居中显示 -->
-<div class="w-full max-w-3xl mx-auto py-2 px-4">
-  <!-- 热力图渲染容器 -->
-  <div id="cal-heatmap" class="w-full"></div>
+<!-- 热力图容器 - 响应式布局，自适应宽度，居中显示 -->
+<div class="w-full max-w-app mx-auto py-2 px-4">
+  <!-- 热力图渲染容器 - 添加滚动条，确保不超过父级容器 -->
+  <div id="cal-heatmap" class="w-full overflow-x-auto overflow-y-hidden"></div>
   <!-- 加载状态提示 -->
   <div id="loading" class="text-center text-gray-500 py-4">Loading sports data...</div>
 </div>
@@ -458,7 +458,7 @@
                 <div class="mt-2.5 pt-2.5 border-t" style="border-color: var(--tooltip-divider);">
                   ${weeklyArticles.slice(0, 3).map(article => `
                     <div class="mb-1.5 last:mb-0">
-                      <div class="font-medium text-sm leading-relaxed" style="color: var(--tooltip-article-title);">${article.title}</div>
+                      <a href="${article.url}" target="_blank" class="font-medium text-sm leading-relaxed hover:underline" style="color: var(--tooltip-article-title); text-decoration: none;">${article.title}</a>
                     </div>
                   `).join('')}
                   ${weeklyArticles.length > 3 ? `

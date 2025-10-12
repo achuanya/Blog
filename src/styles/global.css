@@ -199,6 +199,21 @@ html[data-theme="dark"] .ch-subdomain-bg[fill="#1a5a2e"] {
   fill: #2ea043 !important;
 }
 
+/* Cal-Heatmap 单元格悬停效果 - 1px 描边 */
+/* 浅色主题悬停样式 */
+:root .ch-subdomain-bg:hover {
+  stroke: #0284c7 !important;
+  stroke-width: 1px !important;
+  cursor: pointer !important;
+}
+
+/* 深色主题悬停样式 */
+html[data-theme="dark"] .ch-subdomain-bg:hover {
+  stroke: #ff8c1a !important;
+  stroke-width: 1px !important;
+  cursor: pointer !important;
+}
+
 html[data-theme="dark"] .ch-subdomain-bg[fill="#0d4d21"] {
   fill: #238636 !important;
 }
