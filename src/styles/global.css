@@ -1,11 +1,19 @@
-@import "../../public/assets/fonts/TsangerJinKai01-W04/result.css"; /* 仓耳今楷字体 */
-@import "tailwindcss";              /* Tailwind CSS 框架 */
-@import "./typography.css";         /* 排版样式 */
+@import "tailwindcss";
+@import "./typography.css";
 
-/* 定义深色主题的自定义变体选择器 */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-/* 浅色主题颜色变量定义 */
+:root {
+  --font-sans: "Noto Sans", "Noto Sans TC", sans-serif;
+  --font-mono: "Roboto Mono", "Noto Sans TC", monospace;
+  --font-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+
+  /* Wonton comment */
+  --wtc-primary-color: var(--color-accent);
+  --wtc-background-color: var(--color-background);
+  --wtc-text-color: var(--color-foreground);
+}
+
 :root,
 html[data-theme="light"] {
   --background: #fdfdfd;    /* 背景色 */
@@ -32,11 +40,17 @@ html[data-theme="light"] {
 
 /* 深色主题颜色变量定义 */
 html[data-theme="dark"] {
-  --background: #212737;    /* 背景色 */
-  --foreground: #eaedf3;    /* 前景色（文字）*/
-  --accent: #ff6b01;        /* 强调色 - 橙色 */
-  --muted: #343f60bf;       /* 静音色（次要元素）*/
-  --border: #ab4b08;        /* 边框色 - 深橙 */
+  /* --background: #212737;
+  --foreground: #eaedf3;
+  --accent: #ff6b01;
+  --muted: #343f60bf;
+  --border: #ab4b08; */
+
+  --background: #23272e;
+  --foreground: #eaedf3;
+  --accent: #d19a66;
+  --muted: #343f60bf;
+  --border: #4d4844;
   
   /* 评论数统计专用颜色变量 */
   --comment-count-bg: #374151;      /* 深灰色背景 */
@@ -80,7 +94,7 @@ html[data-theme="dark"] {
   /* 页面主体样式 */
   body {
     @apply flex min-h-svh flex-col bg-background font-mono text-foreground selection:bg-accent/75 selection:text-background;
-    font-family: Consolas,TsangerJinKai01 W04;
+    font-family: var(--font-sans), var(--font-emoji);
   }
   
   /* 链接和按钮的焦点样式 */

@@ -2,9 +2,9 @@ export const SITE = {
   // 网站基础信息
   website: "https://lhasa.icu/",
   author: "游钓四方",
-  profile: "https://lhasa.icu/",
+  profile: "https://github.com/achuanya",
   desc: "千禧年小孩、长途骑行小学生、野钓路亚、振出并继、古典乐爱好者、野生程序员、独立开发者",
-  title: "lhasa's Blog",
+  title: "游钓四方",
   
   // 图片资源配置
   ogImage: "https://cos.lhasa.icu/StylePictures/my-photo.jpg",          // 社交媒体分享图片
