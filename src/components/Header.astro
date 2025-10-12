@@ -56,24 +56,24 @@ const isActive = (path: string) => {
   <!-- 导航容器 -->
   <div
     id="nav-container"
-    class="mx-auto flex max-w-app flex-col items-center justify-between sm:flex-row"
+    class="mx-auto flex max-w-6xl flex-col items-center justify-between sm:flex-row"
   >
     <!-- 顶部导航包装器 -->
     <div
       id="top-nav-wrap"
-      class="relative flex w-full items-baseline justify-between bg-background p-4 sm:items-center sm:py-6"
+      class="relative flex w-full items-baseline justify-between bg-background p-2 sm:items-center sm:py-4"
     >
       <!-- 网站标题/Logo -->
       <a
         href="/"
-        class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none"
+        class="absolute p-1 text-2xl leading-7 font-semibold whitespace-nowrap sm:static"
       >
         {SITE.title}
       </a>
       <!-- 导航菜单区域 -->
       <nav
         id="nav-menu"
-        class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"
+        class="flex w-full flex-col items-center sm:ml-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0"
       >
         <!-- 移动端菜单切换按钮 -->
         <button
@@ -94,34 +94,34 @@ const isActive = (path: string) => {
             "mt-4 grid w-44 grid-cols-2 place-content-center gap-2",
             "[&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium [&>li>a]:hover:text-accent sm:[&>li>a]:px-2 sm:[&>li>a]:py-1",
             "hidden",
-            "sm:mt-0 sm:flex sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0",
+            "sm:mt-0 sm:ml-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0",
           ]}
         >
           <!-- 文章页面导航链接 -->
           <li class="col-span-2">
             <a href="/posts/" class:list={{ "active-nav": isActive("/posts") }}>
-              Posts
+              全部
             </a>
           </li>
           
           <!-- 运动页面导航链接 -->
           <li class="col-span-2">
             <a href="/sports/" class:list={{ "active-nav": isActive("/sports") }}>
-              Sports
+              骑行
             </a>
           </li>
           
           <!-- 订阅源页面导航链接 -->
           <li class="col-span-2">
             <a href="/feeds/" class:list={{ "active-nav": isActive("/feeds") }}>
-              Feeds
+              逛逛
             </a>
           </li>
           
           <!-- 关于页面导航链接 -->
           <li class="col-span-2">
             <a href="/about/" class:list={{ "active-nav": isActive("/about") }}>
-              About
+              关于
             </a>
           </li>
           {/* 归档页面链接（根据配置显示/隐藏） */}
@@ -140,7 +140,7 @@ const isActive = (path: string) => {
                   title="Archives"
                 >
                   <IconArchive class="hidden sm:inline-block" />  {/* 归档图标（桌面端显示） */}
-                  <span class="sm:sr-only">Archives</span>        {/* 文本（移动端显示） */}
+                  <span class="sm:sr-only">归档</span>        {/* 文本（移动端显示） */}
                 </LinkButton>
               </li>
             )
@@ -185,7 +185,9 @@ const isActive = (path: string) => {
       </nav>
     </div>
   </div>
-  {!isActive("/sports") && <Hr />}
+  <div class="mx-auto w-full">
+    <div class="h-px bg-gradient-to-r from-transparent via-border/30 to-transparent"></div>
+  </div>
 </header>
 
 <script>

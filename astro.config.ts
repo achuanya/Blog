@@ -1,33 +1,21 @@
-// Astro 核心配置
 import { defineConfig, envField } from "astro/config";
-// Tailwind CSS Vite 插件
 import tailwindcss from "@tailwindcss/vite";
-// 站点地图生成器
 import sitemap from "@astrojs/sitemap";
-// Markdown 目录生成器
 import remarkToc from "remark-toc";
-// Markdown 可折叠区块生成器
 import remarkCollapse from "remark-collapse";
-// Shiki 代码高亮转换器
 import {
-  transformerNotationDiff,      // 代码差异
-  transformerNotationHighlight,  // 代码行
-  transformerNotationWordHighlight, // 代码词汇
+  transformerNotationDiff,
+  transformerNotationHighlight,
+  transformerNotationWordHighlight,
 } from "@shikijs/transformers";
-// 自定义文件名转换器
 import { transformerFileName } from "./src/utils/transformers/fileName";
-// 站点配置
 import { SITE } from "./src/config";
-// MDX 支持插件
 import mdx from "@astrojs/mdx";
-// 数学公式支持插件
 import remarkMath from "remark-math";
-// KaTeX 数学公式渲染插件
 import rehypeKatex from "rehype-katex";
 
 // 官方文档: https://astro.build/config
 export default defineConfig({
-  // 网站的基础 URL，用于生成绝对链接和站点地图
   site: SITE.website,
   
   // 尾部斜杠
@@ -40,13 +28,10 @@ export default defineConfig({
   integrations: [
     // MDX 支持
     mdx({
-      // 支持数学公式语法
       remarkPlugins: [remarkMath], 
-      // 将数学公式渲染为 KaTeX
       rehypePlugins: [rehypeKatex],
     }),
     
-    // 站点地图生成器
     sitemap({
       // 决定哪些页面包含在站点地图中
       // 如果不显示归档页面，则排除 /archives
@@ -56,9 +41,7 @@ export default defineConfig({
   
   // Markdown 文件处理
   markdown: {
-    // Remark 插件配置
     remarkPlugins: [
-      // 自动生成目录
       remarkToc, 
       // 可折叠的目录区块
       [remarkCollapse, { test: "Table of contents" }], 
@@ -85,9 +68,9 @@ export default defineConfig({
         // 显示文件名
         transformerFileName({ style: "v2", hideDot: false }),              
         // 高亮指定行
-        transformerNotationHighlight(),     
+        transformerNotationHighlight(),
         // 高亮指定词汇
-        transformerNotationWordHighlight(), 
+        transformerNotationWordHighlight(),
         // 显示代码差异
         transformerNotationDiff({ matchAlgorithm: "v3" }), 
       ],

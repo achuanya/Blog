@@ -1,10 +1,10 @@
 export const SITE = {
   // 网站基础信息
-  website: "https://lhasa.icu/",              // 网站完整URL
-  author: "游钓四方",                          // 作者名称
-  profile: "https://lhasa.icu/",              // 作者个人资料页面URL
-  desc: "千禧年小孩、长途骑行小学生、野钓路亚、振出并继、古典乐爱好者、野生程序员、独立开发者", // 网站描述
-  title: "lhasa's Blog",                      // 网站标题
+  website: "https://lhasa.icu/",
+  author: "游钓四方",
+  profile: "https://lhasa.icu/",
+  desc: "千禧年小孩、长途骑行小学生、野钓路亚、振出并继、古典乐爱好者、野生程序员、独立开发者",
+  title: "lhasa's Blog",
   
   // 图片资源配置
   ogImage: "https://cos.lhasa.icu/StylePictures/my-photo.jpg",          // 社交媒体分享图片
@@ -16,15 +16,15 @@ export const SITE = {
   lightAndDarkMode: true,    // 启用浅色/深色主题切换
   showArchives: true,        // 显示归档页面
   showBackButton: true,      // 显示返回按钮
-  dynamicOgImage: false,      // 启用动态生成社交媒体图片
+  dynamicOgImage: false,     // 启用动态生成社交媒体图片
   
   // 默认分页配置
-  postPerIndex: 5,          // 首页显示的文章数量
-  postPerPage: 5,           // 每页显示的文章数量
+  postPerIndex: 8,          // 首页显示的文章数量
+  postPerPage: 8,           // 每页显示的文章数量
   
   // Sports分类独立分页配置
   sports: {
-    postPerPage: 5,         // Sports每页显示的文章数量
+    postPerPage: 8,         // Sports每页显示的文章数量
   },
   
   // 定时发布配置
