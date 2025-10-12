@@ -28,12 +28,106 @@ const { page } = Astro.props;
   <link slot="head" href="https://cos.lhasa.icu/assets/lightgalleryjs/lightgallery.min.css" rel="stylesheet" />
   <script slot="head" is:inline src="https://cos.lhasa.icu/assets/lightgalleryjs/lightgallery.min.js"></script>
   
-  <!-- Cal-Heatmap 资源 - 静态加载 -->
+  <!-- Cal-Heatmap 资源 - 按顺序加载 -->
   <link slot="head" href="https://cos.lhasa.icu/assets/cal-heatmap/cal-heatmap.css" rel="stylesheet" />
-  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/d3.v7.min.js"></script>
-  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/cal-heatmap.min.js"></script>
-  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/popper.min.js"></script>
-  <script slot="head" is:inline src="https://cos.lhasa.icu/assets/cal-heatmap/Tooltip.min.js"></script>
+  
+  <!-- 确保资源按正确顺序加载 -->
+  <script slot="head" is:inline>
+    // 资源加载状态跟踪
+    window.calHeatmapResourcesLoaded = window.calHeatmapResourcesLoaded || {
+      d3: false,
+      calHeatmap: false,
+      popper: false,
+      tooltip: false
+    };
+
+    // 动态加载脚本的辅助函数
+    function loadScript(src, callback, errorCallback) {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = callback;
+      script.onerror = errorCallback || function() {
+        console.error('Failed to load script:', src);
+      };
+      document.head.appendChild(script);
+    }
+
+    // 按顺序加载资源
+    function loadCalHeatmapResources() {
+      // 如果已经开始加载，避免重复加载
+      if (window.calHeatmapResourcesLoading) return;
+      window.calHeatmapResourcesLoading = true;
+
+      console.log('开始加载 Cal-Heatmap 资源...');
+
+      // 1. 首先加载 D3.js
+      loadScript('https://cos.lhasa.icu/assets/cal-heatmap/d3.v7.min.js', function() {
+        console.log('D3.js 加载完成');
+        window.calHeatmapResourcesLoaded.d3 = true;
+        
+        // 验证 D3 是否正确加载
+        if (typeof window.d3 === 'undefined') {
+          console.error('D3.js 加载失败 - window.d3 未定义');
+          return;
+        }
+
+        // 2. 加载 Cal-Heatmap
+        loadScript('https://cos.lhasa.icu/assets/cal-heatmap/cal-heatmap.min.js', function() {
+          console.log('Cal-Heatmap 加载完成');
+          window.calHeatmapResourcesLoaded.calHeatmap = true;
+          
+          // 验证 Cal-Heatmap 是否正确加载
+          if (typeof window.CalHeatmap === 'undefined') {
+            console.error('Cal-Heatmap 加载失败 - window.CalHeatmap 未定义');
+            return;
+          }
+
+          // 3. 加载 Popper.js
+          loadScript('https://cos.lhasa.icu/assets/cal-heatmap/popper.min.js', function() {
+            console.log('Popper.js 加载完成');
+            window.calHeatmapResourcesLoaded.popper = true;
+
+            // 4. 最后加载 Tooltip
+            loadScript('https://cos.lhasa.icu/assets/cal-heatmap/Tooltip.min.js', function() {
+              console.log('Tooltip 加载完成');
+              window.calHeatmapResourcesLoaded.tooltip = true;
+              
+              // 验证 Tooltip 是否正确加载
+              if (typeof window.Tooltip === 'undefined') {
+                console.error('Tooltip 加载失败 - window.Tooltip 未定义');
+                return;
+              }
+
+              console.log('所有 Cal-Heatmap 资源加载完成');
+              window.calHeatmapResourcesLoading = false;
+              
+              // 触发资源加载完成事件
+              window.dispatchEvent(new CustomEvent('calHeatmapResourcesReady'));
+            }, function() {
+              console.error('Tooltip.min.js 加载失败');
+              window.calHeatmapResourcesLoading = false;
+            });
+          }, function() {
+            console.error('popper.min.js 加载失败');
+            window.calHeatmapResourcesLoading = false;
+          });
+        }, function() {
+          console.error('cal-heatmap.min.js 加载失败');
+          window.calHeatmapResourcesLoading = false;
+        });
+      }, function() {
+        console.error('d3.v7.min.js 加载失败');
+        window.calHeatmapResourcesLoading = false;
+      });
+    }
+
+    // 立即开始加载资源
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadCalHeatmapResources);
+    } else {
+      loadCalHeatmapResources();
+    }
+  </script>
   
   <Header />
   <!-- <Sports /> -->

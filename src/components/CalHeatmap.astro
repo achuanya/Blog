@@ -193,6 +193,40 @@
     }
 
     /**
+     * 等待资源加载完成
+     */
+    function waitForResources() {
+      return new Promise((resolve, reject) => {
+        // 如果资源已经加载完成，直接返回
+        if (window.calHeatmapResourcesLoaded && 
+            window.calHeatmapResourcesLoaded.d3 && 
+            window.calHeatmapResourcesLoaded.calHeatmap && 
+            window.calHeatmapResourcesLoaded.popper && 
+            window.calHeatmapResourcesLoaded.tooltip) {
+          console.log('资源已加载完成');
+          resolve();
+          return;
+        }
+
+        // 监听资源加载完成事件
+        const handleResourcesReady = () => {
+          console.log('收到资源加载完成事件');
+          window.removeEventListener('calHeatmapResourcesReady', handleResourcesReady);
+          resolve();
+        };
+
+        window.addEventListener('calHeatmapResourcesReady', handleResourcesReady);
+
+        // 设置超时，避免无限等待
+        setTimeout(() => {
+          window.removeEventListener('calHeatmapResourcesReady', handleResourcesReady);
+          console.warn('等待资源加载超时');
+          reject(new Error('资源加载超时'));
+        }, 10000); // 10秒超时
+      });
+    }
+
+    /**
      * 销毁 Cal-Heatmap 实例
      */
     function destroyCalHeatmap() {
@@ -261,17 +295,32 @@
           loadingElement.textContent = 'Loading sports data...';
         }
 
+        // 等待资源加载完成
+        await waitForResources();
+
         // 使用全局加载的 Cal-Heatmap 和 Tooltip 插件
-         const CalHeatmap = window.CalHeatmap;
-         const Tooltip = window.Tooltip;
+        const CalHeatmap = window.CalHeatmap;
+        const Tooltip = window.Tooltip;
 
-         // 检查资源是否已加载
-          if (!CalHeatmap || !Tooltip) {
-            console.error('Cal-Heatmap 或 Tooltip 插件未正确加载');
-            return;
+        // 检查资源是否已加载
+        if (!CalHeatmap || !Tooltip) {
+          console.error('Cal-Heatmap 或 Tooltip 插件未正确加载');
+          if (loadingElement) {
+            loadingElement.textContent = 'Failed to load Cal-Heatmap resources';
           }
+          return;
+        }
 
-          // CSS 样式已在页面级别静态加载，无需动态添加
+        // 验证 D3 是否可用
+        if (typeof window.d3 === 'undefined') {
+          console.error('D3.js 未正确加载');
+          if (loadingElement) {
+            loadingElement.textContent = 'Failed to load D3.js';
+          }
+          return;
+        }
+
+        console.log('所有资源验证通过，开始初始化热力图');
 
         // 获取处理后的运动数据和骑行文章数据
         const stravaData = await fetchStravaData();
@@ -465,10 +514,27 @@
       // 检查是否存在热力图容器
       const container = document.getElementById('cal-heatmap');
       if (container && container.offsetParent !== null) {
-        // 等待 DOM 稳定后初始化
-        setTimeout(() => {
-          initCalHeatmap();
-        }, 200);
+        // 检查是否在 sports 页面
+        if (window.location.pathname.includes('/sports')) {
+          console.log('检测到 sports 页面，准备初始化热力图');
+          
+          // 等待资源加载完成后再初始化
+          waitForResources()
+            .then(() => {
+              console.log('资源加载完成，开始初始化热力图');
+              initCalHeatmap();
+            })
+            .catch((error) => {
+              console.error('等待资源加载失败:', error);
+              // 尝试直接初始化（降级处理）
+              setTimeout(() => {
+                console.log('降级处理：直接尝试初始化');
+                initCalHeatmap();
+              }, 1000);
+            });
+        } else {
+          console.log('非 sports 页面，跳过热力图初始化');
+        }
       }
     }
 
@@ -478,6 +544,11 @@
     function handleBeforeSwap() {
       console.log('Cal-Heatmap 页面切换前清理');
       destroyCalHeatmap();
+      
+      // 清理资源加载状态（但保留已加载的资源）
+      if (window.calHeatmapResourcesLoading) {
+        window.calHeatmapResourcesLoading = false;
+      }
     }
 
     /**
