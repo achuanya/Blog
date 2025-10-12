@@ -21,7 +21,7 @@ function formatArchiveDate(dateString, tz) {
     const datetime = dayjs(dateString).tz(tz || 'UTC');
     return {
       iso: datetime.toISOString(),
-      date: datetime.format('D MMM, YYYY'),
+      date: datetime.format('MMM  D, YYYY'),
       time: datetime.format('hh:mm A'),
     };
   } catch (e) {
@@ -47,16 +47,6 @@ function createArchiveCardHTML(post, siteTimezone) {
 
   return `
     <li class="my-6 flex flex-row gap-6 items-start">
-      ${imgSrc ? `
-        <a href="${postPath}" class="shrink-0">
-          <img
-            src="${imgSrc}"
-            alt="${post.data.title}"
-            class="${defaultImageClass} mx-auto my-auto" 
-            loading="lazy"
-          />
-        </a>
-      ` : ''}
       <div class="flex-grow mx-auto my-auto">
         <a
           href="${postPath}"
@@ -202,4 +192,4 @@ export function initArchives(allPostsFromServer, siteTimezone, initialYearCount,
   } else if (loadMoreTrigger) {
     loadMoreTrigger.style.display = 'none';
   }
-} 
+}

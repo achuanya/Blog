@@ -98,9 +98,8 @@ function createFeedCardHTML(item, siteTimezone, fallbackOgImageGlobal) {
           <h3 class="text-lg font-medium decoration-dashed hover:underline">${item.title}</h3>
         </a>
         <div class="flex items-center gap-x-2 opacity-80">
-          ${calendarIconSvg}
           <span class="sr-only">Published:</span>
-          <span class="text-sm">
+          <span class="text-xs">
             <time datetime="${isoTimestamp}">${displayDate}</time>
             ${displayTime ? `
             <span aria-hidden="true"> | </span>
