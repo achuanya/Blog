@@ -165,8 +165,8 @@ async function generateSportsData() {
   
   // 生成JSON数据
   const jsonData = {
-    generated: new Date().toISOString(),
-    total: sportsData.length,
+    // generated: new Date().toISOString(),
+    // total: sportsData.length,
     articles: sportsData
   };
   
