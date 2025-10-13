@@ -28,7 +28,7 @@ export const SOCIALS: Social[] = [
   {
     name: "Douyin",                                     // 抖音平台
     href: "https://www.douyin.com/user/MS4wLjABAAAAKa6NwPUcIhC4qAwdvPjfGSyyENvEk1rGPBJVRQIQmCo", // 抖音用户页面
-    linkTitle: `${SITE.title} on Douyin`,              // 链接标题
+    linkTitle: `${SITE.title} on 抖音`,              // 链接标题
     icon: IconDouyin,                                  // 抖音图标
   },
   {

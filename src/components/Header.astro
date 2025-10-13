@@ -67,6 +67,7 @@ const isActive = (path: string) => {
       <a
         href="/"
         class="absolute p-1 text-2xl leading-7 font-semibold whitespace-nowrap sm:static"
+        title="钓五湖四海，交八方朋友，我就是游钓四方"
       >
         {SITE.title}
       </a>
@@ -137,7 +138,7 @@ const isActive = (path: string) => {
                     },
                   ]}
                   ariaLabel="archives"
-                  title="Archives"
+                  title="可查看往年所有文章"
                 >
                   <IconArchive class="hidden sm:inline-block" />  {/* 归档图标（桌面端显示） */}
                   <span class="sm:sr-only">归档</span>        {/* 文本（移动端显示） */}
@@ -155,7 +156,7 @@ const isActive = (path: string) => {
                 { "[&>svg]:stroke-accent": isActive("/search") },
               ]}
               ariaLabel="search"
-              title="Search"
+              title="基于 Pagefind 静态搜索，输入关键字查询博客所有内容"
             >
               <IconSearch />                              {/* 搜索图标 */}
               <span class="sr-only">Search</span>        {/* 屏幕阅读器文本 */}
@@ -169,7 +170,7 @@ const isActive = (path: string) => {
                 <button
                   id="theme-btn"
                   class="focus-outline relative size-12 p-4 sm:size-8 hover:[&>svg]:stroke-accent"
-                  title="Toggles light & dark"
+                  title="切换浅色和深色主题，支持自动切换，支持日出日落模式、支持识别用户系统主题"
                   aria-label="auto"
                   aria-live="polite"
                 >
