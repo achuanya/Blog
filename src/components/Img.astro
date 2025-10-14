@@ -106,7 +106,7 @@ const exifUrl = shouldShowExif ? generateExifUrl(finalSrc) : undefined;
       data-show-exif={shouldShowExif} />
     </a>
     
-    {caption && (
+    {caption && alt && alt.trim() && (
     <figcaption class={`img-caption caption-${caption === 'long' ? 'bar' : 'tag'}`}>
       <span class="caption-text">{alt}</span>
       </figcaption>
