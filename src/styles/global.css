@@ -66,6 +66,9 @@ html[data-theme="dark"] {
   --tooltip-param-value: #ffa657;    /* Tooltip 参数值颜色（亮橙色） */
   --tooltip-article-title: #ff7b00;  /* Tooltip 文章标题颜色（橙色强调） */
   --tooltip-shadow: 0 16px 32px rgba(1, 4, 9, 0.85); /* Tooltip 阴影 */
+
+  
+  --at-color-bg: #2c3138;
 }
 
 /* Tailwind 主题颜色映射配置 */
