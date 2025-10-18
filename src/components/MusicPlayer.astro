@@ -15,6 +15,12 @@ export interface Props {
 const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
 ---
 
+<!-- AmplitudeJS 音乐播放器 -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/amplitudejs@5.3.1/dist/amplitude.js"></script>
+
+<!-- Import iconfont.js for SVG symbols -->
+<script src="https://cos.lhasa.icu/assets/iconfont/iconfont.js"></script>
+
 <!-- Blue Playlist Container -->
 <div id="blue-playlist-container">
   <div class="playlist-title">{playlistTitle}</div>
@@ -48,25 +54,44 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
 
         <div id="control-container">
           <div id="repeat-container">
-            <div class="amplitude-repeat" id="repeat"></div>
-            <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle"></div>
+            <div class="amplitude-repeat" id="repeat">
+              <svg class="icon" style="width: 32px; height: 32px;">
+                <!-- 循环播放 -->
+                <use href="#icon-loop"></use>
+              </svg>
+            </div>
           </div>
 
           <div id="central-control-container">
             <div id="central-controls">
-              <div class="amplitude-prev" id="previous"></div>
-              <div class="amplitude-play-pause" id="play-pause"></div>
-              <div class="amplitude-next" id="next"></div>
+              <div class="amplitude-prev" id="previous">
+                <svg class="icon" style="width: 32px; height: 32px;">
+                  <use href="#icon-bg-previous"></use>
+                </svg>
+              </div>
+              <div class="amplitude-play-pause" id="play-pause">
+                <svg class="icon amplitude-paused" style="width: 60px; height: 60px;">
+                  <use href="#icon-kaishi"></use>
+                </svg>
+                <svg class="icon amplitude-playing" style="width: 60px; height: 60px; display: none;">
+                  <use href="#icon-zanting1"></use>
+                </svg>
+              </div>
+              <div class="amplitude-next" id="next">
+                <svg class="icon" style="width: 32px; height: 32px;">
+                  <use href="#icon-bg-next"></use>
+                </svg>
+              </div>
             </div>
           </div>
 
-          <div id="volume-container">
-            <div class="volume-controls">
-              <div class="amplitude-mute amplitude-not-muted"></div>
-              <input type="range" class="amplitude-volume-slider"/>
-              <div class="ms-range-fix"></div>
+          <div id="right-controls">
+            <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle">
+              <svg class="icon" style="width: 32px; height: 32px;">
+                <!-- 随机播放 -->
+                <use href="#icon-random"></use>
+              </svg>
             </div>
-            <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle-right"></div>
           </div>
         </div>
 
@@ -90,7 +115,6 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
             <div class="play-button-container">
 
             </div>
-            <img class="now-playing" src="	https://cos.lhasa.icu/assets/AmplitudeJS/now-playing.svg"/>
           </div>
           <div class="song-meta-data">
             <span class="song-title">{song.name}</span>
@@ -109,58 +133,122 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
 
 <style>
 /*
-  1. Base - MusicPlayer主题变量定义
+  SVG Icon Styles
 */
-:root,
-html[data-theme="light"] {
-  /* MusicPlayer 浅色主题变量 */
-  --music-player-bg: #ffffff;
-  --music-player-left-bg: #f1f1f1;
-  --music-player-border: #cfd8dc;
-  --music-player-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.1);
-  
-  /* 歌曲信息颜色 */
-  --music-song-title: #272726;
-  --music-song-artist: #607d8b;
-  --music-song-duration: #607d8b;
-  
-  /* 进度条颜色 */
-  --music-progress-bg: #cfd8dc;
-  --music-progress-buffered: #78909c;
-  --music-progress-played: #00a0ff;
-  --music-progress-thumb: #00a0ff;
-  
-  /* 控制按钮颜色 */
-  --music-control-bg: #d7dee3;
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
 }
 
-html[data-theme="dark"] {
-  /* MusicPlayer 深色主题变量 */
-  --music-player-bg: var(--background);
-  --music-player-left-bg: var(--background);
-  --music-player-border: var(--border);
-  --music-player-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.3);
-  
-  /* 歌曲信息颜色 */
-  --music-song-title: var(--foreground);
-  --music-song-artist: var(--accent);
-  --music-song-duration: var(--accent);
-  
-  /* 进度条颜色 */
-  --music-progress-bg: var(--border);
-  --music-progress-buffered: var(--muted);
-  --music-progress-played: var(--accent);
-  --music-progress-thumb: var(--accent);
-  
-  /* 控制按钮颜色 */
-  --music-control-bg: var(--muted);
+/* Theme-aware icon colors */
+:root .icon,
+html[data-theme="light"] .icon {
+  color: var(--foreground);
+}
+
+html[data-theme="dark"] .icon {
+  color: var(--foreground);
+}
+
+/* Special styling for control buttons with improved theme compatibility */
+/* 循环播放按钮 - 未选中状态 */
+:root #repeat .icon,
+html[data-theme="light"] #repeat .icon {
+  color: var(--foreground);
+  transition: color 0.3s ease;
+  opacity: 0.7;
+}
+
+html[data-theme="dark"] #repeat .icon {
+  color: var(--foreground);
+  transition: color 0.3s ease;
+  opacity: 0.7;
+}
+
+/* 循环播放按钮 - 选中状态 (AmplitudeJS自动添加amplitude-repeat-on类) */
+:root #repeat.amplitude-repeat-on .icon,
+html[data-theme="light"] #repeat.amplitude-repeat-on .icon {
+  color: var(--accent) !important;
+  opacity: 1;
+}
+
+html[data-theme="dark"] #repeat.amplitude-repeat-on .icon {
+  color: var(--accent) !important;
+  opacity: 1;
+}
+
+/* 随机播放按钮 - 未选中状态 */
+:root #shuffle .icon,
+html[data-theme="light"] #shuffle .icon {
+  color: var(--foreground);
+  transition: color 0.3s ease;
+  opacity: 0.7;
+}
+
+html[data-theme="dark"] #shuffle .icon {
+  color: var(--foreground);
+  transition: color 0.3s ease;
+  opacity: 0.7;
+}
+
+/* 随机播放按钮 - 选中状态 (AmplitudeJS自动添加amplitude-shuffle-on类) */
+:root #shuffle.amplitude-shuffle-on .icon,
+html[data-theme="light"] #shuffle.amplitude-shuffle-on .icon {
+  color: var(--accent) !important;
+  opacity: 1;
+}
+
+html[data-theme="dark"] #shuffle.amplitude-shuffle-on .icon {
+  color: var(--accent) !important;
+  opacity: 1;
+}
+
+/* 按钮悬停效果 */
+:root #repeat:hover .icon,
+html[data-theme="light"] #repeat:hover .icon,
+html[data-theme="dark"] #repeat:hover .icon,
+#shuffle:hover .icon {
+  color: var(--accent);
+  opacity: 1;
+}
+
+/* Play/pause button icons with enhanced visibility */
+#play-pause .icon {
+  color: var(--accent);
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+#play-pause:hover .icon {
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+/* Volume control icons with better contrast - REMOVED */
+
+/* Previous/next button icons with consistent styling */
+#previous .icon,
+#next .icon {
+  color: var(--accent);
+  transition: all 0.3s ease;
+  opacity: 0.8;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+#previous:hover .icon,
+#next:hover .icon {
+  color: var(--accent);
+  opacity: 1;
 }
 
 /*
-  2. Components
+  MusicPlayer 样式 - 使用 global.css 中的主题变量
 */
 div#amplitude-player {
-  background: var(--music-player-bg);
+  background: var(--background);
   box-shadow: var(--music-player-shadow);
   margin: auto;
   margin-top: 20px;
@@ -182,7 +270,7 @@ div#amplitude-player {
     max-height: 715px; } }
   div#amplitude-left {
   padding: 0px;
-  border-right: 1px solid var(--music-player-border);
+  border-right: 1px solid var(--border);
   width: 50%;
   display: flex;
   flex-direction: column; }
@@ -190,12 +278,16 @@ div#amplitude-player {
     width: 100%; }
   div#amplitude-left div#player-left-bottom {
     flex: 1;
-    background-color: var(--music-player-left-bg);
+    background-color: var(--background);
     padding: 20px 10px; }
-    div#amplitude-left div#player-left-bottom div#volume-container:after {
-    content: "";
-    display: table;
-    clear: both; }
+  
+  /* Light theme specific styling for player-left-bottom */
+  :root div#amplitude-left div#player-left-bottom,
+  html[data-theme="light"] div#amplitude-left div#player-left-bottom {
+    background-color: var(--apple-gray-light);
+  }
+  
+    /* Volume container styles - REMOVED */
   
   /* Small only */
   @media screen and (max-width: 39.9375em) {
@@ -217,6 +309,12 @@ div#amplitude-player {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */ }
   
+  /* Light theme specific styling for hide-scrollbar */
+  :root div#amplitude-right.hide-scrollbar,
+  html[data-theme="light"] div#amplitude-right.hide-scrollbar {
+    background-color: var(--apple-gray-light);
+  }
+  
   div#amplitude-right.hide-scrollbar::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */ }
   div#amplitude-right div.song {
@@ -227,36 +325,26 @@ div#amplitude-player {
     width: 20px;
     height: 20px;
     margin-right: 10px; }
-    div#amplitude-right div.song div.song-now-playing-icon-container img.now-playing {
-      display: none;
-      padding-top: 15px;
-      margin-top: 15px; }
     div#amplitude-right div.song div.play-button-container {
     display: none;
-    background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/list-play-light.png") no-repeat;
     width: 22px;
     height: 22px;
     margin-top: 15px; }
-    div#amplitude-right div.song div.play-button-container:hover {
-    background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/list-play-hover.png") no-repeat; }
-    div#amplitude-right div.song.amplitude-active-song-container div.song-now-playing-icon-container img.now-playing {
-    display: block; }
-    div#amplitude-right div.song.amplitude-active-song-container:hover div.play-button-container {
-    display: none; }
+
     div#amplitude-right div.song div.song-meta-data {
     float: left;
     width: calc( 100% - 110px ); }
     div#amplitude-right div.song div.song-meta-data span.song-title {
-      color: var(--music-song-title);
+      color: var(--accent);
       font-size: 18px;
       display: block;
-      font-weight: 300;
+      font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis; }
     div#amplitude-right div.song div.song-meta-data span.song-artist {
-      color: var(--music-song-artist);
-      font-size: 12px;
+      color: var(--foreground);
+      font-size: 10px;
       font-weight: bold;
       text-transform: uppercase;
       display: block;
@@ -268,13 +356,26 @@ div#amplitude-player {
     width: 55px;
     text-align: center;
     line-height: 45px;
-    color: var(--music-song-duration);
+    color: var(--accent);
     font-size: 16px;
     font-weight: 500; }
   div#amplitude-right div.song:after {
     content: "";
     display: table;
     clear: both; }
+  
+  /* Light theme hover effect for music list */
+  :root div#amplitude-right div.song:hover,
+  html[data-theme="light"] div#amplitude-right div.song:hover {
+    background-color: var(--apple-silver);
+    opacity: 0.8;
+  }
+  
+  /* Dark theme hover effect for music list */
+  html[data-theme="dark"] div#amplitude-right div.song:hover {
+    background-color: var(--at-color-bg) !important;
+    opacity: 0.8;
+  }
   
   /* Small only */
   @media screen and (max-width: 39.9375em) {
@@ -289,10 +390,7 @@ div#amplitude-player {
   /*
     IE 11
   */ }
-  div#progress-container:hover input[type=range].amplitude-song-slider::-webkit-slider-thumb {
-    display: block; }
-  div#progress-container:hover input[type=range].amplitude-song-slider::-moz-range-thumb {
-    visibility: visible; }
+
   div#progress-container progress#song-played-progress {
     width: 100%;
     position: absolute;
@@ -311,23 +409,23 @@ div#amplitude-player {
     /* Needed for Firefox */ }
   @media all and (-ms-high-contrast: none) {
     div#progress-container *::-ms-backdrop, div#progress-container progress#song-played-progress {
-    color: var(--music-progress-played);
+    color: var(--accent);
     border: none;
-    background-color: var(--music-progress-bg); } }
+    background-color: var(--border); } }
   @supports (-ms-ime-align: auto) {
     div#progress-container progress#song-played-progress {
-    color: var(--music-progress-played);
+    color: var(--accent);
     border: none; } }
   div#progress-container progress#song-played-progress[value]::-webkit-progress-bar {
     background: none;
     border-radius: 5px; }
   div#progress-container progress#song-played-progress[value]::-webkit-progress-value {
-    background-color: var(--music-progress-played);
+    background-color: var(--accent);
     border-radius: 5px; }
   div#progress-container progress#song-played-progress::-moz-progress-bar {
     background: none;
     border-radius: 5px;
-    background-color: var(--music-progress-played);
+    background-color: var(--accent);
     height: 5px;
     margin-top: -2px; }
   div#progress-container progress#song-buffered-progress {
@@ -344,18 +442,18 @@ div#amplitude-player {
     border-radius: 5px;
     background: transparent;
     border: none;
-    background-color: var(--music-control-bg); }
+    background-color: var(--muted); }
   div#progress-container progress#song-buffered-progress[value]::-webkit-progress-bar {
-    background-color: var(--music-progress-bg);
+    background-color: var(--border);
     border-radius: 5px; }
   div#progress-container progress#song-buffered-progress[value]::-webkit-progress-value {
-    background-color: var(--music-progress-buffered);
+    background-color: var(--muted);
     border-radius: 5px;
     transition: width .1s ease; }
   div#progress-container progress#song-buffered-progress::-moz-progress-bar {
     background: none;
     border-radius: 5px;
-    background-color: var(--music-progress-buffered);
+    background-color: var(--muted);
     height: 5px;
     margin-top: -2px; }
   div#progress-container progress::-ms-fill {
@@ -366,11 +464,11 @@ div#amplitude-player {
     border: none; } }
   @media all and (-ms-high-contrast: none) {
     div#progress-container *::-ms-backdrop, div#progress-container progress#song-buffered-progress {
-    color: var(--music-progress-buffered);
+    color: var(--muted);
     border: none; } }
   @supports (-ms-ime-align: auto) {
     div#progress-container progress#song-buffered-progress {
-    color: var(--music-progress-buffered);
+    color: var(--muted);
     border: none; } }
   div#progress-container input[type=range] {
     -webkit-appearance: none;
@@ -389,36 +487,36 @@ div#amplitude-player {
     height: 0px;
     cursor: pointer;
     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
-    background: #0075a9;
+    background: var(--border);
     border-radius: 0px;
     border: 0px solid #010101; }
   div#progress-container input[type=range]::-webkit-slider-thumb {
     box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-    border: 1px solid var(--music-progress-thumb);
+    border: 1px solid var(--accent);
     height: 15px;
     width: 15px;
     border-radius: 16px;
-    background: var(--music-progress-thumb);
+    background: var(--accent);
     cursor: pointer;
     -webkit-appearance: none;
     margin-top: -7.5px; }
   div#progress-container input[type=range]:focus::-webkit-slider-runnable-track {
-    background: #00adfb; }
+    background: var(--accent); }
   div#progress-container input[type=range]::-moz-range-track {
     width: 100%;
     height: 0px;
     cursor: pointer;
     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0);
-    background: #0075a9;
+    background: var(--border);
     border-radius: 0px;
     border: 0px solid #010101; }
   div#progress-container input[type=range]::-moz-range-thumb {
     box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-    border: 1px solid var(--music-progress-thumb);
+    border: 1px solid var(--accent);
     height: 15px;
     width: 15px;
     border-radius: 16px;
-    background: var(--music-progress-thumb);
+    background: var(--accent);
     cursor: pointer; }
   div#progress-container input[type=range]::-ms-track {
     width: 100%;
@@ -428,22 +526,22 @@ div#amplitude-player {
     border-color: transparent;
     color: transparent; }
   div#progress-container input[type=range]::-ms-fill-lower {
-    background: #003d57;
+    background: var(--muted);
     border: 0px solid #010101;
     border-radius: 0px;
     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0); }
   div#progress-container input[type=range]::-ms-fill-upper {
-    background: #0075a9;
+    background: var(--border);
     border: 0px solid #010101;
     border-radius: 0px;
     box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), 0px 0px 0px rgba(13, 13, 13, 0); }
   div#progress-container input[type=range]::-ms-thumb {
     box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-    border: 1px solid var(--music-progress-thumb);
+    border: 1px solid var(--accent);
     height: 15px;
     width: 15px;
     border-radius: 16px;
-    background: #00a0ff;
+    background: var(--accent);
     cursor: pointer;
     height: 0px;
     display: block; }
@@ -460,10 +558,10 @@ div#amplitude-player {
     border-width: 15px 0;
     border-color: transparent; }
     div#progress-container *::-ms-backdrop, div#progress-container input[type=range].amplitude-song-slider::-ms-fill-lower {
-    background: #CFD8DC;
+    background: var(--muted);
     border-radius: 10px; }
     div#progress-container *::-ms-backdrop, div#progress-container input[type=range].amplitude-song-slider::-ms-fill-upper {
-    background: #CFD8DC;
+    background: var(--muted);
     border-radius: 10px; } }
   @supports (-ms-ime-align: auto) {
     div#progress-container input[type=range].amplitude-song-slider::-ms-thumb {
@@ -471,9 +569,9 @@ div#amplitude-player {
     width: 15px;
     margin-top: 3px; } }
   div#progress-container input[type=range]:focus::-ms-fill-lower {
-    background: #0075a9; }
+    background: var(--accent); }
   div#progress-container input[type=range]:focus::-ms-fill-upper {
-    background: #00adfb; }
+    background: var(--accent); }
   
   div#control-container {
   margin-top: 25px;
@@ -481,24 +579,17 @@ div#amplitude-player {
   div#control-container div#repeat-container {
     width: 25%;
     float: left;
-    padding-top: 20px; }
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
     div#control-container div#repeat-container div#repeat {
-    width: 24px;
-    height: 19px;
-    cursor: pointer; }
-    div#control-container div#repeat-container div#repeat.amplitude-repeat-off {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/repeat-off.svg"); }
-    div#control-container div#repeat-container div#repeat.amplitude-repeat-on {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/repeat-on.svg"); }
-    div#control-container div#repeat-container div#shuffle {
-    width: 23px;
-    height: 19px;
+    width: 32px;
+    height: 32px;
     cursor: pointer;
-    float: right; }
-    div#control-container div#repeat-container div#shuffle.amplitude-shuffle-off {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/shuffle-off.svg"); }
-    div#control-container div#repeat-container div#shuffle.amplitude-shuffle-on {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/shuffle-on.svg"); }
+    display: flex;
+    align-items: center;
+    justify-content: center; }
   @media all and (-ms-high-contrast: none) {
     div#control-container *::-ms-backdrop, div#control-container div#control-container {
     margin-top: 40px;
@@ -514,55 +605,49 @@ div#amplitude-player {
       width: 40px;
       height: 40px;
       cursor: pointer;
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/prev.svg");
-      background-repeat: no-repeat;
       float: left;
       margin-top: 10px;
-      margin-right: -5px; }
+      margin-right: -5px;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+    
     div#control-container div#central-control-container div#central-controls div#play-pause {
       display: inline-block;
       width: 60px;
       height: 60px;
       cursor: pointer;
-      float: left; }
-      div#control-container div#central-control-container div#central-controls div#play-pause.amplitude-paused {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/play.svg"); }
-      div#control-container div#central-control-container div#central-controls div#play-pause.amplitude-playing {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/pause.svg"); }
+      float: left;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+    
     div#control-container div#central-control-container div#central-controls div#next {
       display: inline-block;
       width: 40px;
       height: 40px;
       cursor: pointer;
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/next.svg");
-      background-repeat: no-repeat;
       float: left;
       margin-top: 10px;
-      margin-left: -5px; }
-  div#control-container div#volume-container {
+      margin-left: -5px;
+      display: flex;
+      align-items: center;
+      justify-content: center; }
+  div#control-container div#right-controls {
     width: 25%;
     float: left;
-    padding-top: 20px; }
-    div#control-container div#volume-container div#shuffle-right {
-    width: 23px;
-    height: 19px;
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+    div#control-container div#right-controls div#shuffle {
+    width: 32px;
+    height: 32px;
     cursor: pointer;
-    margin: auto; }
-    div#control-container div#volume-container div#shuffle-right.amplitude-shuffle-off {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/shuffle-off.svg"); }
-    div#control-container div#volume-container div#shuffle-right.amplitude-shuffle-on {
-      background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/shuffle-on.svg"); }
-  div#control-container div.amplitude-mute {
-    cursor: pointer;
-    width: 25px;
-    height: 19px;
-    float: left; }
-    div#control-container div.amplitude-mute.amplitude-not-muted {
-    background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/volume.svg");
-    background-repeat: no-repeat; }
-    div#control-container div.amplitude-mute.amplitude-muted {
-    background: url("	https://cos.lhasa.icu/assets/AmplitudeJS/mute.svg");
-    background-repeat: no-repeat; }
+    display: flex;
+    align-items: center;
+    justify-content: center; }
   
   div#control-container:after {
   content: "";
@@ -575,11 +660,7 @@ div#amplitude-player {
     margin-left: auto;
     margin-right: auto;
     float: none; }
-  div#amplitude-player div#repeat-container div#shuffle {
-    display: none; }
-  div#amplitude-player div#volume-container div.volume-controls {
-    display: none; }
-  div#amplitude-player div#volume-container div#shuffle-right {
+  div#amplitude-player div#right-controls div#shuffle {
     display: block; } }
   /* Medium only */
   @media screen and (min-width: 40em) and (max-width: 63.9375em) {
@@ -587,11 +668,7 @@ div#amplitude-player {
     margin-left: auto;
     margin-right: auto;
     float: none; }
-  div#amplitude-player div#repeat-container div#shuffle {
-    display: none; }
-  div#amplitude-player div#volume-container div.volume-controls {
-    display: none; }
-  div#amplitude-player div#volume-container div#shuffle-right {
+  div#amplitude-player div#right-controls div#shuffle {
     display: block; } }
   /* Large and up */
   @media screen and (min-width: 64em) {
@@ -599,121 +676,19 @@ div#amplitude-player {
     margin-left: 10px;
     margin-right: 20px;
     float: left; }
-  div#amplitude-player div#volume-container div#shuffle-right {
-    display: none; } }
-  input[type=range].amplitude-volume-slider {
-  -webkit-appearance: none;
-  width: calc( 100% - 33px);
-  float: left;
-  margin-top: 10px;
-  margin-left: 5px; }
-  
-  @-moz-document url-prefix() {
-  input[type=range].amplitude-volume-slider {
-    margin-top: 0px; } }
-  @supports (-ms-ime-align: auto) {
-  input[type=range].amplitude-volume-slider {
-    margin-top: 3px;
-    height: 12px;
-    background-color: rgba(255, 255, 255, 0) !important;
-    z-index: 999;
-    position: relative; }
-  
-  div.ms-range-fix {
-    height: 1px;
-    background-color: #A9A9A9;
-    width: 67%;
-    float: right;
-    margin-top: -6px;
-    z-index: 9;
-    position: relative; } }
-  @media all and (-ms-high-contrast: none) {
-  *::-ms-backdrop, input[type=range].amplitude-volume-slider {
-    margin-top: -24px;
-    background-color: rgba(255, 255, 255, 0) !important; } }
-  input[type=range].amplitude-volume-slider:focus {
-  outline: none; }
-  
-  input[type=range].amplitude-volume-slider::-webkit-slider-runnable-track {
-  width: 75%;
-  height: 1px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: #CFD8DC; }
-  
-  input[type=range].amplitude-volume-slider::-webkit-slider-thumb {
-  height: 10px;
-  width: 10px;
-  border-radius: 10px;
-  background: var(--accent);
-  cursor: pointer;
-  margin-top: -4px;
-  -webkit-appearance: none; }
-  
-  input[type=range].amplitude-volume-slider:focus::-webkit-slider-runnable-track {
-  background: #CFD8DC; }
-  
-  input[type=range].amplitude-volume-slider::-moz-range-track {
-  width: 100%;
-  height: 1px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: #CFD8DC; }
-  
-  input[type=range].amplitude-volume-slider::-moz-range-thumb {
-  height: 10px;
-  width: 10px;
-  border-radius: 10px;
-  background: var(--accent);
-  cursor: pointer;
-  margin-top: -4px; }
-  
-  input[type=range].amplitude-volume-slider::-ms-track {
-  width: 100%;
-  height: 1px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: transparent;
-  /*leave room for the larger thumb to overflow with a transparent border */
-  border-color: transparent;
-  border-width: 15px 0;
-  /*remove default tick marks*/
-  color: transparent; }
-  
-  input[type=range].amplitude-volume-slider::-ms-fill-lower {
-  background: #CFD8DC;
-  border-radius: 10px; }
-  
-  input[type=range].amplitude-volume-slider::-ms-fill-upper {
-  background: #CFD8DC;
-  border-radius: 10px; }
-  
-  input[type=range].amplitude-volume-slider::-ms-thumb {
-  height: 10px;
-  width: 10px;
-  border-radius: 10px;
-  background: var(--accent);
-  cursor: pointer;
-  margin-top: 2px; }
-  
-  input[type=range].amplitude-volume-slider:focus::-ms-fill-lower {
-  background: #CFD8DC; }
-  
-  input[type=range].amplitude-volume-slider:focus::-ms-fill-upper {
-  background: #CFD8DC; }
-  
-  input[type=range].amplitude-volume-slider::-ms-tooltip {
-  display: none; }
+  div#amplitude-player div#right-controls div#shuffle {
+    display: block; } }
+  /* Volume slider styles - REMOVED */
   
   div#time-container span.current-time {
-  color: #607D8B;
+  color: var(--accent);
   font-size: 14px;
   font-weight: 700;
   float: left;
   width: 15%;
   text-align: center; }
   div#time-container span.duration {
-  color: #607D8B;
+  color: var(--accent);
   font-size: 14px;
   font-weight: 700;
   float: left;
@@ -730,14 +705,15 @@ div#amplitude-player {
   margin-top: 5px; }
   div#meta-container span.song-name {
     display: block;
-    color: var(--music-song-title);
-    font-size: 20px;
+    color: var(--accent);
+    font-size: 25px;
+    font-weight: 500;
     font-family: 'Open Sans', sans-serif;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; }
   div#meta-container div.song-artist-album {
-    color: var(--music-song-artist);
+    color: var(--foreground);
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
@@ -756,32 +732,32 @@ div#amplitude-player {
   }
     
    div.amplitude-wave-form svg{
-    stroke: #00a0ff;
+    stroke: var(--accent);
     height: 50px;
     width: 100%;
     stroke-width: .5px;
   }
    div.amplitude-wave-form svg g{
-   stroke: #00a0ff;
+   stroke: var(--accent);
    height: 50px;
    width: 100%;
   }
    div.amplitude-wave-form svg g path{
-   stroke: #00a0ff;
+   stroke: var(--accent);
    height: 50px;
    width: 100%;
   }
   
   div#large-visualization{
     width: 100%;
-    background-color: black;
+    background-color: var(--background);
     visibility: hidden;
   }
 
   .playlist-title {
     text-align: center;
     margin: 20px 0;
-    color: #272726;
+    color: var(--foreground);
     font-size: 1.875rem; /* 30px, 类似h3的大小 */
     font-weight: 600; /* 更粗的字体权重，类似h3 */
     font-style: italic; /* 添加斜体，匹配typography.css中h3的样式 */
@@ -831,45 +807,31 @@ div#amplitude-player {
       
       for (let i = 0; i < songElements.length; i++) {
         // 移除之前的事件监听器（如果存在）
-        songElements[i].removeEventListener('mouseover', songElements[i]._mouseoverHandler);
-        songElements[i].removeEventListener('mouseout', songElements[i]._mouseoutHandler);
         songElements[i].removeEventListener('click', songElements[i]._clickHandler);
         
-        // 创建新的事件处理函数
-        songElements[i]._mouseoverHandler = function() {
-          const currentTheme = document.documentElement.getAttribute('data-theme');
-          const isLight = !currentTheme || currentTheme === 'light';
-          
-          this.style.backgroundColor = 'var(--at-color-bg)';
-          this.querySelectorAll('.song-meta-data .song-title')[0].style.color = isLight ? '#000000' : 'var(--foreground)';
-          this.querySelectorAll('.song-meta-data .song-artist')[0].style.color = isLight ? '#333333' : 'var(--accent)';
-          
-          if (!this.classList.contains('amplitude-active-song-container')) {
-            this.querySelectorAll('.play-button-container')[0].style.display = 'block';
-          }
-          
-          this.querySelectorAll('.song-duration')[0].style.color = isLight ? '#333333' : 'var(--accent)';
-        };
-        
-        songElements[i]._mouseoutHandler = function() {
-          const currentTheme = document.documentElement.getAttribute('data-theme');
-          const isLight = !currentTheme || currentTheme === 'light';
-          
-          this.style.backgroundColor = isLight ? '#FFFFFF' : 'var(--background)';
-          this.querySelectorAll('.song-meta-data .song-title')[0].style.color = isLight ? '#272726' : 'var(--foreground)';
-          this.querySelectorAll('.song-meta-data .song-artist')[0].style.color = isLight ? '#607D8B' : 'var(--accent)';
-          this.querySelectorAll('.play-button-container')[0].style.display = 'none';
-          this.querySelectorAll('.song-duration')[0].style.color = isLight ? '#607D8B' : 'var(--accent)';
-        };
-        
         songElements[i]._clickHandler = function() {
-          this.querySelectorAll('.play-button-container')[0].style.display = 'none';
+          // 点击处理逻辑保持不变，但移除 hover 相关的显示/隐藏逻辑
         };
         
-        // 添加新的事件监听器
-        songElements[i].addEventListener('mouseover', songElements[i]._mouseoverHandler);
-        songElements[i].addEventListener('mouseout', songElements[i]._mouseoutHandler);
+        // 添加点击事件监听器
         songElements[i].addEventListener('click', songElements[i]._clickHandler);
+      }
+
+      // SVG图标切换函数
+      function updatePlayPauseIcon(isPlaying) {
+        const playPauseBtn = document.getElementById('play-pause');
+        if (playPauseBtn) {
+          const playIcon = playPauseBtn.querySelector('.amplitude-paused');
+          const pauseIcon = playPauseBtn.querySelector('.amplitude-playing');
+          
+          if (isPlaying) {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+          } else {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+          }
+        }
       }
 
       // 初始化AmplitudeJS
@@ -881,14 +843,19 @@ div#amplitude-player {
         callbacks: {
           play: function() {
             console.log('播放开始');
+            updatePlayPauseIcon(true);
           },
           pause: function() {
             console.log('播放暂停');
+            updatePlayPauseIcon(false);
           },
           song_change: function() {
             console.log('歌曲切换');
             // 动态更新当前歌曲的duration
             updateCurrentSongDuration();
+            // 更新播放状态图标
+            const isPlaying = !window.Amplitude.getAudio().paused;
+            updatePlayPauseIcon(isPlaying);
           },
           loadedmetadata: function() {
             console.log('元数据加载完成');
@@ -966,63 +933,6 @@ div#amplitude-player {
     setTimeout(initializeMusicPlayer, 100);
   });
 
-  // 主题切换监听器
-  function handleThemeChange() {
-    // 重新绑定所有歌曲元素的事件处理器以适应新主题
-    const songElements = document.querySelectorAll('.song.amplitude-song-container');
-    for (let i = 0; i < songElements.length; i++) {
-      // 移除旧的事件监听器
-      if (songElements[i]._mouseoverHandler) {
-        songElements[i].removeEventListener('mouseover', songElements[i]._mouseoverHandler);
-      }
-      if (songElements[i]._mouseoutHandler) {
-        songElements[i].removeEventListener('mouseout', songElements[i]._mouseoutHandler);
-      }
-      
-      // 重新创建主题感知的事件处理函数
-      songElements[i]._mouseoverHandler = function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const isLight = !currentTheme || currentTheme === 'light';
-        
-        this.style.backgroundColor = isLight ? '#F5F5F5' : 'var(--muted)';
-        this.querySelectorAll('.song-meta-data .song-title')[0].style.color = isLight ? '#000000' : 'var(--foreground)';
-        this.querySelectorAll('.song-meta-data .song-artist')[0].style.color = isLight ? '#333333' : 'var(--accent)';
-        this.querySelectorAll('.play-button-container')[0].style.display = 'block';
-        this.querySelectorAll('.song-duration')[0].style.color = isLight ? '#333333' : 'var(--accent)';
-      };
-      
-      songElements[i]._mouseoutHandler = function() {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const isLight = !currentTheme || currentTheme === 'light';
-        
-        this.style.backgroundColor = isLight ? '#FFFFFF' : 'var(--background)';
-        this.querySelectorAll('.song-meta-data .song-title')[0].style.color = isLight ? '#272726' : 'var(--foreground)';
-        this.querySelectorAll('.song-meta-data .song-artist')[0].style.color = isLight ? '#607D8B' : 'var(--accent)';
-        this.querySelectorAll('.play-button-container')[0].style.display = 'none';
-        this.querySelectorAll('.song-duration')[0].style.color = isLight ? '#607D8B' : 'var(--accent)';
-      };
-      
-      // 重新添加事件监听器
-      songElements[i].addEventListener('mouseover', songElements[i]._mouseoverHandler);
-      songElements[i].addEventListener('mouseout', songElements[i]._mouseoutHandler);
-    }
-  }
-
-  // 监听主题切换事件
-  const themeObserver = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-        handleThemeChange();
-      }
-    });
-  });
-
-  // 开始观察主题变化
-  themeObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['data-theme']
-  });
-
   // Astro页面切换前的清理
   document.addEventListener('astro:before-preparation', function() {
     console.log('Astro 页面切换前清理 MusicPlayer');
@@ -1038,11 +948,6 @@ div#amplitude-player {
       } catch (error) {
         console.log('清理 Amplitude 时出错:', error);
       }
-    }
-    
-    // 清理主题观察器
-    if (themeObserver) {
-      themeObserver.disconnect();
     }
   });
 </script>

@@ -16,26 +16,34 @@
 
 :root,
 html[data-theme="light"] {
-  --background: #fdfdfd;    /* 背景色 */
-  --foreground: #282728;    /* 前景色（文字）*/
-  --accent: #006cac;        /* 强调色 */
-  --muted: #e6e6e6;         /* 静音色（次要元素） */
-  --border: #ece9e9;        /* 边框色 */
+  --apple-gray-light: #f1f1f1;
+  --apple-silver: #d2d2d7;
+  --background: #fdfdfd;
+  --foreground: #282728;
+  --accent: #006cac;
+  --muted: #e6e6e6;
+  --border: #ece9e9;
   
   /* 评论数统计专用颜色变量 */
-  --comment-count-bg: #96d7f5;      /* 浅蓝色背景 */
-  --comment-count-text: #fff;    /* 深蓝色文字 */
-  --comment-count-hover-bg: #2ea9df; /* 悬停时的背景色 */
+  --comment-count-bg: #96d7f5;
+  --comment-count-text: #fff;
+  --comment-count-hover-bg: #2ea9df;
   
   /* Tooltip 专用颜色变量 - 浅色主题 */
-  --tooltip-bg: #ffffff;             /* Tooltip 背景色 */
-  --tooltip-border: #e1e5e9;         /* Tooltip 边框色 */
-  --tooltip-title: #0ea5e9;          /* Tooltip 标题颜色（蓝色主题色） */
-  --tooltip-divider: #e1e5e9;        /* Tooltip 分割线颜色 */
-  --tooltip-param-name: #6b7280;     /* Tooltip 参数名称颜色（灰色） */
-  --tooltip-param-value: #0284c7;    /* Tooltip 参数值颜色（深蓝色） */
-  --tooltip-article-title: #0969da;  /* Tooltip 文章标题颜色（GitHub 蓝） */
+  --tooltip-bg: #ffffff;
+  --tooltip-border: #e1e5e9;
+  --tooltip-title: #0ea5e9;
+  --tooltip-divider: #e1e5e9;
+  --tooltip-param-name: #6b7280;
+  --tooltip-param-value: #0284c7;
+  --tooltip-article-title: #0969da;
   --tooltip-shadow: 0 8px 24px rgba(140, 149, 159, 0.2); /* Tooltip 阴影 */
+  
+  /* MusicPlayer 专用颜色变量 - 浅色主题 */
+  --music-player-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.1); /* 播放器阴影 */
+  --blue-gray: #607d8b;
+  --color-neutral: #7b7a7a;
+  --color-neutral-hover: #5E5C5C;
 }
 
 /* 深色主题颜色变量定义 */
@@ -46,6 +54,8 @@ html[data-theme="dark"] {
   --muted: #343f60bf;
   --border: #ab4b08; */
 
+  --apple-gray-light: var(--at-color-bg)
+  --apple-silver: var(--at-color-bg);
   --background: #23272e;
   --foreground: #eaedf3;
   --accent: #d19a66;
@@ -53,31 +63,34 @@ html[data-theme="dark"] {
   --border: #4d4844;
   
   /* 评论数统计专用颜色变量 */
-  --comment-count-bg: #374151;      /* 深灰色背景 */
-  --comment-count-text: #e5e7eb;    /* 浅灰色文字 */
-  --comment-count-hover-bg: #4b5563; /* 悬停时的背景色 */
+  --comment-count-bg: #374151;
+  --comment-count-text: #e5e7eb;
+  --comment-count-hover-bg: #4b5563;
   
   /* Tooltip 专用颜色变量 - 深色主题 */
-  --tooltip-bg: #161b22;             /* Tooltip 背景色 */
-  --tooltip-border: #30363d;         /* Tooltip 边框色 */
-  --tooltip-title: #ff8c1a;          /* Tooltip 标题颜色（橙色主题色） */
-  --tooltip-divider: #30363d;        /* Tooltip 分割线颜色 */
-  --tooltip-param-name: #8b949e;     /* Tooltip 参数名称颜色（灰色） */
-  --tooltip-param-value: #ffa657;    /* Tooltip 参数值颜色（亮橙色） */
-  --tooltip-article-title: #ff7b00;  /* Tooltip 文章标题颜色（橙色强调） */
-  --tooltip-shadow: 0 16px 32px rgba(1, 4, 9, 0.85); /* Tooltip 阴影 */
-
+  --tooltip-bg: #161b22;
+  --tooltip-border: #30363d; 
+  --tooltip-title: #ff8c1a;
+  --tooltip-divider: #30363d;
+  --tooltip-param-name: #8b949e;
+  --tooltip-param-value: #ffa657;
+  --tooltip-article-title: #ff7b00;
+  --tooltip-shadow: 0 16px 32px rgba(1, 4, 9, 0.85);
   
   --at-color-bg: #2c3138;
+  
+  /* MusicPlayer 专用颜色变量 - 深色主题 */
+  --blue-gray: #d2d2d7;
+  --music-player-shadow: 0 2px 12px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Tailwind 主题颜色映射配置 */
 @theme inline {
-  --color-background: var(--background);  /* 背景色映射 */
-  --color-foreground: var(--foreground);  /* 前景色映射 */
-  --color-accent: var(--accent);          /* 强调色映射 */
-  --color-muted: var(--muted);            /* 静音色映射 */
-  --color-border: var(--border);          /* 边框色映射 */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
 }
 
 /* 基础样式层 */
