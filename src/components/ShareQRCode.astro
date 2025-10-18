@@ -1,0 +1,349 @@
+---
+// ShareQRCode.astro - 分享二维码组件
+---
+<div class="share-qr-container">
+  <button
+    id="share-qr-button"
+    class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-0"
+    type="button"
+  >
+    <svg
+      class="h-3.5 w-3.5"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+      ></path>
+    </svg>
+    分享
+  </button>
+
+  <!-- 二维码卡片 -->
+  <div
+    id="qr-card"
+    class="hidden absolute top-full right-0 mt-2 w-80 max-w-sm rounded-lg border border-border bg-background p-4 shadow-lg transition-all duration-300 ease-in-out transform translate-y-[-10px] opacity-0 z-50"
+  >
+    <!-- 关闭按钮 - 保持在右上角 -->
+    <button
+      id="close-qr-card"
+      class="absolute top-3 right-3 rounded-full p-1 text-foreground/60 hover:bg-muted hover:text-foreground transition-colors"
+      type="button"
+    >
+      <svg
+        class="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+    
+    <div class="flex items-center gap-4 pr-8">
+      <div
+        id="qr-code-container"
+        class="flex h-20 w-20 items-center justify-center rounded-lg bg-white p-1 border flex-shrink-0"
+      >
+        <!-- 二维码将在这里生成 -->
+      </div>
+      <div class="flex-1 min-w-0 flex flex-col justify-center">
+        <p class="text-base text-foreground/70 leading-relaxed text-center">
+          使用手机扫描二维码<br>分享文章到朋友圈
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import QRCode from 'qrcode';
+  import { SITE } from "@/config";
+  
+  // 全局状态管理
+  const ShareQRCodeManager = {
+    isCardVisible: false,
+    isProcessing: false,
+    documentClickHandler: null as ((e: Event) => void) | null,
+    keydownHandler: null as ((e: KeyboardEvent) => void) | null,
+    shareButtonHandler: null as ((e: Event) => void) | null,
+    closeButtonHandler: null as ((e: Event) => void) | null,
+
+    // 清理所有事件监听器
+    cleanup() {
+      const shareButton = document.getElementById('share-qr-button');
+      const closeButton = document.getElementById('close-qr-card');
+
+      // 移除按钮事件监听器
+      if (shareButton && this.shareButtonHandler) {
+        shareButton.removeEventListener('click', this.shareButtonHandler);
+      }
+      if (closeButton && this.closeButtonHandler) {
+        closeButton.removeEventListener('click', this.closeButtonHandler);
+      }
+
+      // 移除全局事件监听器
+      if (this.documentClickHandler) {
+        document.removeEventListener('click', this.documentClickHandler);
+        this.documentClickHandler = null;
+      }
+      if (this.keydownHandler) {
+        document.removeEventListener('keydown', this.keydownHandler);
+        this.keydownHandler = null;
+      }
+
+      this.shareButtonHandler = null;
+      this.closeButtonHandler = null;
+    },
+
+    // 初始化事件监听器
+    init() {
+      const shareButton = document.getElementById('share-qr-button');
+      const card = document.getElementById('qr-card');
+      const closeButton = document.getElementById('close-qr-card');
+      const qrContainer = document.getElementById('qr-code-container');
+
+      if (!shareButton || !card || !closeButton || !qrContainer) {
+        console.error('ShareQRCode: Required elements not found');
+        return;
+      }
+
+      // 先清理之前的监听器
+      this.cleanup();
+
+      // 创建事件处理函数
+      this.shareButtonHandler = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.toggleCard();
+      };
+
+      this.closeButtonHandler = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.hideCard();
+      };
+
+      this.documentClickHandler = (e: Event) => {
+        const target = e.target as Element;
+        if (this.isCardVisible && !shareButton.contains(target) && !card.contains(target)) {
+          this.hideCard();
+        }
+      };
+
+      this.keydownHandler = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && this.isCardVisible) {
+          this.hideCard();
+        }
+      };
+
+      // 绑定按钮事件监听器
+      shareButton.addEventListener('click', this.shareButtonHandler);
+      closeButton.addEventListener('click', this.closeButtonHandler);
+    },
+
+    // 切换卡片显示状态
+    async toggleCard() {
+      // 防止重复处理
+      if (this.isProcessing) return;
+      
+      if (this.isCardVisible) {
+        this.hideCard();
+      } else {
+        await this.showCard();
+      }
+    },
+
+    // 显示卡片
+    async showCard() {
+      if (this.isProcessing || this.isCardVisible) return;
+      
+      this.isProcessing = true;
+      const card = document.getElementById('qr-card');
+      const qrContainer = document.getElementById('qr-code-container');
+      
+      if (!card || !qrContainer) {
+        this.isProcessing = false;
+        return;
+      }
+
+      try {
+        // 获取当前页面URL
+        const currentUrl = `${SITE.website}${window.location.pathname}`;
+
+        // 清空容器
+        qrContainer.innerHTML = '';
+
+        // 生成二维码
+        const canvas = document.createElement('canvas');
+        await QRCode.toCanvas(canvas, currentUrl, {
+          width: 72,
+          margin: 1,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+          }
+        });
+
+        qrContainer.appendChild(canvas);
+
+        // 更新状态
+        this.isCardVisible = true;
+        
+        // 显示卡片
+        card.classList.remove('hidden');
+        
+        // 添加全局监听器
+        if (this.documentClickHandler) {
+          document.addEventListener('click', this.documentClickHandler);
+        }
+        if (this.keydownHandler) {
+          document.addEventListener('keydown', this.keydownHandler);
+        }
+        
+        // 触发动画
+        requestAnimationFrame(() => {
+          card.classList.remove('translate-y-[-10px]', 'opacity-0');
+          card.classList.add('translate-y-0', 'opacity-100');
+        });
+
+      } catch (error) {
+        console.error('生成二维码失败:', error);
+        qrContainer.innerHTML = '<p class="text-red-500 text-xs">二维码生成失败</p>';
+        
+        // 即使失败也要显示卡片
+        this.isCardVisible = true;
+        card.classList.remove('hidden');
+        
+        // 添加全局监听器
+        if (this.documentClickHandler) {
+          document.addEventListener('click', this.documentClickHandler);
+        }
+        if (this.keydownHandler) {
+          document.addEventListener('keydown', this.keydownHandler);
+        }
+        
+        requestAnimationFrame(() => {
+          card.classList.remove('translate-y-[-10px]', 'opacity-0');
+          card.classList.add('translate-y-0', 'opacity-100');
+        });
+      } finally {
+        this.isProcessing = false;
+      }
+    },
+
+    // 隐藏卡片
+    hideCard() {
+      if (this.isProcessing || !this.isCardVisible) return;
+      
+      const card = document.getElementById('qr-card');
+      if (!card) return;
+
+      // 更新状态
+      this.isCardVisible = false;
+      
+      // 移除全局监听器
+      if (this.documentClickHandler) {
+        document.removeEventListener('click', this.documentClickHandler);
+      }
+      if (this.keydownHandler) {
+        document.removeEventListener('keydown', this.keydownHandler);
+      }
+
+      // 添加退出动画
+      card.classList.remove('translate-y-0', 'opacity-100');
+      card.classList.add('translate-y-[-10px]', 'opacity-0');
+      
+      // 动画结束后隐藏
+      setTimeout(() => {
+        if (!this.isCardVisible) {
+          card.classList.add('hidden');
+        }
+      }, 300);
+    }
+  };
+
+  // 初始化函数
+  function initShareQRCode() {
+    ShareQRCodeManager.init();
+  }
+
+  // 页面加载时初始化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initShareQRCode);
+  } else {
+    initShareQRCode();
+  }
+
+  // 支持Astro的页面切换
+  document.addEventListener('astro:page-load', initShareQRCode);
+
+  // 页面卸载时清理
+  document.addEventListener('astro:before-preparation', () => {
+    ShareQRCodeManager.cleanup();
+  });
+</script>
+
+<style>
+  @reference "tailwindcss";
+  
+  .share-qr-container {
+    position: relative;
+  }
+
+  /* 卡片动画样式 */
+  #qr-card {
+    transition: all 0.3s ease-in-out;
+  }
+
+  #qr-card.hidden {
+    display: none;
+  }
+
+  /* 确保二维码容器在不同主题下都有合适的背景 */
+  #qr-code-container {
+    background-color: white !important;
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 640px) {
+    /* 在移动端完全隐藏分享按钮和二维码卡片 */
+    .share-qr-container {
+      display: none !important;
+    }
+  }
+
+  /* 确保卡片在小屏幕上不会超出边界 */
+  @media (max-width: 480px) {
+    #qr-card {
+      @apply right-2 left-2 w-auto;
+    }
+
+    /* 超小屏幕优化 */
+    #qr-card .flex {
+      @apply gap-2;
+    }
+
+    #qr-code-container {
+      @apply h-16 w-16;
+    }
+
+    #qr-card h3 {
+      @apply text-xs mb-1;
+    }
+
+    #qr-card p {
+      @apply text-xs;
+    }
+  }
+</style>
