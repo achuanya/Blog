@@ -17,7 +17,7 @@ const { frontmatter } = Astro.props;
 const blogStats = await getBlogStats();
 ---
 
-<Layout title={`${frontmatter.title} | ${SITE.title}`}>
+<Layout title={`关于 | ${SITE.title}`}>
   <Header />
   <Breadcrumb />
   <main id="main-content">

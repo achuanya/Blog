@@ -3,7 +3,7 @@ export const SITE = {
   website: "https://lhasa.icu/",
   author: "游钓四方",
   profile: "https://github.com/achuanya",
-  desc: "千禧年小孩、长途骑行小学生、野钓路亚、振出并继、古典乐爱好者、野生程序员、独立开发者",
+  desc: "骑过湖边的小径，走过文字里的角落，偶尔停下，看见风，也看见自己",
   title: "游钓四方",
   
   // 图片资源配置
