@@ -7,10 +7,16 @@ async function loadLocalFont(
   try {
     // 读取本地字体文件
     const fontBuffer = fs.readFileSync(fontPath);
-    return fontBuffer.buffer.slice(
+    // 使用 Uint8Array 作为中间步骤来确保类型兼容性
+    const uint8Array = new Uint8Array(
+      fontBuffer.buffer,
       fontBuffer.byteOffset,
-      fontBuffer.byteOffset + fontBuffer.byteLength
+      fontBuffer.byteLength
     );
+    // 创建新的 ArrayBuffer 并复制数据
+    const arrayBuffer = new ArrayBuffer(uint8Array.length);
+    new Uint8Array(arrayBuffer).set(uint8Array);
+    return arrayBuffer;
   } catch (error) {
     throw new Error(`Failed to load local font: ${fontPath}. Error: ${error}`);
   }
