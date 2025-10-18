@@ -179,7 +179,7 @@
 
       try {
         // 获取当前页面URL
-        const currentUrl = `${SITE.website}${window.location.pathname}`;
+        const currentUrl = window.location.href;
 
         // 清空容器
         qrContainer.innerHTML = '';
@@ -187,7 +187,7 @@
         // 生成二维码
         const canvas = document.createElement('canvas');
         await QRCode.toCanvas(canvas, currentUrl, {
-          width: 72,
+          width: 90,
           margin: 1,
           color: {
             dark: '#000000',
@@ -313,6 +313,13 @@
   /* 确保二维码容器在不同主题下都有合适的背景 */
   #qr-code-container {
     background-color: white !important;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+  }
+
+  /* 二维码悬停效果 */
+  #qr-code-container:hover {
+    transform: scale(1.1);
   }
 
   /* 响应式调整 */
