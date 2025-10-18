@@ -4,7 +4,7 @@ draft: false
 featured: false
 category: life
 pubDatetime: 2025-10-18T14:23+08:00
-title: 答：个人博客内容常陷入同质化，如何找到独特风格？
+title: 知乎答疑：个人博客内容常陷入同质化，如何找到独特风格？
 slug: 2025-10-18-answer-how-to-find-unique-style
 ogImage: https://cos.lhasa.icu/ArticlePictures/2025-10-18-answer-how-to-find-unique-style/zhihu.png
 tags:
