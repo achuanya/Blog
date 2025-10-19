@@ -1,22 +1,22 @@
 ---
 // 网站头部导航组件 - 包含站点标题、导航菜单、搜索和主题切换功能
 
-import Hr from "./Hr.astro";                           // 水平分割线组件
-import IconX from "@/assets/icons/IconX.svg";          // 关闭图标（用于移动端菜单）
-import IconMoon from "@/assets/icons/IconMoon.svg";    // 月亮图标（深色主题）
-import IconSearch from "@/assets/icons/IconSearch.svg"; // 搜索图标
-import IconArchive from "@/assets/icons/IconArchive.svg"; // 归档图标
-import IconSunHigh from "@/assets/icons/IconSunHigh.svg"; // 太阳图标（浅色主题）
-import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg"; // 汉堡菜单图标
-import LinkButton from "./LinkButton.astro";           // 链接按钮组件
-import { SITE } from "@/config";                       // 站点配置
+import Hr from "./Hr.astro";
+import IconX from "@/assets/icons/IconX.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconArchive from "@/assets/icons/IconArchive.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
+import LinkButton from "./LinkButton.astro";
+import { SITE } from "@/config";
 
 export interface Props {
-  currentCategory?: string;  // 当前文章分类（可选）
+  currentCategory?: string;
 }
 
 const { currentCategory } = Astro.props;
-const { pathname } = Astro.url;           // 获取当前页面路径
+const { pathname } = Astro.url;
 
 // 处理当前路径 - 移除尾部斜杠（除了根路径）
 const currentPath =
