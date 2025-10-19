@@ -17,13 +17,7 @@ import rehypeKatex from "rehype-katex";
 // 官方文档: https://astro.build/config
 export default defineConfig({
   site: SITE.website,
-  
-  // 尾部斜杠
-  // "ignore" - 保持原样
-  // "always" - 总是添加
-  // "never" - 总是移除
-  trailingSlash: "ignore",
-  
+
   // 集成插件
   integrations: [
     // MDX 支持
