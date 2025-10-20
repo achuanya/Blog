@@ -19,12 +19,12 @@ export const SITE = {
   dynamicOgImage: false,     // 启用动态生成社交媒体图片
   
   // 默认分页配置
-  postPerIndex: 8,          // 首页显示的文章数量
-  postPerPage: 8,           // 每页显示的文章数量
+  postPerIndex: 12,          // 首页显示的文章数量
+  postPerPage: 12,           // 每页显示的文章数量
   
   // Sports分类独立分页配置
   sports: {
-    postPerPage: 8,         // Sports每页显示的文章数量
+    postPerPage: 12,         // Sports每页显示的文章数量
   },
   
   // 定时发布配置
