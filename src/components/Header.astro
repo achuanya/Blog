@@ -56,18 +56,18 @@ const isActive = (path: string) => {
   <!-- 导航容器 -->
   <div
     id="nav-container"
-    class="mx-auto flex max-w-6xl flex-col items-center justify-between sm:flex-row"
+    class="mx-auto flex max-w-app flex-col items-center justify-between sm:flex-row"
   >
     <!-- 顶部导航包装器 -->
     <div
       id="top-nav-wrap"
-      class="relative flex w-full items-baseline justify-between bg-background p-2 sm:items-center sm:py-4"
+      class="relative flex w-full items-baseline justify-between bg-background p-4 sm:items-center sm:py-6"
     >
       <!-- 网站标题/Logo -->
       <a
         href="/"
         class="absolute p-1 text-2xl leading-7 font-semibold whitespace-nowrap sm:static"
-        title="钓五湖四海，交八方朋友，我就是游钓四方"
+        title="钓五湖四海，交八方朋友"
       >
         {SITE.title}
       </a>
@@ -186,9 +186,7 @@ const isActive = (path: string) => {
       </nav>
     </div>
   </div>
-  <div class="mx-auto w-full">
-    <hr class="border-skin-line" aria-hidden={true} />
-  </div>
+  <Hr />
 </header>
 
 <script>
