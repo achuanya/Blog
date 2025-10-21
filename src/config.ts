@@ -1,45 +1,41 @@
 export const SITE = {
-  // 网站基础信息
   website: "https://lhasa.icu/",
   author: "游钓四方",
   profile: "https://github.com/achuanya",
   desc: "骑过湖边的小径，走过文字里的角落，偶尔停下，看见风，也看见自己",
   title: "游钓四方",
   
-  // 图片资源配置
-  ogImage: "https://cos.lhasa.icu/StylePictures/my-photo.jpg",          // 社交媒体分享图片
-  notFoundImage: "https://cos.lhasa.icu/StylePictures/404.gif",         // 404页面动态图片
-  notFoundStaticImage: "https://cos.lhasa.icu/StylePictures/404.webp",  // 404页面静态图片
-  logo: "https://cos.lhasa.icu/StylePictures/apple-touch-icon.png", // 网站logo图片链接
+  ogImage: "https://cos.lhasa.icu/StylePictures/my-photo.jpg",
+  notFoundImage: "https://cos.lhasa.icu/StylePictures/404.gif",
+  notFoundStaticImage: "https://cos.lhasa.icu/StylePictures/404.webp",
+  logo: "https://cos.lhasa.icu/StylePictures/apple-touch-icon.png",
   
-  // 功能开关配置
-  lightAndDarkMode: true,    // 启用浅色/深色主题切换
-  showArchives: true,        // 显示归档页面
-  showBackButton: true,      // 显示返回按钮
-  dynamicOgImage: false,     // 启用动态生成社交媒体图片
+  // 功能配置
+  lightAndDarkMode: true,    // 主题切换
+  showArchives: true,        // 归档
+  showBackButton: true,      // 返回按钮
+  dynamicOgImage: false,     // OG图片
   
-  // 默认分页配置
-  postPerIndex: 12,          // 首页显示的文章数量
-  postPerPage: 12,           // 每页显示的文章数量
+  // 分页配置
+  postPerIndex: 12,          // 首页文章数量
+  postPerPage: 12,           // 每页文章数量
   
-  // Sports分类独立分页配置
+  // Sports 独立分页配置
   sports: {
-    postPerPage: 12,         // Sports每页显示的文章数量
+    postPerPage: 12,
   },
   
   // 定时发布配置
-  scheduledPostMargin: 15 * 60 * 1000,  // 定时发布边距时间（15分钟，单位：毫秒）
+  scheduledPostMargin: 15 * 60 * 1000,
   
-  // 编辑功能配置
   editPost: {
-    enabled: false,         // 是否启用编辑功能
-    text: "Edit page",      // 编辑按钮文本
-    url: "https://github.com/achuanya/lhasa/edit/main/",  // 编辑页面URL前缀
+    enabled: false,
+    text: "Edit page",
+    url: "https://github.com/achuanya/lhasa/edit/main/",
   },
   
   // 本地化配置
-  dir: "ltr",              // 文本方向: "ltr"（左到右）| "rtl"（右到左）| "auto"（自动）
-  lang: "zh-CN",           // 网站语言代码
-  timezone: "Asia/Shanghai", // 默认全局时区（IANA格式）
-                            // 时区列表参考: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  dir: "ltr",
+  lang: "zh-CN",
+  timezone: "Asia/Shanghai",
 } as const;

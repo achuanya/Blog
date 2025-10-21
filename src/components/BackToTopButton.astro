@@ -33,7 +33,6 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
 </div>
 
 <style>
-  /* 确保BackToTopButton文字正确显示，不受外部CSS影响 */
   #btt-btn-container .btt-text-content {
     /* 移动端隐藏文字，只显示图标 */
     position: absolute !important;
@@ -97,8 +96,6 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
 </style>
 
 <script is:inline data-astro-rerun>
-  /** Scrolls the document to the top when
-   * the "Back to Top" button is clicked. */
   function backToTop() {
     const rootElement = document.documentElement;
     const btnContainer = document.querySelector("#btt-btn-container");
@@ -108,13 +105,11 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
     if (!rootElement || !btnContainer || !backToTopBtn || !progressIndicator)
       return;
 
-    // Attach click event handler for back-to-top button
     backToTopBtn.addEventListener("click", () => {
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     });
 
-    // Handle button visibility according to scroll position
     let lastVisible = null;
     function handleScroll() {
       const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;

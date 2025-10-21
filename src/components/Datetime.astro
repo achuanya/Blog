@@ -1,50 +1,40 @@
 ---
-// 日期时间显示组件 - 用于在文章中显示发布和修改时间
-
-import dayjs from "dayjs";                            // 轻量级日期处理
-import utc from "dayjs/plugin/utc";                   // UTC时间
-import timezone from "dayjs/plugin/timezone";        // 时区处理
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 // import IconCalendar from "@/assets/icons/IconCalendar.svg";
-import { SITE } from "@/config";                      // 站点配置
+import { SITE } from "@/config";
 
-// 扩展dayjs
-dayjs.extend(utc);       // UTC时间
-dayjs.extend(timezone);  // 时区
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
-// 组件属性接口定义
 export interface Props {
-  class?: string;                                // 自定义CSS类名
-  size?: "sm" | "lg";                           // 尺寸大小："sm"（小）| "lg"（大）
-  timezone: string | undefined;                 // 时区设置（IANA格式，如"Asia/Shanghai"）
-  pubDatetime: string | Date;                   // 发布
-  modDatetime: string | Date | undefined | null; // 修改时间（可选）
+  class?: string;
+  size?: "sm" | "lg";
+  timezone: string | undefined;
+  pubDatetime: string | Date;
+  modDatetime: string | Date | undefined | null;
 }
 
-// 解构组件属性并设置默认值
 const {
-  pubDatetime,                    // 发布
-  modDatetime,                    // 修改
-  size = "sm",                    // 默认小
-  class: className = "",          // 默认无
-  timezone: postTimezone,         // 文章时区
+  pubDatetime,
+  modDatetime,
+  size = "sm",
+  class: className = "",
+  timezone: postTimezone,
 } = Astro.props;
 
-// 判断文章是否已被修改
 const isModified = modDatetime && modDatetime > pubDatetime;
 
-// 使用修改时间或发布时间，并转换到指定时区
 const datetime = dayjs(isModified ? modDatetime : pubDatetime).tz(
-  postTimezone || SITE.timezone  // 优先使用文章时区，否则使用站点默认时区
+  postTimezone || SITE.timezone
 );
 
-// 格式化日期为可读格式，例如：'Mar  22, 2025'
 const date = datetime.format("MMM  D, YYYY");
 ---
 
-<!-- 日期时间显示容器 -->
 <div class:list={["flex items-center gap-x-2 opacity-80", className]}>
   
-  {/* 如果文章已被修改，显示"Updated:" */}
   {
     isModified && (
       <span class:list={["text-xs", { "sm:text-base": size === "lg" }]}>
@@ -53,7 +43,6 @@ const date = datetime.format("MMM  D, YYYY");
     )
   }
   
-  {/* 日期时间 */}
   <time
     class:list={["text-xs", { "sm:text-base": size === "lg" }]}
     datetime={datetime.toISOString()}
@@ -61,4 +50,3 @@ const date = datetime.format("MMM  D, YYYY");
     {date}
   </time>
 </div>
-

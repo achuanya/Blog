@@ -39,7 +39,6 @@ const blogStats = await getBlogStats();
 </Layout>
 
 <script>
-  // 数字动画函数
   function animateNumber(element: HTMLElement, targetValue: number, duration: number = 2000, isDecimal: boolean = false) {
     const startValue = 0;
     const startTime = performance.now();
@@ -48,7 +47,6 @@ const blogStats = await getBlogStats();
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      // 使用缓动函数让动画更自然
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const currentValue = startValue + (targetValue - startValue) * easeOutQuart;
       
@@ -61,7 +59,6 @@ const blogStats = await getBlogStats();
       if (progress < 1) {
         requestAnimationFrame(updateNumber);
       } else {
-        // 确保最终值准确
         if (isDecimal) {
           element.textContent = targetValue.toFixed(1);
         } else {
@@ -73,7 +70,6 @@ const blogStats = await getBlogStats();
     requestAnimationFrame(updateNumber);
   }
 
-  // 启动所有数字动画
   function startAnimations() {
     const statsData = document.getElementById('blog-stats-data');
     if (!statsData) return;
@@ -85,7 +81,6 @@ const blogStats = await getBlogStats();
     const startMonth = parseInt(statsData.dataset.startMonth || '8');
     const startDay = parseInt(statsData.dataset.startDay || '31');
     
-    // 查找并动画化所有数字元素
     const elements = [
       { id: 'start-year', value: startYear, duration: 1000 },
       { id: 'start-month', value: startMonth, duration: 800 },
@@ -98,7 +93,6 @@ const blogStats = await getBlogStats();
     elements.forEach((item, index) => {
       const element = document.getElementById(item.id);
       if (element) {
-        // 为每个元素添加不同的延迟，创造连续动画效果
         setTimeout(() => {
           animateNumber(element, item.value, item.duration, item.isDecimal || false);
         }, index * 200);
@@ -106,20 +100,16 @@ const blogStats = await getBlogStats();
     });
   }
 
-  // 页面加载完成后直接启动动画
   function initializeAnimations() {
-    // 添加短暂延迟确保DOM完全渲染
     setTimeout(() => {
       startAnimations();
     }, 300);
   }
 
-  // 初始化
   document.addEventListener('astro:page-load', () => {
     initializeAnimations();
   });
 
-  // 兼容非Astro环境
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeAnimations);
   } else {

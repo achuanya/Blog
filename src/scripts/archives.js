@@ -5,13 +5,10 @@ import timezone from 'dayjs/plugin/timezone';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// 从 getPath 函数复制的路径生成逻辑 - 更新为简化URL结构
 function getPostPath(id) {
-  // Making sure `id` does not contain the directory
   const blogId = id.split("/");
   const slug = blogId.length > 0 ? blogId.slice(-1)[0] : id;
 
-  // 返回简化的URL结构，只包含slug，带尾部斜杠
   return `/${slug}/`;
 }
 
@@ -42,7 +39,6 @@ function createArchiveCardHTML(post, siteTimezone) {
     }
   }
 
-  // 使用正确的路径生成函数
   const postPath = getPostPath(post.id);
 
   return `
@@ -72,7 +68,6 @@ function createYearSectionHTML(year, yearGroup, siteTimezone, months) {
       <sup class="text-sm">${yearGroup.length}</sup>
   `;
 
-  // 按月份分组
   const monthGroups = {};
   yearGroup.forEach(post => {
     const month = new Date(post.data.pubDatetime).getMonth() + 1;
@@ -82,7 +77,6 @@ function createYearSectionHTML(year, yearGroup, siteTimezone, months) {
     monthGroups[month].push(post);
   });
 
-  // 按月份排序（从新到旧）
   const sortedMonths = Object.entries(monthGroups)
     .sort(([monthA], [monthB]) => Number(monthB) - Number(monthA));
 
@@ -96,7 +90,6 @@ function createYearSectionHTML(year, yearGroup, siteTimezone, months) {
         <ul class="month-posts" data-month="${month}">
     `;
 
-    // 按发布时间排序（从新到旧）
     const sortedPosts = monthGroup.sort(
       (a, b) => new Date(b.data.pubDatetime).getTime() - new Date(a.data.pubDatetime).getTime()
     );
@@ -128,7 +121,6 @@ export function initArchives(allPostsFromServer, siteTimezone, initialYearCount,
     "July", "August", "September", "October", "November", "December"
   ];
 
-  // 按年份分组
   const yearGroups = {};
   allPostsFromServer.forEach(post => {
     const year = new Date(post.data.pubDatetime).getFullYear();
@@ -138,7 +130,6 @@ export function initArchives(allPostsFromServer, siteTimezone, initialYearCount,
     yearGroups[year].push(post);
   });
 
-  // 按年份排序（从新到旧）
   const sortedYears = Object.entries(yearGroups)
     .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA));
 

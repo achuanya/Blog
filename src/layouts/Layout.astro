@@ -1,53 +1,49 @@
 ---
-// 主要布局组件 - 为整个网站提供基础HTML结构、SEO设置和第三方集成
-
-import { ClientRouter } from "astro:transitions";           // Astro页面转换路由器
-import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client"; // Google站点验证环境变量
-import { SITE } from "@/config";                            // 站点配置
-import "@/styles/global.css";                               // 全局样式
-import "katex/dist/katex.min.css";                          // KaTeX数学公式样式
+import { ClientRouter } from "astro:transitions";
+import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
+import { SITE } from "@/config";
+import "@/styles/global.css";
+import "katex/dist/katex.min.css";
 import Artalk from "@/components/Artalk.astro";
 
 export interface Props {
-  title?: string;           // 页面标题（可选，默认使用站点标题）
-  author?: string;          // 作者名称（可选，默认使用站点作者）
-  profile?: string;         // 作者个人资料URL（可选）
-  description?: string;     // 页面描述（可选，默认使用站点描述）
-  ogImage?: string;         // Open Graph图片URL（可选）
-  canonicalURL?: string;    // 规范URL（可选，用于SEO）
-  pubDatetime?: Date;       // 发布时间（可选，用于文章页面）
-  modDatetime?: Date | null; // 修改时间（可选，用于文章页面）
-  scrollSmooth?: boolean;   // 是否启用平滑滚动（可选，默认false）
+  title?: string;
+  author?: string;
+  profile?: string;
+  description?: string;
+  ogImage?: string;
+  canonicalURL?: string;
+  pubDatetime?: Date;
+  modDatetime?: Date | null;
+  scrollSmooth?: boolean;
 }
 
 const {
-  title = SITE.title,                                       // 默认使用站点标题
-  author = SITE.author,                                     // 默认使用站点作者
-  profile = SITE.profile,                                   // 默认使用站点作者资料
-  description = SITE.desc,                                  // 默认使用站点描述
-  ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",  // 默认OG图片
-  canonicalURL = new URL(Astro.url.pathname, Astro.url),   // 当前页面的完整URL
-  pubDatetime,                                              // 发布时间
-  modDatetime,                                              // 修改时间
-  scrollSmooth = false,                                     // 默认不启用平滑滚动
+  title = SITE.title,
+  author = SITE.author,
+  profile = SITE.profile,
+  description = SITE.desc,
+  ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
+  canonicalURL = new URL(Astro.url.pathname, Astro.url),
+  pubDatetime,
+  modDatetime,
+  scrollSmooth = false,
 } = Astro.props;
 
-// 构建社交媒体分享图片的完整URL
 const socialImageURL = new URL(ogImage, Astro.url);
 
-// 构建JSON-LD结构化数据（用于SEO和搜索引擎理解）
 const structuredData = {
-  "@context": "https://schema.org",                         // Schema.org上下文
-  "@type": "BlogPosting",                                   // 内容类型：博客文章
-  headline: `${title}`,                                     // 文章标题
-  image: `${socialImageURL}`,                               // 文章图片
-  datePublished: `${pubDatetime?.toISOString()}`,           // 发布时间（ISO格式）
-  ...(modDatetime && { dateModified: modDatetime.toISOString() }), // 修改时间（如果存在）
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: `${title}`,
+  image: `${socialImageURL}`,
+  datePublished: `${pubDatetime?.toISOString()}`,
+  ...(modDatetime && { dateModified: modDatetime.toISOString() }),
   author: [
     {
-      "@type": "Person",                                    // 作者类型：个人
-      name: `${author}`,                                    // 作者姓名
-      ...(profile && { url: profile }),                     // 作者个人资料URL（如果存在）
+      "@type": "Person",
+      name: `${author}`,
+      ...(profile && { url: profile }),
     },
   ],
 };
@@ -60,32 +56,27 @@ const structuredData = {
   class={`${scrollSmooth && "scroll-smooth"}`}
 >
   <head>
-    <!-- 基础HTML元信息 -->
-    <meta charset="UTF-8" />                               <!-- 字符编码 -->
-    <meta name="viewport" content="width=device-width" />  <!-- 响应式视口 -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
     
-    <!-- 网站图标和清单文件 -->
-    <link rel="icon" href="https://cos.lhasa.icu/StylePictures/favicon.ico" sizes="32x32" />      <!-- ICO格式图标 -->
-    <link rel="icon" href="https://cos.lhasa.icu/StylePictures/favicon.svg" type="image/svg+xml" /> <!-- SVG格式图标 -->
-    <link rel="apple-touch-icon" href="https://cos.lhasa.icu/StylePictures/apple-touch-icon.png" /> <!-- Apple设备图标 -->
-    <link rel="manifest" href="/site.webmanifest" />           <!-- Web应用清单 -->
-    <link rel="canonical" href={canonicalURL} />               <!-- 规范URL -->
-    <meta name="generator" content={Astro.generator} />        <!-- 生成器信息 -->
+    <link rel="icon" href="https://cos.lhasa.icu/StylePictures/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="https://cos.lhasa.icu/StylePictures/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="https://cos.lhasa.icu/StylePictures/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
 
-    <!-- 通用元标签 -->
-    <title>{title}</title>                                  <!-- 页面标题 -->
-    <meta name="title" content={title} />                  <!-- 标题元标签 -->
-    <meta name="description" content={description} />      <!-- 页面描述 -->
-    <meta name="author" content={author} />                <!-- 作者信息 -->
-    <link rel="sitemap" href="/sitemap-index.xml" />       <!-- 站点地图 -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <!-- Open Graph / Facebook 社交媒体分享标签 -->
-    <meta property="og:title" content={title} />           <!-- OG标题 -->
-    <meta property="og:description" content={description} /> <!-- OG描述 -->
-    <meta property="og:url" content={canonicalURL} />      <!-- OG URL -->
-    <meta property="og:image" content={socialImageURL} />  <!-- OG图片 -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={socialImageURL} />
 
-    <!-- 文章发布/修改时间标签 -->
     {
       pubDatetime && (
         <meta
@@ -103,25 +94,20 @@ const structuredData = {
       )
     }
 
-    <!-- Twitter 社交媒体分享标签 -->
-    <meta property="twitter:card" content="summary_large_image" /> <!-- Twitter卡片类型 -->
-    <meta property="twitter:url" content={canonicalURL} />         <!-- Twitter URL -->
-    <meta property="twitter:title" content={title} />              <!-- Twitter标题 -->
-    <meta property="twitter:description" content={description} />  <!-- Twitter描述 -->
-    <meta property="twitter:image" content={socialImageURL} />     <!-- Twitter图片 -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={socialImageURL} />
 
-    <!-- Mastodon 联邦宇宙创作者标签 -->
     <meta name="fediverse:creator" content="@lhasarider@mastodon.social">
 
-    <!-- Google JSON-LD 结构化数据 -->
     <script
       type="application/ld+json"
       is:inline
       set:html={JSON.stringify(structuredData)}
     />
 
-    <!-- 启用RSS订阅源自动发现 -->
-    <!-- 参考：https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery -->
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -129,13 +115,9 @@ const structuredData = {
       href={new URL("rss.xml", Astro.site)}
     />
 
-    <!-- 主题颜色（将由JavaScript动态设置） -->
     <meta name="theme-color" content="" />
 
     {
-      // 如果在环境变量中设置了 PUBLIC_GOOGLE_SITE_VERIFICATION，
-      // 则在头部包含 google-site-verification 标签
-      // 了解更多：https://support.google.com/webmasters/answer/9008080#meta_tag_verification&zippy=%2Chtml-tag
       PUBLIC_GOOGLE_SITE_VERIFICATION && (
         <meta
           name="google-site-verification"
@@ -147,18 +129,14 @@ const structuredData = {
     <ClientRouter />
     <script is:inline src="/toggle-theme.js"></script>
     
-    <!-- 页面特定的 head 内容 -->
     <slot name="head" />
     
-    <!-- Artalk 评论系统 -->
     <link href="https://cos.lhasa.icu/assets/artalk/Artalk.css" rel="stylesheet" />
     <script is:inline src="https://cos.lhasa.icu/assets/artalk/Artalk.js"></script>
     
-    <!-- umami 统计 -->
     <script defer is:inline src="https://umami.lhasa.icu/script.js" data-website-id="f540bb26-76fd-4fa6-9257-e4814c6679bd"></script>
   </head>
   <body>
-    <!-- 页面主体 -->
     <slot />
     <Artalk />
   </body>

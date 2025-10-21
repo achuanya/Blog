@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 腾讯云CDN Type A鉴权自动化脚本 - 模块化版本
+ * 腾讯云CDN Type A鉴权自动化脚本
  */
 
 import { Worker, isMainThread } from 'worker_threads';

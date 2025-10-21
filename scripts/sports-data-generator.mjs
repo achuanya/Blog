@@ -1,4 +1,4 @@
-// 运动文章数据生成器 - 独立ES模块版本
+// 运动文章数据生成器
 // 用于在构建时生成运动文章数据JSON文件
 
 import fs from 'fs';
@@ -191,7 +191,6 @@ async function generateSportsData() {
 }
 }
 
-// 执行脚本
 generateSportsData()
   .then(() => {
     console.log("运动文章数据生成完成！");

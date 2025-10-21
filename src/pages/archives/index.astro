@@ -8,7 +8,6 @@ import Card from "@/components/Card.astro";
 import getPostsByGroupCondition from "@/utils/getPostsByGroupCondition";
 import { SITE } from "@/config";
 
-// Redirect to 404 page if `showArchives` config is false
 if (!SITE.showArchives) {
   return Astro.redirect("/404");
 }
@@ -30,18 +29,15 @@ const months = [
   "December",
 ];
 
-// 配置懒加载参数
 const INITIAL_YEARS_TO_SHOW = 2;
 const YEARS_PER_PAGE = 1;
 
-// 按年份分组并排序
 const yearGroups = getPostsByGroupCondition(posts, post =>
   post.data.pubDatetime.getFullYear()
 );
 const sortedYears = Object.entries(yearGroups)
   .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA));
 
-// 准备客户端数据
 const archivesDataForClient = {
   allPosts: posts,
   siteTimezone: SITE.timezone,
@@ -49,7 +45,6 @@ const archivesDataForClient = {
   yearsPerPage: YEARS_PER_PAGE,
 };
 
-// 获取初始显示的年份
 const initialYears = sortedYears.slice(0, INITIAL_YEARS_TO_SHOW);
 ---
 

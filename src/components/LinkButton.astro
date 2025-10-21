@@ -28,7 +28,6 @@ if (href && href.startsWith("mailto:")) {
   targetToApply = undefined;
   relToApply = undefined;
 } else if (href && propTarget === "_blank") {
-  // For non-mailto links, if target is _blank, ensure rel is set
   targetToApply = "_blank";
   relToApply = propRel || "noopener noreferrer";
 }

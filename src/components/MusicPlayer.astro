@@ -15,20 +15,15 @@ export interface Props {
 const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
 ---
 
-<!-- AmplitudeJS 音乐播放器 -->
 <script is:inline src="https://cdn.jsdelivr.net/npm/amplitudejs@5.3.1/dist/amplitude.js"></script>
 
-<!-- Import iconfont.js for SVG symbols -->
 <script src="https://cos.lhasa.icu/assets/iconfont/iconfont.js"></script>
 
-<!-- Blue Playlist Container -->
 <div id="blue-playlist-container">
   <div class="playlist-title">{playlistTitle}</div>
 
-  <!-- Amplitude Player -->
   <div id="amplitude-player">
 
-    <!-- Left Side Player -->
     <div id="amplitude-left">
       <img data-amplitude-song-info="cover_art_url" class="album-art" id="album-art"/>
       <div class="amplitude-visualization" id="large-visualization">
@@ -56,7 +51,6 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
           <div id="repeat-container">
             <div class="amplitude-repeat" id="repeat">
               <svg class="icon" style="width: 32px; height: 32px;">
-                <!-- 循环播放 -->
                 <use href="#icon-loop"></use>
               </svg>
             </div>
@@ -88,7 +82,6 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
           <div id="right-controls">
             <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle">
               <svg class="icon" style="width: 32px; height: 32px;">
-                <!-- 随机播放 -->
                 <use href="#icon-random"></use>
               </svg>
             </div>
@@ -105,9 +98,7 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
         </div>
       </div>
     </div>
-    <!-- End Left Side Player -->
 
-    <!-- Right Side Player -->
     <div id="amplitude-right" class={hideScrollbar ? 'hide-scrollbar' : ''}>
       {songs.map((song, index) => (
         <div class="song amplitude-song-container amplitude-play-pause" data-amplitude-song-index={index}>
@@ -126,15 +117,10 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
         </div>
       ))}
     </div>
-    <!-- End Right Side Player -->
   </div>
-  <!-- End Amplitdue Player -->
 </div>
 
 <style>
-/*
-  SVG Icon Styles
-*/
 .icon {
   width: 1em;
   height: 1em;
@@ -143,7 +129,6 @@ const { playlistTitle, hideScrollbar = false, songs } = Astro.props;
   overflow: hidden;
 }
 
-/* Theme-aware icon colors */
 :root .icon,
 html[data-theme="light"] .icon {
   color: var(--foreground);
@@ -153,8 +138,6 @@ html[data-theme="dark"] .icon {
   color: var(--foreground);
 }
 
-/* Special styling for control buttons with improved theme compatibility */
-/* 循环播放按钮 - 未选中状态 */
 :root #repeat .icon,
 html[data-theme="light"] #repeat .icon {
   color: var(--foreground);
@@ -168,7 +151,6 @@ html[data-theme="dark"] #repeat .icon {
   opacity: 0.7;
 }
 
-/* 循环播放按钮 - 选中状态 (AmplitudeJS自动添加amplitude-repeat-on类) */
 :root #repeat.amplitude-repeat-on .icon,
 html[data-theme="light"] #repeat.amplitude-repeat-on .icon {
   color: var(--accent) !important;
@@ -180,7 +162,6 @@ html[data-theme="dark"] #repeat.amplitude-repeat-on .icon {
   opacity: 1;
 }
 
-/* 随机播放按钮 - 未选中状态 */
 :root #shuffle .icon,
 html[data-theme="light"] #shuffle .icon {
   color: var(--foreground);
@@ -194,7 +175,6 @@ html[data-theme="dark"] #shuffle .icon {
   opacity: 0.7;
 }
 
-/* 随机播放按钮 - 选中状态 (AmplitudeJS自动添加amplitude-shuffle-on类) */
 :root #shuffle.amplitude-shuffle-on .icon,
 html[data-theme="light"] #shuffle.amplitude-shuffle-on .icon {
   color: var(--accent) !important;
@@ -206,7 +186,6 @@ html[data-theme="dark"] #shuffle.amplitude-shuffle-on .icon {
   opacity: 1;
 }
 
-/* 按钮悬停效果 */
 :root #repeat:hover .icon,
 html[data-theme="light"] #repeat:hover .icon,
 html[data-theme="dark"] #repeat:hover .icon,
@@ -215,7 +194,6 @@ html[data-theme="dark"] #repeat:hover .icon,
   opacity: 1;
 }
 
-/* Play/pause button icons with enhanced visibility */
 #play-pause .icon {
   color: var(--accent);
   transition: all 0.3s ease;
@@ -226,9 +204,6 @@ html[data-theme="dark"] #repeat:hover .icon,
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
-/* Volume control icons with better contrast - REMOVED */
-
-/* Previous/next button icons with consistent styling */
 #previous .icon,
 #next .icon {
   color: var(--accent);
@@ -244,9 +219,6 @@ html[data-theme="dark"] #repeat:hover .icon,
   opacity: 1;
 }
 
-/*
-  MusicPlayer 样式 - 使用 global.css 中的主题变量
-*/
 div#amplitude-player {
   background: var(--background);
   box-shadow: var(--music-player-shadow);
@@ -256,15 +228,12 @@ div#amplitude-player {
   display: flex;
   max-width: 900px; }
   
-  /* Small only */
   @media screen and (max-width: 39.9375em) {
   div#amplitude-player {
     flex-direction: column; } }
-  /* Medium only */
   @media screen and (min-width: 40em) and (max-width: 63.9375em) {
   div#amplitude-player {
     max-height: 715px; } }
-  /* Large and up */
   @media screen and (min-width: 64em) {
   div#amplitude-player {
     max-height: 715px; } }
@@ -281,15 +250,11 @@ div#amplitude-player {
     background-color: var(--background);
     padding: 20px 10px; }
   
-  /* Light theme specific styling for player-left-bottom */
   :root div#amplitude-left div#player-left-bottom,
   html[data-theme="light"] div#amplitude-left div#player-left-bottom {
     background-color: var(--apple-gray-light);
   }
   
-    /* Volume container styles - REMOVED */
-  
-  /* Small only */
   @media screen and (max-width: 39.9375em) {
   div#amplitude-player div#amplitude-left {
     width: 100%; }
@@ -303,20 +268,18 @@ div#amplitude-player {
   display: flex;
   flex-direction: column; }
 
-  /* 隐藏滚动条的样式 */
   div#amplitude-right.hide-scrollbar {
     overflow-y: scroll;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */ }
+    scrollbar-width: none;
+    -ms-overflow-style: none; }
   
-  /* Light theme specific styling for hide-scrollbar */
   :root div#amplitude-right.hide-scrollbar,
   html[data-theme="light"] div#amplitude-right.hide-scrollbar {
     background-color: var(--apple-gray-light);
   }
   
   div#amplitude-right.hide-scrollbar::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */ }
+    display: none; }
   div#amplitude-right div.song {
     cursor: pointer;
     padding: 10px; }
@@ -364,20 +327,17 @@ div#amplitude-player {
     display: table;
     clear: both; }
   
-  /* Light theme hover effect for music list */
   :root div#amplitude-right div.song:hover,
   html[data-theme="light"] div#amplitude-right div.song:hover {
     background-color: var(--apple-silver);
     opacity: 0.8;
   }
   
-  /* Dark theme hover effect for music list */
   html[data-theme="dark"] div#amplitude-right div.song:hover {
     background-color: var(--at-color-bg) !important;
     opacity: 0.8;
   }
   
-  /* Small only */
   @media screen and (max-width: 39.9375em) {
   div#amplitude-player div#amplitude-right {
     width: 100%; } }
@@ -387,9 +347,7 @@ div#amplitude-player {
   position: relative;
   height: 20px;
   cursor: pointer;
-  /*
-    IE 11
-  */ }
+}
 
   div#progress-container progress#song-played-progress {
     width: 100%;
@@ -406,7 +364,7 @@ div#amplitude-player {
     border-radius: 5px;
     background: transparent;
     border: none;
-    /* Needed for Firefox */ }
+  }
   @media all and (-ms-high-contrast: none) {
     div#progress-container *::-ms-backdrop, div#progress-container progress#song-played-progress {
     color: var(--accent);
@@ -654,7 +612,6 @@ div#amplitude-player {
   display: table;
   clear: both; }
   
-  /* Small only */
   @media screen and (max-width: 39.9375em) {
   div#amplitude-player div#repeat-container div#repeat {
     margin-left: auto;
@@ -662,7 +619,6 @@ div#amplitude-player {
     float: none; }
   div#amplitude-player div#right-controls div#shuffle {
     display: block; } }
-  /* Medium only */
   @media screen and (min-width: 40em) and (max-width: 63.9375em) {
   div#amplitude-player div#repeat-container div#repeat {
     margin-left: auto;
@@ -670,7 +626,6 @@ div#amplitude-player {
     float: none; }
   div#amplitude-player div#right-controls div#shuffle {
     display: block; } }
-  /* Large and up */
   @media screen and (min-width: 64em) {
   div#amplitude-player div#repeat-container div#repeat {
     margin-left: 10px;
@@ -678,7 +633,6 @@ div#amplitude-player {
     float: left; }
   div#amplitude-player div#right-controls div#shuffle {
     display: block; } }
-  /* Volume slider styles - REMOVED */
   
   div#time-container span.current-time {
   color: var(--accent);
@@ -724,9 +678,6 @@ div#amplitude-player {
     div#meta-container div.song-artist-album span {
     display: block; }
   
-  /*
-  3. Layout
-  */
   div.amplitude-wave-form{
     margin-top: -14px;
   }
@@ -758,9 +709,9 @@ div#amplitude-player {
     text-align: center;
     margin: 20px 0;
     color: var(--foreground);
-    font-size: 1.875rem; /* 30px, 类似h3的大小 */
-    font-weight: 600; /* 更粗的字体权重，类似h3 */
-    font-style: italic; /* 添加斜体，匹配typography.css中h3的样式 */
+    font-size: 1.875rem;
+    font-weight: 600;
+    font-style: italic;
     line-height: 1.2;
   }
 

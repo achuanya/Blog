@@ -1,5 +1,4 @@
 ---
-// 声明全局常量类型
 declare const IMAGES: string;
 declare const EXIF: string;
 
@@ -11,12 +10,11 @@ export interface Props {
   caption?: false | 'long' | 'short';
   exif?: boolean;
   showExif?: boolean;
-  slug?: string; // 可选：手动指定slug，如果不提供则自动获取
+  slug?: string;
 }
 
 const { src, alt, class: className, style, caption = "long", exif = true, showExif = true, slug } = Astro.props;
 
-// 自动获取 slug 的改进版本
 const getFrontmatterSlug = (): string | undefined => {
   try {
     // 尝试从 Astro.props 中获取 frontmatter
@@ -147,7 +145,6 @@ document.addEventListener('astro:page-load', initLightGallery);
     const result: ProcessedExifData = {};
     const settings = [];
 
-    // Helper function to safely parse numeric values, including fractions
     function safeParseFloat(value: string | undefined): number | null {
       if (typeof value !== 'string') return null;
       if (value.includes('/')) {
@@ -165,7 +162,7 @@ document.addEventListener('astro:page-load', initLightGallery);
       return isNaN(parsed) ? null : parsed;
     }
 
-    // 光圈 F/1.7
+    // 光圈
     if (data.FNumber?.val) {
       const aperture = safeParseFloat(data.FNumber.val);
       if (aperture !== null) {
@@ -173,7 +170,7 @@ document.addEventListener('astro:page-load', initLightGallery);
       }
     }
     
-    // 快门速度 1/714s
+    // 快门速度
     if (data.ExposureTime?.val) {
       const exposure = safeParseFloat(data.ExposureTime.val);
       if (exposure !== null) {
@@ -185,12 +182,12 @@ document.addEventListener('astro:page-load', initLightGallery);
       }
     }
     
-    // ISO ISO 10
+    // ISO
     if (data.ISOSpeedRatings?.val) {
       settings.push(`ISO ${data.ISOSpeedRatings.val}`);
     }
 
-    // 焦距 6.3mm
+    // 焦距
     if (data.FocalLength?.val) {
       const focal = safeParseFloat(data.FocalLength.val);
       if (focal !== null) {
@@ -198,28 +195,28 @@ document.addEventListener('astro:page-load', initLightGallery);
       }
     }
 
-    // 色彩空间 sRGB
+    // 色彩空间
     if (data.ColorSpace?.val) {
       settings.push(data.ColorSpace.val);
     }
 
-    // 白平衡 Auto WB
+    // 白平衡
     if (data.WhiteBalance?.val) {
       const wb = data.WhiteBalance.val === "0" ? "Auto WB" : "Manual WB";
       settings.push(wb);
     }
 
-    // 拍摄时间 2025-05-23
+    // 拍摄时间
     if (data.DateTimeOriginal?.val) {
       const dateStr = data.DateTimeOriginal.val;
       const date = dateStr.split(' ')[0].replace(/:/g, '-');
       settings.push(date);
     }
 
-    // 设备型号 Samsung Galaxy S23 Ultra
+    // 设备型号
     if (data.Software?.val) {
       let deviceName = data.Software.val;
-      // 特殊处理Samsung设备
+      // 处理 Samsung 型号
       const s23UltraModels = ["S9180ZCU6DYDA", "S9180ZCS6DYF1"];
       if (s23UltraModels.includes(deviceName) || deviceName.startsWith("S9180")) {
         deviceName = "Samsung Galaxy S23 Ultra";
@@ -475,7 +472,7 @@ document.addEventListener('astro:page-load', initLightGallery);
           showTooltip();
           setTimeout(() => {
             tooltip.classList.remove('show');
-          }, 3000); // Auto hide after 3 seconds on touch
+          }, 3000);
         }
       };
 
@@ -489,15 +486,12 @@ document.addEventListener('astro:page-load', initLightGallery);
     });
   }
 
-  // Initialize on page load
   document.addEventListener('DOMContentLoaded', initExifTooltips);
   
-  // Re-initialize on Astro page transitions
   document.addEventListener('astro:page-load', initExifTooltips);
 </script>
 
 <style>
-  /* CSS 变量定义 */
   .img-container {
     --caption-font-size: 0.8rem;
     --caption-padding: 3px 10px;
@@ -531,7 +525,6 @@ document.addEventListener('astro:page-load', initLightGallery);
     cursor: pointer;
   }
   
-  /* 通用覆层样式 */
   .img-caption {
     position: absolute;
     margin: 0;
@@ -551,7 +544,6 @@ document.addEventListener('astro:page-load', initLightGallery);
     max-width: calc(100% - calc(var(--tag-offset) * 2));
   }
   
-  /* 通用文本样式 */
   .caption-text,
   .exif-content {
     color: #ffffff;
@@ -585,7 +577,6 @@ document.addEventListener('astro:page-load', initLightGallery);
     word-wrap: break-word;
   }
 
-  /* EXIF 样式 */
   .exif-tooltip {
     position: absolute;
     top: 0;
@@ -625,7 +616,6 @@ document.addEventListener('astro:page-load', initLightGallery);
     font-style: italic;
   }
   
-  /* 响应式设计 */
   @media (max-width: 768px) {
     .img-container {
       --caption-font-size: 0.7rem;

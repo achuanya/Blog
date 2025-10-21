@@ -115,33 +115,25 @@
 
   /* ===== 二次开发图片样式 ===== */
   .app-prose {
-    /* 强制覆盖 typography 插件对 img 的默认设置 */
     & :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
       margin-top: 0 !important;
       margin-bottom: 0 !important;
     }
   }
 
-  /* 自定义图片组件的特殊处理 */
   .prose .img-container {
-    /* 覆盖默认的prose图片样式，确保自定义组件正确显示 */
     margin: 1.5rem auto !important;
     max-width: 100% !important;
-    /* 确保在prose容器内不会超出边界 */
     width: 100% !important;
     box-sizing: border-box !important;
   }
   
   .prose .img-container figure {
-    /* 防止嵌套figure元素的样式冲突 */
     margin: 0 !important;
   }
   
   .prose .img-container img {
-    /* 确保图片在prose容器内的正确显示 */
     margin: 0 !important;
     max-width: 100% !important;
   }
-
-
 }

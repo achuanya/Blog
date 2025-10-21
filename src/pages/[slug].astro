@@ -9,12 +9,11 @@ export interface Props {
 }
 
 export async function getStaticPaths() {
-  // 开发环境下包含草稿文章，生产环境下排除草稿文章
   const posts = await getCollection("blog", ({ data }) => {
     if (import.meta.env.DEV) {
-      return true; // 开发环境显示所有文章包括草稿
+      return true;
     }
-    return !data.draft; // 生产环境排除草稿
+    return !data.draft;
   });
   const postResult = posts.map(post => ({
     params: { slug: getSlugFromPath(post.id, post.filePath) },

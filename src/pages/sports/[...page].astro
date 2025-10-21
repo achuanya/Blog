@@ -31,9 +31,7 @@ const { page } = Astro.props;
   <!-- Cal-Heatmap 资源 - 按顺序加载 -->
   <link slot="head" href="https://cos.lhasa.icu/assets/cal-heatmap/cal-heatmap.css" rel="stylesheet" />
   
-  <!-- 确保资源按正确顺序加载 -->
   <script slot="head" is:inline>
-    // 资源加载状态跟踪
     window.calHeatmapResourcesLoaded = window.calHeatmapResourcesLoaded || {
       d3: false,
       calHeatmap: false,
@@ -41,7 +39,6 @@ const { page } = Astro.props;
       tooltip: false
     };
 
-    // 动态加载脚本的辅助函数
     function loadScript(src, callback, errorCallback) {
       const script = document.createElement('script');
       script.src = src;
@@ -52,7 +49,6 @@ const { page } = Astro.props;
       document.head.appendChild(script);
     }
 
-    // 按顺序加载资源
     function loadCalHeatmapResources() {
       // 如果已经开始加载，避免重复加载
       if (window.calHeatmapResourcesLoading) return;
@@ -60,7 +56,7 @@ const { page } = Astro.props;
 
       console.log('开始加载 Cal-Heatmap 资源...');
 
-      // 1. 首先加载 D3.js
+      // 首先加载 D3.js
       loadScript('https://cos.lhasa.icu/assets/cal-heatmap/d3.v7.min.js', function() {
         console.log('D3.js 加载完成');
         window.calHeatmapResourcesLoaded.d3 = true;
@@ -71,7 +67,7 @@ const { page } = Astro.props;
           return;
         }
 
-        // 2. 加载 Cal-Heatmap
+        // 加载 Cal-Heatmap
         loadScript('https://cos.lhasa.icu/assets/cal-heatmap/cal-heatmap.min.js', function() {
           console.log('Cal-Heatmap 加载完成');
           window.calHeatmapResourcesLoaded.calHeatmap = true;
@@ -82,12 +78,12 @@ const { page } = Astro.props;
             return;
           }
 
-          // 3. 加载 Popper.js
+          // 加载 Popper.js
           loadScript('https://cos.lhasa.icu/assets/cal-heatmap/popper.min.js', function() {
             console.log('Popper.js 加载完成');
             window.calHeatmapResourcesLoaded.popper = true;
 
-            // 4. 最后加载 Tooltip
+            // 最后加载 Tooltip
             loadScript('https://cos.lhasa.icu/assets/cal-heatmap/Tooltip.min.js', function() {
               console.log('Tooltip 加载完成');
               window.calHeatmapResourcesLoaded.tooltip = true;
