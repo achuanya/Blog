@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // 配置
-const BLOG_PATH = path.join(__dirname, '../src/data/blog');
+const BLOG_PATH = path.join(__dirname, '../posts');
 const OUTPUT_DIR = path.join(__dirname, '../public/data');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'sports-articles.json');
 
