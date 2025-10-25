@@ -10,6 +10,8 @@ export interface Props extends CollectionEntry<"blog"> {
   imageClass?: string;
   fallbackOgImage?: string;
   showCommentCount?: boolean;
+  showDatetime?: boolean;
+  compact?: boolean;
 }
 
 const { 
@@ -20,7 +22,9 @@ const {
   showDescription = true,
   imageClass, 
   fallbackOgImage,
-  showCommentCount = true
+  showCommentCount = true,
+  showDatetime = true,
+  compact = false
 } = Astro.props;
 
 const { title, description, pubDatetime, modDatetime, timezone, ogImage } = data;
@@ -39,7 +43,7 @@ if ((!imgSrc || imgSrc.trim() === "") && fallbackOgImage) {
 }
 ---
 
-<li class="my-6 grid grid-cols-[auto_1fr] items-center gap-4">
+<li class:list={[compact ? "my-2" : "my-6", "grid grid-cols-[auto_1fr] items-center gap-4"]}>
   <!-- {/* 缩略图 */}
   {imgSrc && (
     <a href={getPath(id, filePath)} class="shrink-0">
@@ -75,10 +79,12 @@ if ((!imgSrc || imgSrc.trim() === "") && fallbackOgImage) {
     )} -->
 
     <div class="flex items-center gap-x-1">
-      <Datetime pubDatetime={pubDatetime} modDatetime={modDatetime} timezone={timezone} />
+      {showDatetime && (
+        <Datetime pubDatetime={pubDatetime} modDatetime={modDatetime} timezone={timezone} />
+      )}
       {showCommentCount && (
         <span class="text-xs opacity-80">
-          · <span class="artalk-comment-count" data-page-key={getPath(id, filePath)}></span> Comments
+          {showDatetime && "· "}<span class="artalk-comment-count" data-page-key={getPath(id, filePath)}></span> Comments
         </span>
       )}
     </div>

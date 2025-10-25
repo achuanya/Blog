@@ -14,23 +14,8 @@ if (!SITE.showArchives) {
 
 const posts = await getCollection("blog", ({ data }) => !data.draft);
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const INITIAL_YEARS_TO_SHOW = 2;
-const YEARS_PER_PAGE = 1;
+const INITIAL_YEARS_TO_SHOW = SITE.archives.initialYearsToShow;
+const YEARS_PER_PAGE = SITE.archives.yearsPerPage;
 
 const yearGroups = getPostsByGroupCondition(posts, post =>
   post.data.pubDatetime.getFullYear()
@@ -43,6 +28,7 @@ const archivesDataForClient = {
   siteTimezone: SITE.timezone,
   initialYearCount: INITIAL_YEARS_TO_SHOW,
   yearsPerPage: YEARS_PER_PAGE,
+  enableLazyLoad: SITE.archives.enableLazyLoad,
 };
 
 const initialYears = sortedYears.slice(0, INITIAL_YEARS_TO_SHOW);
@@ -57,41 +43,31 @@ const initialYears = sortedYears.slice(0, INITIAL_YEARS_TO_SHOW);
           <div class="year-section" data-year={year}>
             <span class="text-2xl font-bold">{year}</span>
             <sup class="text-sm">{yearGroup.length}</sup>
-            {Object.entries(
-              getPostsByGroupCondition(
-                yearGroup,
-                post => post.data.pubDatetime.getMonth() + 1
-              )
-            )
-              .sort(([monthA], [monthB]) => Number(monthB) - Number(monthA))
-              .map(([month, monthGroup]) => (
-                <div class="flex flex-col sm:flex-row">
-                  <div class="mt-6 min-w-36 text-lg sm:my-6">
-                    <span class="font-bold">{months[Number(month) - 1]}</span>
-                    <sup class="text-xs">{monthGroup.length}</sup>
-                  </div>
-                  <ul class="month-posts" data-month={month}>
-                    {monthGroup
-                      .sort(
-                        (a, b) =>
-                          Math.floor(
-                            new Date(b.data.pubDatetime).getTime() / 1000
-                          ) -
-                          Math.floor(
-                            new Date(a.data.pubDatetime).getTime() / 1000
-                          )
+            <div class="flex flex-col sm:flex-row">
+              <div class="mt-6 min-w-36 text-lg sm:my-6">
+                {/* 保持原有的左侧空间以维持对齐 */}
+              </div>
+              <ul class="year-posts">
+                {yearGroup
+                  .sort(
+                    (a, b) =>
+                      Math.floor(
+                        new Date(b.data.pubDatetime).getTime() / 1000
+                      ) -
+                      Math.floor(
+                        new Date(a.data.pubDatetime).getTime() / 1000
                       )
-                      .map(data => (
-                        <Card {...data} showDescription={false} showCommentCount={false} imageClass={"w-[55px] h-[55px] object-cover rounded-md group-hover:opacity-90 transition-opacity duration-300"} />
-                      ))}
-                  </ul>
-                </div>
-              ))}
+                  )
+                  .map(data => (
+                    <Card {...data} showDescription={false} showCommentCount={false} showDatetime={false} compact={true} imageClass={"w-[55px] h-[55px] object-cover rounded-md group-hover:opacity-90 transition-opacity duration-300"} />
+                  ))}
+              </ul>
+            </div>
           </div>
         ))
       }
     </div>
-    {sortedYears.length > INITIAL_YEARS_TO_SHOW && (
+    {SITE.archives.enableLazyLoad && sortedYears.length > INITIAL_YEARS_TO_SHOW && (
       <div id="load-more-trigger" class="h-10"></div>
     )}
   </Main>
@@ -113,7 +89,8 @@ const initialYears = sortedYears.slice(0, INITIAL_YEARS_TO_SHOW);
           clientData.allPosts,
           clientData.siteTimezone,
           clientData.initialYearCount,
-          clientData.yearsPerPage
+          clientData.yearsPerPage,
+          clientData.enableLazyLoad
         );
       } catch (e) {
         console.error("Failed to parse archives client data or initialize archives:", e);

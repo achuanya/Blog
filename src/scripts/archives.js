@@ -27,7 +27,6 @@ function formatArchiveDate(dateString, tz) {
 }
 
 function createArchiveCardHTML(post, siteTimezone) {
-  const pubDate = formatArchiveDate(post.data.pubDatetime, siteTimezone);
   const defaultImageClass = "w-[55px] h-[55px] object-cover rounded-md group-hover:opacity-90 transition-opacity duration-300";
 
   let imgSrc = '';
@@ -42,7 +41,7 @@ function createArchiveCardHTML(post, siteTimezone) {
   const postPath = getPostPath(post.id);
 
   return `
-    <li class="my-6 flex flex-row gap-6 items-start">
+    <li class="my-2 flex flex-row gap-6 items-start">
       <div class="flex-grow mx-auto my-auto">
         <a
           href="${postPath}"
@@ -50,76 +49,47 @@ function createArchiveCardHTML(post, siteTimezone) {
         >
           <h3 class="text-lg font-medium decoration-dashed hover:underline" style="view-transition-name: ${post.data.title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')}">${post.data.title}</h3>
         </a>
-        <div class="flex items-end space-x-2 opacity-80">
-          <span class="sr-only">Published:</span>
-          <span class="text-xs italic">
-            <time datetime="${pubDate.iso}">${pubDate.date}</time>
-          </span>
-        </div>
       </div>
     </li>
   `;
 }
 
-function createYearSectionHTML(year, yearGroup, siteTimezone, months) {
+function createYearSectionHTML(year, yearGroup, siteTimezone) {
   let yearHTML = `
     <div class="year-section" data-year="${year}">
       <span class="text-2xl font-bold">${year}</span>
       <sup class="text-sm">${yearGroup.length}</sup>
-  `;
-
-  const monthGroups = {};
-  yearGroup.forEach(post => {
-    const month = new Date(post.data.pubDatetime).getMonth() + 1;
-    if (!monthGroups[month]) {
-      monthGroups[month] = [];
-    }
-    monthGroups[month].push(post);
-  });
-
-  const sortedMonths = Object.entries(monthGroups)
-    .sort(([monthA], [monthB]) => Number(monthB) - Number(monthA));
-
-  sortedMonths.forEach(([month, monthGroup]) => {
-    yearHTML += `
       <div class="flex flex-col sm:flex-row">
         <div class="mt-6 min-w-36 text-lg sm:my-6">
-          <span class="font-bold">${months[Number(month) - 1]}</span>
-          <sup class="text-xs">${monthGroup.length}</sup>
+          <!-- 保持原有的左侧空间以维持对齐 -->
         </div>
-        <ul class="month-posts" data-month="${month}">
-    `;
+        <ul class="year-posts">
+  `;
 
-    const sortedPosts = monthGroup.sort(
-      (a, b) => new Date(b.data.pubDatetime).getTime() - new Date(a.data.pubDatetime).getTime()
-    );
+  // 直接按发布时间排序，不进行月份分组
+  const sortedPosts = yearGroup.sort(
+    (a, b) => new Date(b.data.pubDatetime).getTime() - new Date(a.data.pubDatetime).getTime()
+  );
 
-    sortedPosts.forEach(post => {
-      yearHTML += createArchiveCardHTML(post, siteTimezone);
-    });
-
-    yearHTML += `
-        </ul>
-      </div>
-    `;
+  sortedPosts.forEach(post => {
+    yearHTML += createArchiveCardHTML(post, siteTimezone);
   });
 
-  yearHTML += `</div>`;
+  yearHTML += `
+        </ul>
+      </div>
+    </div>
+  `;
   return yearHTML;
 }
 
-export function initArchives(allPostsFromServer, siteTimezone, initialYearCount, yearsPerPage) {
+export function initArchives(allPostsFromServer, siteTimezone, initialYearCount, yearsPerPage, enableLazyLoad = true) {
   const archivesContainer = document.getElementById('archives-container');
   const loadMoreTrigger = document.getElementById('load-more-trigger');
 
   if (!archivesContainer) {
     return;
   }
-
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
 
   const yearGroups = {};
   allPostsFromServer.forEach(post => {
@@ -152,7 +122,7 @@ export function initArchives(allPostsFromServer, siteTimezone, initialYearCount,
 
     let newYearsHTML = '';
     yearsToLoad.forEach(([year, yearGroup]) => {
-      newYearsHTML += createYearSectionHTML(year, yearGroup, siteTimezone, months);
+      newYearsHTML += createYearSectionHTML(year, yearGroup, siteTimezone);
     });
 
     archivesContainer.insertAdjacentHTML('beforeend', newYearsHTML);
@@ -167,7 +137,7 @@ export function initArchives(allPostsFromServer, siteTimezone, initialYearCount,
   }
 
   let observer;
-  if (loadMoreTrigger && sortedYears.length > initialYearCount) {
+  if (loadMoreTrigger && sortedYears.length > initialYearCount && enableLazyLoad) {
     observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
         loadMoreYears();

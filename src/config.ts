@@ -17,12 +17,19 @@ export const SITE = {
   dynamicOgImage: false,     // OG图片
   
   // 分页配置
-  postPerIndex: 12,          // 首页文章数量
-  postPerPage: 12,           // 每页文章数量
+  postPerIndex: 12,          // 初始显示文章数量
+  postPerPage: 12,           // 每次加载文章数量
   
   // Sports 独立分页配置
   sports: {
     postPerPage: 12,
+  },
+  
+  // Archives 懒加载配置
+  archives: {
+    enableLazyLoad: true,     // 启用懒加载
+    initialYearsToShow: 1,    // 初始显示年份数量
+    yearsPerPage: 1,          // 每次加载年份数量
   },
   
   // 定时发布配置
