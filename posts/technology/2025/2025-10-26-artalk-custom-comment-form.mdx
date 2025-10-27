@@ -18,6 +18,147 @@ description: 打造全新 Artalk 评论界面
 
 import Img from "@/components/Img.astro";
 
-**Artalk-S** 是我基于 Artalk v2.9.1 二次开发的一个版本
+***Artalk-ui*** 是 [Artalk](https://github.com/ArtalkJS/Artalk) `v2.9.1` 的一个分支，主要重构 ui
 
-本次更新的主要功能包括：
+本次更新的主要功能如下：
+
+ - 全新 Artalk 评论界面，评论框分段式折叠展开，响应式布局
+ - 表单处展示动态头像，自动根据邮箱哈希计算，Artalk 后端可改 API
+ - 扩展 Color 变量，尽力做到一切前端非硬编码
+ - 优化 Markdown Preview 体验，修复 bug
+ - 添加 Crypto-js 支持（[Crypto-js](https://github.com/brix/crypto-js)）
+
+大多数其他功能，例如后端逻辑、前端接口等，基本保持不变
+
+-----
+
+## 用法：
+
+### 1.环境要求
+
+- Node.js（^ 20.17.0）
+- PNPM (^ 9.10.0)
+- Go（^1.22.7）
+- Make（任意）
+- Gcc  (必须启用`CGO_ENABLED=1`)
+
+对环境不熟悉的，直接复制下面一条龙命令，缺哪个装哪个
+
+```bash
+# Go + Make + Gcc
+sudo apt update && sudo apt install -y make gcc && wget https://golang.google.cn/dl/go1.21.4.linux-amd64.tar.gz && sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.4.linux-amd64.tar.gz && for file in ~/.bashrc ~/.zshrc; do grep -q 'export GOROOT=/usr/local/go' "$file" || echo -e '\nexport GOROOT=/usr/local/go' >> "$file"; grep -q 'export GOPATH=$HOME/go' "$file" || echo 'export GOPATH=$HOME/go' >> "$file"; grep -q 'export PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin' "$file" || echo 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' >> "$file"; grep -q 'export GOPROXY=https://goproxy.cn,direct' "$file" || echo 'export GOPROXY=https://goproxy.cn,direct' >> "$file"; done && SHELL_NAME=$(basename "$SHELL") && [ "$SHELL_NAME" = "zsh" ] && source ~/.zshrc || source ~/.bashrc
+
+# Nvm + Node + pnpm + PM2
+curl -o- https://cdn.jsdelivr.net/gh/nvm-sh/nvm@v0.39.7/install.sh | bash && export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && for file in ~/.bashrc ~/.zshrc; do grep -q 'export NVM_DIR="$HOME/.nvm"' "$file" || echo -e '\nexport NVM_DIR="$HOME/.nvm"' >> "$file"; grep -q '\. "\$NVM_DIR/nvm.sh"' "$file" || echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> "$file"; grep -q '\. "\$NVM_DIR/bash_completion"' "$file" || echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> "$file"; done && SHELL_NAME=$(basename "$SHELL") && [ "$SHELL_NAME" = "zsh" ] && source ~/.zshrc || source ~/.bashrc && nvm install --lts && npm config set registry https://registry.npmmirror.com && npm install -g pnpm pm2 && pnpm config set registry https://registry.npmmirror.com
+```
+
+### 2.源码编译
+
+全程 Linux 操作，如果你用 Windows，建议 [MSYS2](https://www.msys2.org/)
+
+`git clone https://github.com/achuanya/Artalk-ui.git`
+
+1. 根目录执行 `pnpm i` 安装依赖
+2. 找到 `./conf/artalk.example.yml` 复制到根目录，重命名为 `artalk.yml`
+3. 运行 `make build-frontend` （把嵌入的前端主程序和侧边栏前端程序放入 `/public` 目录）
+4. 执行 `make build` 构建后端
+
+```bash
+➜  Artalk-ui git:(master) make build
+go build \
+    	-ldflags "-s -w" \
+        -o ./bin/artalk \
+    	github.com/artalkjs/artalk/v2
+    
+➜  Artalk-ui git:(master) ls -lh ./bin/artalk                  
+-rwxr-xr-x 1 lhasa lhasa 46M 10月 27 06:14 ./bin/artalk
+```
+
+### 3. 后端初始化
+
+`./bin/artalk` 生成后，运行 `./bin/artalk admin` 创建管理员账号
+
+如果你要修改，密码，输入原昵称、邮箱即可
+
+```bash
+➜  Artalk-ui git:(master) ./bin/artalk admin
+2025/10/27 06:32:23.291 INFO [core/gen.go:70] File Generated: /home/lhasa/.config/artalk/artalk.yml
+--------------------------------
+ Create admin account
+--------------------------------
+Enter Username: lhasa
+Enter Email: haibao1027@gmail.com
+Enter Password: 
+Retype Password: 
+--------------------------------
+  Name: lhasa
+  Mail: haibao1027@gmail.com
+--------------------------------
+```
+
+#### Artalk CLI 命令
+
+| 命令 | 描述 | 常见用法示例 |
+|------|------|--------------|
+| **`server`** | 启动 Artalk 服务端 | `./bin/artalk server -c ./artalk.yml` |
+| **`admin`** | 创建或修改管理员账号 | `./bin/artalk admin` |
+| **`config`** | 输出当前配置文件信息 | `./bin/artalk config` |
+| **`export`** | 导出数据（Artransfer 格式） | `./bin/artalk export --out backup.json` |
+| **`import`** | 导入数据（Artransfer 格式） | `./bin/artalk import --in backup.json` |
+| **`gen`** | 工具集合（如生成配置、密钥等） | `./bin/artalk gen` |
+| **`upgrade`** | 升级到最新版本 | `./bin/artalk upgrade` |
+| **`version`** | 输出版本信息 | `./bin/artalk version` |
+| **`completion`** | 生成 Shell 自动补全脚本 | `./bin/artalk completion zsh` |
+| **`help`** | 查看帮助信息 | `./bin/artalk help` |
+
+| 参数 | 描述 | 示例 |
+|------|------|------|
+| `-c, --config <path>` | 指定配置文件路径（默认 `./artalk.yml`） | `./bin/artalk server -c /etc/artalk.yml` |
+| `-w, --workdir <dir>` | 指定工作目录（默认 `./`） | `./bin/artalk -w /var/www/artalk server` |
+
+### 4.使用 PM2 持久化运行
+
+到这里用什么都行，全凭个人喜好
+
+```bash
+➜  Artalk-ui git:(master) pm2 start ./bin/artalk --name artalk -- server
+[PM2] Spawning PM2 daemon with pm2_home=/home/lhasa/.pm2
+[PM2] PM2 Successfully daemonized
+[PM2] Starting /home/lhasa/code/Artalk-ui/bin/artalk in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ artalk             │ fork     │ 0    │ online    │ 0%       │ 22.7mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+➜  Artalk-ui git:(master) pm2 startup                         
+[PM2] Init System found: systemd
+[PM2] To setup the Startup Script, copy/paste the following command:
+sudo env PATH=$PATH:/home/lhasa/.nvm/versions/node/v22.21.0/bin /home/lhasa/.nvm/versions/node/v22.21.0/lib/node_modules/pm2/bin/pm2 startup systemd -u lhasa --hp /home/lhasa
+➜  Artalk-ui git:(master) pm2 save
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/lhasa/.pm2/dump.pm2
+```
+
+### 5.集成到博客
+
+该样式位于：`/ui/artalk/dist`
+```html
+<!-- CSS -->
+<link href="http://artalk.example.com:8080/dist/Artalk.css" rel="stylesheet" />
+
+<!-- JS -->
+<script src="http://artalk.example.com:8080/dist/Artalk.js"></script>
+
+<!-- Artalk -->
+<div id="Comments"></div>
+<script>
+Artalk.init({
+  el:        '#Comments',               // 绑定元素的 Selector
+  server:    'http://artalk.example.com:8080', // 后端地址
+  site:      'Artalk 的博客',               // 你的站点名
+  pageKey:   '/post/1',                   // 固定链接
+  pageTitle: '关于引入 Artalk 的这档子事',   // 页面标题 (留空自动获取)
+})
+</script>
+```
